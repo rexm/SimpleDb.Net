@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9DA30BCD-FE40-4215-A513-3434608C20E7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cucumber.SimpleDb</RootNamespace>
+    <AssemblyName>Cucumber.SimpleDb</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ServiceBus\SimpleDbSoapService.cs" />
+    <Compile Include="Session\ISessionAttribute.cs" />
+    <Compile Include="Session\ISessionItem.cs" />
+    <Compile Include="Session\ISession.cs" />
+    <Compile Include="IInternalContext.cs" />
+    <Compile Include="Session\ISessionSimpleDbItemCollection.cs" />
+    <Compile Include="Session\SessionNewSimpleDbItem.cs" />
+    <Compile Include="Session\SessionSimpleDbContext.cs" />
+    <Compile Include="Session\SessionSimpleDbItemCollection.cs" />
+    <Compile Include="Session\SimpleDbSession.cs" />
+    <Compile Include="Utilities\ObjectExtensions.cs" />
+    <Compile Include="Utilities\ExpressionExtensions.cs" />
+    <Compile Include="Utilities\EnumerableExtensions.cs" />
+    <Compile Include="ISimpleDbAttribute.cs" />
+    <Compile Include="ISimpleDbAttributeCollection.cs" />
+    <Compile Include="ISimpleDbDomain.cs" />
+    <Compile Include="ISimpleDbDomainCollection.cs" />
+    <Compile Include="ISimpleDbItem.cs" />
+    <Compile Include="ISimpleDbItemCollection.cs" />
+    <Compile Include="Linq\Query.cs" />
+    <Compile Include="Linq\Translation\QueryCommand.cs" />
+    <Compile Include="Linq\Translation\QueryProxyWriter.cs" />
+    <Compile Include="Linq\Structure\DomainExpression.cs" />
+    <Compile Include="Linq\Structure\Grouping.cs" />
+    <Compile Include="Linq\Structure\OrderExpression.cs" />
+    <Compile Include="Linq\Structure\AttributeExpression.cs" />
+    <Compile Include="Linq\Structure\ProjectionExpression.cs" />
+    <Compile Include="Linq\Structure\SelectExpression.cs" />
+    <Compile Include="Linq\Structure\SimpleDbExpression.cs" />
+    <Compile Include="Linq\Translation\ClientProjectionWriter.cs" />
+    <Compile Include="Linq\Translation\DomainResolver.cs" />
+    <Compile Include="Linq\Translation\PartialEvaluator.cs" />
+    <Compile Include="Linq\Translation\QueryBinder.cs" />
+    <Compile Include="Linq\Translation\QueryWriter.cs" />
+    <Compile Include="Linq\Translation\SelectEnsurer.cs" />
+    <Compile Include="Linq\Translation\SelectionCollector.cs" />
+    <Compile Include="Linq\Translation\QueryReducer.cs" />
+    <Compile Include="Linq\Translation\SimpleDbExpressionVisitor.cs" />
+    <Compile Include="Linq\SimpleDbQueryProvider.cs" />
+    <Compile Include="Linq\Structure\QueryExpression.cs" />
+    <Compile Include="Linq\Translation\IndexedAttributeMapper.cs" />
+    <Compile Include="Utilities\TypeUtilities.cs" />
+    <Compile Include="Session\ProxySimpleDbDomain.cs" />
+    <Compile Include="ISimpleDbService.cs" />
+    <Compile Include="ServiceBus\SimpleDbRestService.cs" />
+    <Compile Include="Session\SessionSimpleDbAttribute.cs" />
+    <Compile Include="Session\SessionSimpleDbAttributeCollection.cs" />
+    <Compile Include="SimpleDbAttributeValue.cs" />
+    <Compile Include="Session\SessionSimpleDbDomain.cs" />
+    <Compile Include="SimpleDbException.cs" />
+    <Compile Include="Session\SessionSimpleDbItem.cs" />
+    <Compile Include="SimpleDbContext.cs" />
+    <Compile Include="ISimpleDbContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Session\SessionSimpleDbDomainCollection.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
