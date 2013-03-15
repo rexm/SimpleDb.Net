@@ -1,4 +1,57 @@
-SimpleDbDotNet
-==============
+# SimpleDb.NET
 
-A .NET library for AWS SimpleDB
+A .NET library that lets you work with [AWS SimpleDB][1] using a familiar entity-like model and LINQ queries.
+
+The goals of SimpleDb.NET are:
+* Surface 100% of SimpleDB's capabilities through a consistent, logical .NET API - no falling back to "low-level" REST for some operations.
+* Provide robust LINQ querying and session-based change tracking.
+* High performance compared to interacting directly with the AWS APIs from your application.
+* No dependencies on third-party libraries (including the AWS SDK).
+
+# Installation
+
+## Nuget
+
+    nuget install SimpleDb.NET
+    
+## From this repo
+
+Download `Cucumber.SimpleDb.dll` from the **dist** directory. That always reflects the current state of the master.
+
+# Usage
+
+SimpleDb.NET doesn't require any configuration. To begin using it, just call `SimpleDbContext.Create`:
+
+    using(var simpleDb = SimpleDbContext.Create("publicKey", "privateKey"))
+    {
+      var items = simpleDb.Domains["myDomain"].Items
+        .Where(item => item["MyStringAttribute"] == "hello world" || item["MyDateTimeAttribute"] < DateTime.Now)
+        .OrderBy(item => item["SomeOtherAttribute"]);
+        
+      foreach(var item in items)
+      {
+        Console.WriteLine(item["MyOtherAttribute"]);
+      }
+    }
+
+If you've used LINQ to SQL (or pretty much any LINQ-friendly ORM) this should look fairly familiar. We've left it up to you to decide where to store your AWS public and private keys.
+
+## Querying
+
+Although AWS SimpleDB is not a relational data store, SimpleDb.NET will support complex LINQ queries such as `JOIN` and `UNION` by batching multiple queries to AWS in parallel, and transforming the results on the local machine.
+
+## CRUD
+
+All changes to items, as well as additions and deletions from a domain, are tracked and batch-sent over the wire once `SubmitChanges()` is called:
+
+    var newItem = myDomain.Items.Add("SomeItem");
+    newItem["SomeAttribute"] = "we really are schema-less!";
+    simpleDb.SubmitChanges();
+    
+Changes to Domains (currently only deleting Domains is supported) are executed immediately.
+
+# Contributing
+
+Use GitHub pull requests to point to code changes. For very large changes, open an issue first to explain the shortcomings you intend to address.
+
+[1]: http://aws.amazon.com/simpledb
