@@ -16,7 +16,7 @@ The goals of SimpleDb.NET are:
     
 ## From this repo
 
-Download `Cucumber.SimpleDb.dll` from the **dist** directory. That always reflects the current state of the master.
+Download `Cucumber.SimpleDb.dll` from the root directory. That always reflects the current state of the master.
 
 # Usage
 
