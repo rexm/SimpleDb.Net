@@ -31,7 +31,7 @@ namespace Cucumber.SimpleDb
             {
                 throw new ArgumentNullException("privateKey");
             }
-            return Create(new SimpleDbSoapService(publicKey, privateKey));
+            return Create(new SimpleDbRestService(publicKey, privateKey));
         }
 
         /// <summary>

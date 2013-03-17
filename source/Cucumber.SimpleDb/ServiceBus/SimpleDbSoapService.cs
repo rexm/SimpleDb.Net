@@ -10,6 +10,7 @@ using System.Net;
 
 namespace Cucumber.SimpleDb.ServiceBus
 {
+	[Obsolete("AWS no longer supports SOAP as a transport. Use the REST provider instead.")]
     internal class SimpleDbSoapService : ISimpleDbService
     {
         private readonly string _publicKey;
