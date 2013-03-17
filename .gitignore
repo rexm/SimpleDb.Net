@@ -63,3 +63,5 @@ packages/
 #Test files
 *.testsettings
 *.[Tt]est-[Cc]ache
+
+.DS_Store
