@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb", "Cucumber.SimpleDb\Cucumber.SimpleDb.csproj", "{9DA30BCD-FE40-4215-A513-3434608C20E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb.Test", "Cucumber.SimpleDb.Test\Cucumber.SimpleDb.Test.csproj", "{73319C1B-979E-4879-A410-1C2F896E037D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb.Test", "Cucumber.SimpleDb.Test\Cucumber.SimpleDb.Test.csproj", "{7C915ED2-81D2-4DAF-BB3E-503441CBD922}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +15,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|x86.Build.0 = Debug|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.ActiveCfg = Release|Any CPU
+		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.Build.0 = Release|Any CPU
 		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -25,16 +37,9 @@ Global
 		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|x86.ActiveCfg = Release|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{73319C1B-979E-4879-A410-1C2F896E037D}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Cucumber.SimpleDb\Cucumber.SimpleDb.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Based on the TypeHelper class by Matt Warren:
+// http://iqtoolkit.codeplex.com
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,16 +24,22 @@ namespace Cucumber.SimpleDb.Utilities
         public static Type FindIEnumerable(Type seqType)
         {
             if (seqType == null || seqType == typeof(string))
-                return null;
+			{
+				return null;
+			}
             if (seqType.IsArray)
-                return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType());
+			{
+				return typeof(IEnumerable<>).MakeGenericType (seqType.GetElementType ());
+			}
             if (seqType.IsGenericType)
             {
                 foreach (Type arg in seqType.GetGenericArguments())
                 {
                     Type ienum = typeof(IEnumerable<>).MakeGenericType(arg);
                     if (ienum.IsAssignableFrom(seqType))
+					{
                         return ienum;
+					}
                 }
             }
             Type[] ifaces = seqType.GetInterfaces();
@@ -40,11 +49,15 @@ namespace Cucumber.SimpleDb.Utilities
                 {
                     Type ienum = FindIEnumerable(iface);
                     if (ienum != null)
+					{
                         return ienum;
+					}
                 }
             }
             if (seqType.BaseType != null && seqType.BaseType != typeof(object))
-                return FindIEnumerable(seqType.BaseType);
+			{
+				return FindIEnumerable (seqType.BaseType);
+			}
             return null;
         }
 
@@ -57,7 +70,9 @@ namespace Cucumber.SimpleDb.Utilities
         {
             Type ienum = FindIEnumerable(seqType);
             if (ienum == null)
-                return seqType;
+			{
+				return seqType;
+			}
             return ienum.GetGenericArguments()[0];
         }
 
@@ -73,8 +88,10 @@ namespace Cucumber.SimpleDb.Utilities
 
         public static Type GetNonNullableType(Type type)
         {
-            if (IsNullableType(type))
-                return type.GetGenericArguments()[0];
+            if (IsNullableType (type))
+			{
+				return type.GetGenericArguments () [0];
+			}
             return type;
         }
 
@@ -82,13 +99,19 @@ namespace Cucumber.SimpleDb.Utilities
         {
             FieldInfo fi = mi as FieldInfo;
             if (fi != null)
-                return fi.FieldType;
+			{
+				return fi.FieldType;
+			}
             PropertyInfo pi = mi as PropertyInfo;
             if (pi != null)
-                return pi.PropertyType;
+			{
+				return pi.PropertyType;
+			}
             EventInfo ei = mi as EventInfo;
             if (ei != null)
-                return ei.EventHandlerType;
+			{
+				return ei.EventHandlerType;
+			}
             return null;
         }
     }
