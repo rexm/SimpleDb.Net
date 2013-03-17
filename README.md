@@ -38,7 +38,7 @@ If you've used LINQ to SQL (or pretty much any LINQ-friendly ORM) this should lo
 
 ## Querying
 
-Although AWS SimpleDB is not a relational data store, SimpleDb.NET will support complex LINQ queries such as `JOIN` and `UNION` by batching multiple queries to AWS in parallel, and transforming the results on the local machine.
+Although AWS SimpleDB is not a relational data store, SimpleDb.NET will support relation-y LINQ queries such as `JOIN` by batching multiple queries to AWS in parallel, and transforming the results on the local machine.
 
 ## CRUD
 
@@ -54,4 +54,13 @@ Changes to Domains (currently only deleting Domains is supported) are executed i
 
 Use GitHub pull requests to point to code changes. For very large changes, open an issue first to explain the shortcomings you intend to address.
 
+# Acknowledgements
+
+The LINQ provider stands on [Matt Warren's shoulders][2]. Every LINQ provider that exists today (and LINQ itself) is thanks to him and the brilliant guys and girls at Microsoft.
+
+And of course, Amazon for creating and operating such a brilliant cloud database service.
+
+
+
 [1]: http://aws.amazon.com/simpledb
+[2]: http://blogs.msdn.com/b/mattwar/archive/2008/11/18/linq-links.aspx
