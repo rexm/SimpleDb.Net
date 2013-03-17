@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using Cucumber.SimpleDb.ServiceBus;
 
 namespace Cucumber.SimpleDb.Session
@@ -92,6 +93,17 @@ namespace Cucumber.SimpleDb.Session
         private void PopulateDomains()
         {
             _domains = new Dictionary<string, ISimpleDbDomain>(StringComparer.OrdinalIgnoreCase);
+            XElement result = null;
+            string nextPageToken = null;
+            do
+            {
+                result = _session.Service.ListDomains(nextPageToken);
+                foreach (var domainNode in result.Elements("DomainName"))
+                {
+                    _domains.Add(domainNode.Value, new ProxySimpleDbDomain(domainNode.Value, _domains, _session));
+                }
+                nextPageToken = result.Elements("NextPageToken").Select(x => x.Value).FirstOrDefault();
+            } while (!string.IsNullOrEmpty(nextPageToken));
         }
     }
 }

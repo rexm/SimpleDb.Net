@@ -14,6 +14,7 @@ namespace Cucumber.SimpleDb.Utilities
             {
                 throw new ArgumentOutOfRangeException();
             }
+            //this is not efficient. need to refactor to stream elements
             var enumerator = source.GetEnumerator();
             List<TElement> group = new List<TElement>();
             while (enumerator.MoveNext())

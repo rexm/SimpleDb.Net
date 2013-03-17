@@ -93,7 +93,6 @@ namespace Cucumber.SimpleDb.Session
         {
             XElement data = _context.Service.GetDomainMeta(_name);
             _realDomain = new SessionSimpleDbDomain(_context, _name, data);
-            _loadedDomains.Add(_name, _realDomain);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
+using System.Xml;
 
 namespace Cucumber.SimpleDb.ServiceBus
 {
@@ -326,10 +327,19 @@ namespace Cucumber.SimpleDb.ServiceBus
             try
             {
                 using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
                 {
-                    using (var stream = response.GetResponseStream())
+                    try
                     {
                         return XDocument.Load(stream).Root;
+                    }
+                    catch (XmlException xmlex)
+                    {
+                        throw new SimpleDbException("Amazon SimpleDb returned invalid XML", xmlex);
+                    }
+                    catch (InvalidOperationException invalidex)
+                    {
+                        throw new SimpleDbException("Amazon SimpleDb returned invalid XML", invalidex);
                     }
                 }
             }
