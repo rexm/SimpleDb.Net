@@ -186,8 +186,8 @@ namespace Cucumber.SimpleDb
 
         public override int GetHashCode()
         {
-            return string.Join("", this._values).GetHashCode();
-        }
+			return string.Join ("", this._values).GetHashCode ();
+		}
 
         public override bool Equals(object obj)
         {

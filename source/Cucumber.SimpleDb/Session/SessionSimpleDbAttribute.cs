@@ -36,7 +36,7 @@ namespace Cucumber.SimpleDb.Session
             set
             {
                 _newValue = value;
-                IsDirty = true;
+				this.IsDirty = _newValue.Values.SequenceEqual (_originalValue.Values);
             }
         }
 
