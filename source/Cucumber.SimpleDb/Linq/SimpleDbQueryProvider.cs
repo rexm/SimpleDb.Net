@@ -47,29 +47,6 @@ namespace Cucumber.SimpleDb.Linq
             }
         }
 
-        protected virtual bool CanBeEvaluatedLocally(Expression expression)
-        {
-            ConstantExpression cex = expression as ConstantExpression;
-            if (cex != null)
-            {
-                IQueryable query = cex.Value as IQueryable;
-                if (query != null && query.Provider == this)
-                    return false;
-            }
-            MethodCallExpression mc = expression as MethodCallExpression;
-            if (mc != null &&
-                (mc.Method.DeclaringType == typeof(Enumerable) ||
-                 mc.Method.DeclaringType == typeof(Queryable)))
-            {
-                return false;
-            }
-            if (expression.NodeType == ExpressionType.Convert &&
-                expression.Type == typeof(object))
-                return true;
-            return expression.NodeType != ExpressionType.Parameter &&
-                   expression.NodeType != ExpressionType.Lambda;
-        }
-
         IQueryable<TElement> IQueryProvider.CreateQuery<TElement>(Expression expression)
         {
             return new Query<TElement>(this, expression);
@@ -91,6 +68,33 @@ namespace Cucumber.SimpleDb.Linq
         TResult IQueryProvider.Execute<TResult>(Expression expression)
         {
             return (TResult)this.Execute(expression);
+        }
+
+        private bool CanBeEvaluatedLocally(Expression expression)
+        {
+            ConstantExpression cex = expression as ConstantExpression;
+            if (cex != null)
+            {
+                IQueryable query = cex.Value as IQueryable;
+                if (query != null && query.Provider == this)
+                {
+                    return false;
+                }
+            }
+            MethodCallExpression mc = expression as MethodCallExpression;
+            if (mc != null &&
+                (mc.Method.DeclaringType == typeof(Enumerable) ||
+                 mc.Method.DeclaringType == typeof(Queryable)))
+            {
+                return false;
+            }
+            if (expression.NodeType == ExpressionType.Convert &&
+                expression.Type == typeof(object))
+            {
+                return true;
+            }
+            return expression.NodeType != ExpressionType.Parameter &&
+                   expression.NodeType != ExpressionType.Lambda;
         }
     }
 }
