@@ -1,6 +1,7 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
+.DS_Store
 
 #Visual Studio files
 *.[Oo]bj
@@ -63,7 +64,4 @@ packages/
 #Test files
 *.testsettings
 *.[Tt]est-[Cc]ache
-
-.DS_Store
-
-source/Cucumber.SimpleDb.Test/test-results/Cucumber.SimpleDb.Test.csproj-Debug-2013-03-17.xml
+*.[Tt]est-[Rr]esults
