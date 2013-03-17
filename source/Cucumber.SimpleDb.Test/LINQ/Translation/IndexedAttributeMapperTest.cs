@@ -13,7 +13,7 @@ namespace Cucumber.SimpleDb.Test
     public class IndexedAttributeMapperTest
     {
         [Test()]
-        public void ConvertBasicAccessorInsidePredicate ()
+        public void ConvertBasicAccessorExpression ()
         {
             var item = new Mock<ISimpleDbItem> ();
             var methodCallExp = Expression.Call(
@@ -26,7 +26,26 @@ namespace Cucumber.SimpleDb.Test
 
             Assert.IsNotNull (mappedAttribute);
             Assert.IsInstanceOf<AttributeExpression> (mappedAttribute);
-            Assert.AreEqual (((AttributeExpression)mappedAttribute).Name, "TestAttribute");
+            Assert.AreEqual ("TestAttribute", ((AttributeExpression)mappedAttribute).Name);
+        }
+
+        [Test()]
+        public void SkipNonAccessorExpression()
+        {
+            var item = new Mock<ISimpleDbItem> ();
+            var methodCallExp = Expression.Call (
+                Expression.Constant (item.Object),
+                typeof(object).GetMethod ("ToString"));
+            
+            var mapper = new IndexedAttributeMapperAccessor ();
+            var returnExpression = mapper.AccessVisitMethodCall (methodCallExp);
+            Assert.IsNotNull (returnExpression);
+            Assert.IsInstanceOf<MethodCallExpression> (returnExpression);
+            Assert.IsInstanceOf<ConstantExpression> (((MethodCallExpression)returnExpression).Object);
+            Assert.AreEqual (item.Object, ((ConstantExpression)((MethodCallExpression)returnExpression).Object).Value);
+            Assert.AreEqual (
+                typeof(object).GetMethod ("ToString"),
+                ((MethodCallExpression)returnExpression).Method);
         }
 
         private class IndexedAttributeMapperAccessor : IndexedAttributeMapper
