@@ -33,11 +33,16 @@
     <Reference Include="nunit.framework">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SimpleDbAttributeValueConversionTest.cs" />
     <Compile Include="SimpleDbAttributeValueAnyTest.cs" />
     <Compile Include="SimpleDbAttributeValueEveryTest.cs" />
+    <Compile Include="LINQ\Translation\IndexedAttributeMapperTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -45,5 +50,12 @@
       <Project>{9DA30BCD-FE40-4215-A513-3434608C20E7}</Project>
       <Name>Cucumber.SimpleDb</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LINQ\" />
+    <Folder Include="LINQ\Translation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

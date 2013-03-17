@@ -65,3 +65,5 @@ packages/
 *.[Tt]est-[Cc]ache
 
 .DS_Store
+
+source/Cucumber.SimpleDb.Test/test-results/Cucumber.SimpleDb.Test.csproj-Debug-2013-03-17.xml
