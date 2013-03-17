@@ -12,14 +12,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
         public static ProjectionExpression Rewrite(ProjectionExpression pex)
         {
             Expression projector = pex.Projector;
-			if (projector is LambdaExpression)
-			{
-				projector = CreateProjector((LambdaExpression)projector);
-			}
-			else
-			{
-				projector = CreateDefaultProjector();
-			}
+            if (projector is LambdaExpression)
+            {
+                projector = CreateProjector((LambdaExpression)projector);
+            }
+            else
+            {
+                projector = CreateDefaultProjector();
+            }
             return new ProjectionExpression(
                 pex.Source,
                 projector
@@ -47,20 +47,20 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 );
         }
 
-		private static Expression CreateProjector(LambdaExpression originalProjector)
-		{
-			ParameterExpression parameter = Expression.Parameter(typeof(ISimpleDbItem));
-			ClientProjectionWriter writer = new ClientProjectionWriter(parameter);
-			var projector = writer.Visit(originalProjector.Body);
-			projector = Expression.Lambda(projector, originalProjector.Parameters);
-			return projector;
-		}
+        private static Expression CreateProjector(LambdaExpression originalProjector)
+        {
+            ParameterExpression parameter = Expression.Parameter(typeof(ISimpleDbItem));
+            ClientProjectionWriter writer = new ClientProjectionWriter(parameter);
+            var projector = writer.Visit(originalProjector.Body);
+            projector = Expression.Lambda(projector, originalProjector.Parameters);
+            return projector;
+        }
 
-		private static Expression CreateDefaultProjector()
-		{
-			var param = Expression.Parameter(typeof(ISimpleDbItem));
-			var projector = Expression.Lambda(param, param);
-			return projector;
-		}
+        private static Expression CreateDefaultProjector()
+        {
+            var param = Expression.Parameter(typeof(ISimpleDbItem));
+            var projector = Expression.Lambda(param, param);
+            return projector;
+        }
     }
 }

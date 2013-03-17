@@ -50,7 +50,7 @@ namespace Cucumber.SimpleDb.Session
                 if (!_complete)
                 {
                     throw new NotImplementedException(
-						"Lazy-completing partially hydrated items is not yet supported");
+                        "Lazy-completing partially hydrated items is not yet supported");
                 }
                 if (!this.HasAttribute(attributeName))
                 {
@@ -71,8 +71,8 @@ namespace Cucumber.SimpleDb.Session
             }
             if (!_complete)
             {
-				throw new NotImplementedException(
-					"Lazy-completing partially hydrated items is not yet supported");
+                throw new NotImplementedException(
+                    "Lazy-completing partially hydrated items is not yet supported");
             }
             return _attributes.ContainsKey(attributeName);
         }
