@@ -63,7 +63,5 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             return pex;
         }
-
-        protected class UnresolvedType { }
     }
 }

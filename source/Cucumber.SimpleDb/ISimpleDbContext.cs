@@ -6,7 +6,7 @@ using System.Text;
 namespace Cucumber.SimpleDb
 {
     /// <summary>
-    /// Represents the main entry point for SimpleDb.
+    /// Represents the main entry point for SimpleDb.NET
     /// </summary>
     public interface ISimpleDbContext : IDisposable
     {

@@ -6,6 +6,9 @@ using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb
 {
+    /// <summary>
+    /// Provides a transport-layer implementation against the underlying AWS API
+    /// </summary>
     public interface ISimpleDbService
     {
         XElement BatchDeleteAttributes(string domain, params object[] items);

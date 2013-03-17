@@ -17,9 +17,9 @@ using System.Runtime.InteropServices;
 [assembly: Guid("db84cb36-f4b5-4adc-baff-394874cc2f9a")]
 
 // Versioning follows SemVer 2.0.0-rc1
-//      Major: breaking API changes
-//        Minor: non-breaking API changes
-//        Patch: backward-compatible internal changes
+//     Major: breaking API changes
+//     Minor: non-breaking API changes
+//     Patch: backward-compatible internal changes
 [assembly: AssemblyVersion("2.0.1")]
 [assembly: AssemblyFileVersion("2.0.1")]
 
