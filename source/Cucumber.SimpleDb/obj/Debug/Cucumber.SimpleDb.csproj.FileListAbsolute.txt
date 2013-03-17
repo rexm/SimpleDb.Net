@@ -1,5 +1,0 @@
-\\vmware-host\Shared Folders\Documents\Visual Studio 2012\Projects\SimpleDb\Cucumber.SimpleDb\bin\Debug\Cucumber.SimpleDb.dll
-\\vmware-host\Shared Folders\Documents\Visual Studio 2012\Projects\SimpleDb\Cucumber.SimpleDb\bin\Debug\Cucumber.SimpleDb.pdb
-\\vmware-host\Shared Folders\Documents\Visual Studio 2012\Projects\SimpleDb\Cucumber.SimpleDb\obj\Debug\Cucumber.SimpleDb.csprojResolveAssemblyReference.cache
-\\vmware-host\Shared Folders\Documents\Visual Studio 2012\Projects\SimpleDb\Cucumber.SimpleDb\obj\Debug\Cucumber.SimpleDb.dll
-\\vmware-host\Shared Folders\Documents\Visual Studio 2012\Projects\SimpleDb\Cucumber.SimpleDb\obj\Debug\Cucumber.SimpleDb.pdb
