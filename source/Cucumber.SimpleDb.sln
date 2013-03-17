@@ -5,6 +5,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb", "Cucumb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb.Test", "Cucumber.SimpleDb.Test\Cucumber.SimpleDb.Test.csproj", "{7C915ED2-81D2-4DAF-BB3E-503441CBD922}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{214F97E1-B8BB-4160-9493-70AC4F2B5ED4}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +22,16 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|x86.ActiveCfg = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -27,16 +44,9 @@ Global
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.ActiveCfg = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.Build.0 = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Cucumber.SimpleDb\Cucumber.SimpleDb.csproj
@@ -44,7 +54,7 @@ Global
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
 		$1.ResourceNamePolicy = FileFormatDefault
-		$0.TextStylePolicy = $2
+		$0.TextStylePolicy = $4
 		$2.inheritsSet = null
 		$2.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $3
@@ -53,13 +63,9 @@ Global
 		$3.inheritsSet = Mono
 		$3.inheritsScope = text/x-csharp
 		$3.scope = text/x-csharp
-		$0.TextStylePolicy = $4
 		$4.FileWidth = 120
 		$4.inheritsSet = VisualStudio
 		$4.inheritsScope = text/plain
 		$4.scope = text/plain
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
