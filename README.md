@@ -7,6 +7,7 @@ The goals of SimpleDb.NET are:
 * Provide robust LINQ querying and session-based change tracking.
 * High performance compared to interacting directly with the AWS APIs from your application.
 * No dependencies on third-party libraries (including the AWS SDK).
+* Platform-independence (basically, runs anywhere Mono does :) )
 
 # Installation
 
