@@ -39,7 +39,9 @@ If you've used LINQ to SQL (or pretty much any LINQ-friendly ORM) this should lo
 
 ## Querying
 
-Although AWS SimpleDB is not a relational data store, SimpleDb.NET will support relation-y LINQ queries such as `JOIN` by batching multiple queries to AWS in parallel, and transforming the results on the local machine.
+The LINQ API will implicitly convert all the types supported by SimpleDB to the corresponding types in .NET - such as `string`, `int`, and `DateTime`. It also natively supports queries with SimpleDB's concept of multi-value attributes.
+
+Although AWS SimpleDB is not a relational data store, SimpleDb.NET supports relation-y LINQ queries such as `JOIN` by batching multiple queries to AWS in parallel, and transforming the results on the local machine.
 
 ## CRUD
 
