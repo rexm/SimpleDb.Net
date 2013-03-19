@@ -3,7 +3,7 @@
 A .NET library that lets you work with [AWS SimpleDB][1] using a familiar entity-like model and LINQ queries.
 
 The goals of SimpleDb.NET are:
-* Surface 100% of SimpleDB's capabilities through a consistent, logical .NET API - no falling back to "low-level" REST for some operations.
+* Surface 100% of SimpleDB's capabilities through an easy, "just works" .NET API - no falling back to "low-level" REST for some operations.
 * Provide robust LINQ querying and session-based change tracking.
 * High performance compared to interacting directly with the AWS APIs from your application.
 * No dependencies on third-party libraries (including the AWS SDK).
