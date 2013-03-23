@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ServiceBus\SimpleDbSoapService.cs" />
     <Compile Include="Session\ISessionAttribute.cs" />
     <Compile Include="Session\ISessionItem.cs" />
     <Compile Include="Session\ISession.cs" />

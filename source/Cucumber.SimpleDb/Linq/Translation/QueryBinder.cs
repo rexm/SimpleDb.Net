@@ -102,6 +102,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 projector);
         }
 
+		private Expression BindJoin (MethodCallExpression m)
+		{
+			throw new NotImplementedException ();
+		}
+
         private Expression BindOrderBy(MethodCallExpression m)
         {
             SortDirection sortDirection = m.Method.Name.Contains("Descending") ? SortDirection.Descending : SortDirection.Ascending;
