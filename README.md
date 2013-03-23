@@ -25,9 +25,10 @@ SimpleDb.NET doesn't require any configuration. To begin using it, just call `Si
 
     using(var simpleDb = SimpleDbContext.Create("publicKey", "privateKey"))
     {
-      var items = simpleDb.Domains["myDomain"].Items
-        .Where(item => item["MyStringAttribute"] == "hello world" || item["MyDateTimeAttribute"] < DateTime.Now)
-        .OrderBy(item => item["SomeOtherAttribute"]);
+      var items = from item in simpleDb.Domains["myDomain"].Items
+                  where item["Status"] == "Hot" && item["LastUpdated"] > DateTime.Now.AddDays(-1)
+                  orderby item => item["LastUpdated"] descending
+                  select item;
         
       foreach(var item in items)
       {
