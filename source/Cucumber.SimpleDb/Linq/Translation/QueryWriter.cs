@@ -62,7 +62,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         protected override Expression VisitSimpleDbDomain(DomainExpression dex)
         {
             _qsb.Append("FROM");
-            _qsb.AppendFormat(nameFormat, dex.Domain);
+            _qsb.AppendFormat(nameFormat, CreateSystemNameString(dex.Domain.Name));
             return dex;
         }
 
@@ -124,8 +124,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
         private void WriteBetween(string lower, string upper)
         {
             _qsb.AppendFormat("BETWEEN {0} AND {1}",
-                string.Format(valueFormat, lower),
-                string.Format(valueFormat, upper));
+                string.Format(valueFormat, CreateUserValueString(lower)),
+                string.Format(valueFormat, CreateUserValueString(upper)));
         }
 
         private void WriteLike(string term, string prepend, string append)
@@ -135,7 +135,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             _qsb.AppendFormat(valueFormat,
                 string.Format("{0}{1}{2}",
                     prepend,
-                    term,
+                    CreateUserValueString(term),
                     append));
         }
 
@@ -162,6 +162,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void VisitWhere(Expression where)
         {
+			if(where == null)
+			{
+				return;
+			}
             _qsb.Append("WHERE");
             Visit(where);
         }
@@ -174,21 +178,26 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void WriteSimpleDbAttribute(AttributeExpression nex)
         {
-            _qsb.AppendFormat(nameFormat, nex.Name);
+            _qsb.AppendFormat(nameFormat, CreateSystemNameString(nex.Name));
         }
 
         private void VisitOrder(IEnumerable<OrderExpression> orderBys)
         {
-            string orderBy = string.Join(",",
-                orderBys.Select(ob => string.Format("{0} {1}",
-                    string.Format(nameFormat, ob.Attribute.Name),
-                    ob.Direction == SortDirection.Ascending ? "ASC" : "DESC")
-                    )
-                );
-            if (!string.IsNullOrEmpty(orderBy))
-            {
-                _qsb.AppendFormat("ORDERBY {0}", orderBy);
-            }
+			bool first = true;
+			foreach(var orderBy in orderBys)
+			{
+				if(first)
+				{
+					first = false;
+					_qsb.Append("ORDERBY");
+				}
+				else
+				{
+					_qsb.Append(",");
+				}
+				WriteSimpleDbAttribute(orderBy.Attribute);
+				_qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
+			}
         }
 
         protected override Expression VisitUnary(UnaryExpression u)
@@ -256,13 +265,26 @@ namespace Cucumber.SimpleDb.Linq.Translation
             }
             else if (expr is ConstantExpression)
             {
-                _qsb.AppendFormat(valueFormat, ((ConstantExpression)expr).Value.ToSafeString().Replace("\"", "\"\""));
+                _qsb.AppendFormat(valueFormat, CreateUserValueString(((ConstantExpression)expr).Value));
             }
             else
             {
                 Visit(expr);
             }
         }
+
+		private string CreateUserValueString(object value)
+		{
+			return value.ToSafeString()
+				.Replace("\\", "\\\\")
+				.Replace("\"", "\\\"");
+		}
+
+		private string CreateSystemNameString(string name)
+		{
+			return name.ToSafeString()
+				.Replace("`", "``");
+		}
 
         private string GetOperator(ExpressionType type)
         {
@@ -302,7 +324,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
             public QueryStringBuilder Append(string value)
             {
-                _sb.Append(" ");
+				if(value.StartsWith(",") == false)
+				{
+                	_sb.Append(" ");
+				}
                 _sb.Append(value);
                 return this;
             }

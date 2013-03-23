@@ -26,27 +26,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 );
         }
 
-        private readonly ParameterExpression _parameter;
-
-        private ClientProjectionWriter(ParameterExpression parameter)
-        {
-            _parameter = parameter;
-        }
-
-        protected override Expression VisitSimpleDbAttribute(AttributeExpression aex)
-        {
-            return CreateItemAccessor(aex);
-        }
-
-        private Expression CreateItemAccessor(AttributeExpression aex)
-        {
-            return Expression.MakeIndex(
-                _parameter,
-                typeof(ISimpleDbItem).GetProperty("Item"),
-                new[] { Expression.Constant(aex.Name) }
-                );
-        }
-
         private static Expression CreateProjector(LambdaExpression originalProjector)
         {
             ParameterExpression parameter = Expression.Parameter(typeof(ISimpleDbItem));
@@ -62,5 +41,26 @@ namespace Cucumber.SimpleDb.Linq.Translation
             var projector = Expression.Lambda(param, param);
             return projector;
         }
+
+		private readonly ParameterExpression _parameter;
+		
+		private ClientProjectionWriter(ParameterExpression parameter)
+		{
+			_parameter = parameter;
+		}
+		
+		protected override Expression VisitSimpleDbAttribute(AttributeExpression aex)
+		{
+			return CreateItemAccessor(aex);
+		}
+		
+		private Expression CreateItemAccessor(AttributeExpression aex)
+		{
+			return Expression.MakeIndex(
+				_parameter,
+				typeof(ISimpleDbItem).GetProperty("Item"),
+				new[] { Expression.Constant(aex.Name) }
+			);
+		}
     }
 }

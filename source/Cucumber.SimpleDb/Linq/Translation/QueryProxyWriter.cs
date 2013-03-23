@@ -39,7 +39,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
             var projector = pex.Projector as LambdaExpression;
             return Expression.Call(
                 Expression.Constant(this),
-                this.GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(projector.Body.Type),
+                this.GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
+					.MakeGenericMethod(projector.Body.Type),
                 Expression.Constant(new QueryCommand(pex.Source)),
                 projector
             );

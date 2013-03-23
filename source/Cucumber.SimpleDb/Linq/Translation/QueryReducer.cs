@@ -115,7 +115,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 }
                 if (ssex.OrderBy != null)
                 {
-                    _aggregatedOrderBy.AddRange(ssex.OrderBy);
+                    _aggregatedOrderBy.InsertRange(0, ssex.OrderBy);
                 }
                 Visit(ssex.Select);
                 _source = ssex.Source;

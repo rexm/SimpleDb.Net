@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Based on the Query<T> class by Matt Warren:
+// http://iqtoolkit.codeplex.com
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

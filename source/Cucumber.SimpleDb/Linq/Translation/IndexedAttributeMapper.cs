@@ -17,12 +17,9 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Type == typeof(SimpleDbAttributeValue))
+            if (m.Method == typeof(ISimpleDbItem).GetMethod("get_Item"))
             {
-                if (m.Method.Name == "get_Item")
-                {
-                    return GenerateAttributeExpression((ConstantExpression)m.Arguments[0].ReduceTotally());
-                }
+				return GenerateAttributeExpression((ConstantExpression)m.Arguments[0].ReduceTotally());
             }
             return base.VisitMethodCall(m);
         }
@@ -54,7 +51,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private AttributeExpression GenerateAttributeExpression(ConstantExpression expression)
         {
-            return new AttributeExpression(expression.Value as string, typeof(SimpleDbAttributeValue));
+			return SimpleDbExpression.Attribute(expression.Value as string, typeof(SimpleDbAttributeValue));
         }
     }
 }

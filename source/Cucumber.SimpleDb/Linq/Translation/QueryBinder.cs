@@ -119,6 +119,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
             Expression orderByBody = Visit(selector.Body);
             orderByBody = IndexedAttributeMapper.Eval(orderByBody);
             var attributes = SelectionCollector.Collect(orderByBody);
+			if(attributes.Count () < 1)
+			{
+				throw new InvalidOperationException("No attribute references found in the OrderBy expression");
+			}
+			if(attributes.Count () > 1)
+			{
+				throw new NotSupportedException("Currently only ordering by one column per order expression is supported");
+			}
             return new QueryExpression(
                 null,
                 source,

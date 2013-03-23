@@ -48,6 +48,21 @@ namespace Cucumber.SimpleDb.Test
                 ((MethodCallExpression)returnExpression).Method);
         }
 
+		[Test]
+		public void ConstructorWithAccessorOnly()
+		{
+			var item = new Mock<ISimpleDbItem>().Object;
+			Expression<Func<object>> lambdaWithNew = () => new { Test1 = item["TestAttribute"] };
+			var newExp = ((LambdaExpression)lambdaWithNew).Body as NewExpression;
+			var mapper = new IndexedAttributeMapperAccessor();
+			var returnExpression = mapper.AccessVisitNew(newExp);
+			Assert.IsNotNull(returnExpression);
+			Assert.IsInstanceOf<NewExpression>(returnExpression);
+			Assert.AreEqual(1, ((NewExpression)returnExpression).Arguments.Count);
+			Assert.IsInstanceOf<AttributeExpression>(((NewExpression)returnExpression).Arguments[0]);
+			Assert.AreEqual("TestAttribute", ((AttributeExpression)((NewExpression)returnExpression).Arguments[0]).Name);
+		}
+
         private class IndexedAttributeMapperAccessor : IndexedAttributeMapper
         {
             public Expression AccessVisitMethodCall(MethodCallExpression m)
