@@ -65,7 +65,6 @@ The LINQ provider stands on [Matt Warren's shoulders][2]. Every LINQ provider th
 And of course, Amazon for creating and operating such a powerful cloud database service.
 
 
-
 [1]: http://aws.amazon.com/simpledb
 [2]: http://blogs.msdn.com/b/mattwar/archive/2008/11/18/linq-links.aspx
 [3]: http://www.mono-project.com/
