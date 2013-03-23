@@ -61,7 +61,7 @@ Use GitHub pull requests to point to code changes. For very large changes, open 
 
 The LINQ provider stands on [Matt Warren's shoulders][2]. Every LINQ provider that exists today (and LINQ itself) is thanks to him and the brilliant guys and girls at Microsoft.
 
-And of course, Amazon for creating and operating such a brilliant cloud database service.
+And of course, Amazon for creating and operating such a powerful cloud database service.
 
 
 
