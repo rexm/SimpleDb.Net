@@ -115,87 +115,87 @@ namespace Cucumber.SimpleDb.Utilities
             return null;
         }
 
-		//adapted from http://stackoverflow.com/questions/3631547/select-right-generic-method-with-reflection/9496602#9496602
-		public static MethodInfo GetMethod(this Type type, string name, params Type[] parameters)
-		{
-			MethodInfo match = null;
-			foreach (var method in type.GetMethods())
-			{
-				if (method.Name != name)
-				{
-					continue;
-				}
-				if (method.IsGenericMethodDefinition)
-				{
-					var substitutions = new Dictionary<Type, Type>();
-					var genericArguments = method.GetGenericArguments();
-					if (genericArguments.Length >= 1)
-					{
-						substitutions[typeof(Ref.T1)] = genericArguments[0];
-					}
-					if (genericArguments.Length >= 2)
-					{
-						substitutions[typeof(Ref.T2)] = genericArguments[1];
-					}
-					if (genericArguments.Length >= 3)
-					{
-						substitutions[typeof (Ref.T3)] = genericArguments[2];
-					}
-					if (genericArguments.Length > 3)
-					{
-						throw new NotSupportedException("Too many type parameters.");
-					}
-					match = TryMatch (parameters, method, t => Substitute(t, substitutions));
-				}
-				else
-				{
-					match = TryMatch (parameters, method, t => t);
-				}
-				if(match != null)
-				{
-					break;
-				}
-			}
-			return match;
-		}
+        //adapted from http://stackoverflow.com/questions/3631547/select-right-generic-method-with-reflection/9496602#9496602
+        public static MethodInfo GetMethod(this Type type, string name, params Type[] parameters)
+        {
+            MethodInfo match = null;
+            foreach (var method in type.GetMethods())
+            {
+                if (method.Name != name)
+                {
+                    continue;
+                }
+                if (method.IsGenericMethodDefinition)
+                {
+                    var substitutions = new Dictionary<Type, Type>();
+                    var genericArguments = method.GetGenericArguments();
+                    if (genericArguments.Length >= 1)
+                    {
+                        substitutions[typeof(Ref.T1)] = genericArguments[0];
+                    }
+                    if (genericArguments.Length >= 2)
+                    {
+                        substitutions[typeof(Ref.T2)] = genericArguments[1];
+                    }
+                    if (genericArguments.Length >= 3)
+                    {
+                        substitutions[typeof (Ref.T3)] = genericArguments[2];
+                    }
+                    if (genericArguments.Length > 3)
+                    {
+                        throw new NotSupportedException("Too many type parameters.");
+                    }
+                    match = TryMatch (parameters, method, t => Substitute(t, substitutions));
+                }
+                else
+                {
+                    match = TryMatch (parameters, method, t => t);
+                }
+                if(match != null)
+                {
+                    break;
+                }
+            }
+            return match;
+        }
 
-		private static MethodInfo TryMatch (
-			Type[] parameters,
-			MethodInfo method,
-			Func<Type, Type> getParameterType)
-		{
-			var methodParameters = method.GetParameters ();
-			for (var i = 0; i < methodParameters.Length; i++)
-			{
-				var parameterTypeAtPosition = getParameterType(parameters[i]);
-				if (parameterTypeAtPosition != methodParameters [i].ParameterType)
-				{
-					return null;
-				}
-			}
-			return method;
-		}
+        private static MethodInfo TryMatch (
+            Type[] parameters,
+            MethodInfo method,
+            Func<Type, Type> getParameterType)
+        {
+            var methodParameters = method.GetParameters ();
+            for (var i = 0; i < methodParameters.Length; i++)
+            {
+                var parameterTypeAtPosition = getParameterType(parameters[i]);
+                if (parameterTypeAtPosition != methodParameters [i].ParameterType)
+                {
+                    return null;
+                }
+            }
+            return method;
+        }
 
-		private static Type Substitute(Type type, IDictionary<Type, Type> substitutions)
-		{
-			if (type.IsGenericType)
-			{
-				var typeArgs = type.GetGenericArguments();
-				for(int i = 0; i < typeArgs.Length; i++)
-				{
-					typeArgs[i] = Substitute(typeArgs[i], substitutions);
-				}
-				type = type.GetGenericTypeDefinition();
-				type = type.MakeGenericType(typeArgs);
-			}
-			return substitutions.ContainsKey(type) ? substitutions[type] : type;
-		}
+        private static Type Substitute(Type type, IDictionary<Type, Type> substitutions)
+        {
+            if (type.IsGenericType)
+            {
+                var typeArgs = type.GetGenericArguments();
+                for(int i = 0; i < typeArgs.Length; i++)
+                {
+                    typeArgs[i] = Substitute(typeArgs[i], substitutions);
+                }
+                type = type.GetGenericTypeDefinition();
+                type = type.MakeGenericType(typeArgs);
+            }
+            return substitutions.ContainsKey(type) ? substitutions[type] : type;
+        }
     }
 
-	internal static class Ref
-	{
-		public sealed class T1 { }
-		public sealed class T2 { }
-		public sealed class T3 { }
-	}
+    internal static class Ref
+    {
+        public sealed class T1 { }
+        public sealed class T2 { }
+        public sealed class T3 { }
+    }
 }
