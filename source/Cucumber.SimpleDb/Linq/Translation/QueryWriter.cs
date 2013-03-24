@@ -41,6 +41,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             VisitSimpleDbDomain((DomainExpression)qex.Source);
             VisitWhere(qex.Where);
             VisitOrder(qex.OrderBy);
+			VisitLimit(qex.Limit);
             return qex;
         }
 
@@ -104,7 +105,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                             ((ConstantExpression)m.Arguments[1]).Value.ToString());
                         break;
 					case "In":
-						WriteIn(m.Arguments);
+						WriteIn(m);
 						break;
                     default:
                         throw new NotSupportedException(
@@ -140,9 +141,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     append));
         }
 
-		private void WriteIn (IEnumerable<Expression> arguments)
+		private void WriteIn (MethodCallExpression m)
 		{
-			throw new NotImplementedException();
+			VisitSimpleDbAttribute((AttributeExpression)m.Object);
+			_qsb.Append("IN(");
 		}
 
         private void HandleCarriedUnary()
@@ -186,6 +188,15 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             _qsb.AppendFormat(nameFormat, CreateSystemNameString(nex.Name));
         }
+
+		private void VisitLimit(Expression expression)
+		{
+			var limitConstant = expression as ConstantExpression;
+			if(limitConstant != null && limitConstant.Value != null && limitConstant.GetType() == typeof(int))
+			{
+				_qsb.AppendFormat("LIMIT {0}", limitConstant.Value);
+			}
+		}
 
         private void VisitOrder(IEnumerable<OrderExpression> orderBys)
         {

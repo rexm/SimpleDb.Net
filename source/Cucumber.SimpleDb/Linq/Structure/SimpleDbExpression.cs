@@ -30,9 +30,14 @@ namespace Cucumber.SimpleDb.Linq.Structure
             return new DomainExpression(domain);
         }
 
-        public static QueryExpression Query(SelectExpression select, Expression source, Expression where, IEnumerable<OrderExpression> orderBy)
+        public static QueryExpression Query(
+			SelectExpression select,
+			Expression source,
+			Expression where,
+			IEnumerable<OrderExpression> orderBy,
+			Expression limit)
         {
-            return new QueryExpression(select, source, where, orderBy);
+            return new QueryExpression(select, source, where, orderBy, limit);
         }
 
         public static SelectExpression Select(IEnumerable<AttributeExpression> attributes)

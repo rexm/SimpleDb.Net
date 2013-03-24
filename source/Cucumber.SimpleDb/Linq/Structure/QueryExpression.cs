@@ -9,17 +9,19 @@ namespace Cucumber.SimpleDb.Linq.Structure
 {
     internal sealed class QueryExpression : SimpleDbExpression
     {
+		private readonly Expression _limit;
         private readonly SelectExpression _select;
         private readonly Expression _source;
         private readonly Expression _where;
         private readonly IEnumerable<OrderExpression> _orderBy;
 
-        public QueryExpression(SelectExpression select, Expression source, Expression where, IEnumerable<OrderExpression> orderBy)
+        public QueryExpression(SelectExpression select, Expression source, Expression where, IEnumerable<OrderExpression> orderBy, Expression limit)
         {
             _select = select;
             _source = source;
             _where = where;
             _orderBy = orderBy ?? new List<OrderExpression>();
+			_limit = limit;
         }
 
         public SelectExpression Select
@@ -53,6 +55,14 @@ namespace Cucumber.SimpleDb.Linq.Structure
                 return _orderBy;
             }
         }
+
+		public Expression Limit
+		{
+			get
+			{
+				return _limit; 
+			}
+		}
 
         public override Type Type
         {

@@ -14,8 +14,8 @@ namespace Cucumber.SimpleDb.Test
 		[Test]
 		public void EnsureSourceExpressionIsUntouched()
 		{
-			var sourceExpression = new QueryExpression(null, null, null, null);
-			var projectionExpression = new ProjectionExpression(sourceExpression, null);
+			var sourceExpression = SimpleDbExpression.Query(null, null, null, null, null);
+			var projectionExpression = SimpleDbExpression.Project(sourceExpression, null);
 			var resultExpression = ClientProjectionWriter.Rewrite(projectionExpression);
 			Assert.IsNotNull(resultExpression);
 			Assert.AreSame(sourceExpression, resultExpression.Source);
@@ -24,7 +24,7 @@ namespace Cucumber.SimpleDb.Test
 		[Test]
 		public void CreateDefaultProjector ()
 		{
-			var projectionExpression = new ProjectionExpression(null, null);
+			var projectionExpression = SimpleDbExpression.Project(null, null);
 			var resultExpression = ClientProjectionWriter.Rewrite(projectionExpression);
 			Assert.IsNotNull(resultExpression);
 			Assert.IsInstanceOf<LambdaExpression>(resultExpression.Projector);

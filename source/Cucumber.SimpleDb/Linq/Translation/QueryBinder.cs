@@ -26,6 +26,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         return BindWhere(m);
                     case "Select":
                         return BindSelect(m);
+					case "Take":
+						return BindTake(m);
                     case "OrderBy":
                     case "OrderByDescending":
                         return BindOrderBy(m);
@@ -74,7 +76,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             source = this.Visit(source);
             Expression where = Visit(predicate.Body);
             where = IndexedAttributeMapper.Eval(where);
-            return new QueryExpression(null, source, where, null);
+            return SimpleDbExpression.Query(null, source, where, null, null);
         }
 
         private Expression BindSelect(MethodCallExpression m)
@@ -93,14 +95,26 @@ namespace Cucumber.SimpleDb.Linq.Translation
             Expression projectorBody = Visit(projector.Body);
             projectorBody = IndexedAttributeMapper.Eval(projectorBody);
             var attributes = SelectionCollector.Collect(projectorBody);
-            return new ProjectionExpression(
-                new QueryExpression(
+            return SimpleDbExpression.Project(
+                SimpleDbExpression.Query(
                     new SelectExpression(attributes),
                     source,
                     null,
-                    null),
+                    null,
+					null),
                 projector);
         }
+
+		private Expression BindTake (MethodCallExpression m)
+		{
+			var limitExpression = this.Visit(m.Arguments[1]) as ConstantExpression;
+			if(limitExpression == null)
+			{
+				throw new InvalidOperationException("Cannot use an expression to determine the query LIMIT");
+			}
+			return SimpleDbExpression.Query(
+				null, m.Arguments[0], null, null, limitExpression);
+		}
 
 		private Expression BindJoin (MethodCallExpression m)
 		{
@@ -132,11 +146,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
 			{
 				throw new NotSupportedException("Currently only ordering by one column per order expression is supported");
 			}
-            return new QueryExpression(
+            return SimpleDbExpression.Query(
                 null,
                 source,
                 null,
-                new[] { new OrderExpression(attributes.First(), sortDirection) });
+                new[] { new OrderExpression(attributes.First(), sortDirection) },
+				null);
         }
 
         private ProjectionExpression VisitSequence(Expression expr)
@@ -208,7 +223,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     && supportedMethodNames.Contains(m.Name);
             }
 
-            private static readonly string[] supportedMethodNames = { "Select", "Where", "OrderBy", "OrderByDescending" };
+            private static readonly string[] supportedMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending" };
         }
     }
 }

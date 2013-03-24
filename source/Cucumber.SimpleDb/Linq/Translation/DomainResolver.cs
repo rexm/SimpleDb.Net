@@ -27,7 +27,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         qex.Select,
                         SimpleDbExpression.Domain(((ISimpleDbItemCollection)source.Value).Domain),
                         qex.Where,
-                        qex.OrderBy);
+                        qex.OrderBy,
+						qex.Limit);
                 }
                 else
                 {
@@ -39,18 +40,19 @@ namespace Cucumber.SimpleDb.Linq.Translation
             else
             {
                 Expression source = base.Visit(qex.Source);
-                return new QueryExpression(
+                return SimpleDbExpression.Query(
                     qex.Select,
                     source,
                     qex.Where,
-                    qex.OrderBy);
+                    qex.OrderBy,
+					qex.Limit);
             }
         }
 
         protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
         {
             Expression qex = VisitSimpleDbQuery(pex.Source);
-            return new ProjectionExpression(
+            return SimpleDbExpression.Project(
                 (QueryExpression)qex,
                 pex.Projector);
         }

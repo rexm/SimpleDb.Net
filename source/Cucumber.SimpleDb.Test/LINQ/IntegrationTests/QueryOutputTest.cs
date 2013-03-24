@@ -69,6 +69,16 @@ namespace Cucumber.SimpleDb.Test
 			Assert.AreEqual("SELECT * FROM `TestDomain1` ORDERBY `TestAtt1` ASC, `TestAtt2` DESC", query);
 		}
 
+		[Test]
+		public void BasicLimit()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items
+			    	.Where(i => i["TestAtt1"] > 0)
+                   .Take(20));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` > \"0\" LIMIT 20", query);
+		}
+
 		private string GetQueryString(Func<ISimpleDbContext, IQueryable> query)
 		{
 			string output = null;

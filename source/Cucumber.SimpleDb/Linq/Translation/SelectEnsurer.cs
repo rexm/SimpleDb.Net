@@ -29,11 +29,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return SimpleDbExpression.Query(
                     SimpleDbExpression.Select(
-                        qex.Select.Attributes.Concat(qex.OrderBy.Select(ob => ob.Attribute))
+                        qex.Select.Attributes.Union(qex.OrderBy.Select(ob => ob.Attribute))
                     ),
                     qex.Source,
                     qex.Where,
-                    qex.OrderBy);
+                    qex.OrderBy,
+					qex.Limit);
             }
             return base.VisitSimpleDbQuery(qex);
         }
