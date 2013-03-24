@@ -103,6 +103,9 @@ namespace Cucumber.SimpleDb.Linq.Translation
                             ((ConstantExpression)m.Arguments[0]).Value.ToString(),
                             ((ConstantExpression)m.Arguments[1]).Value.ToString());
                         break;
+					case "In":
+						WriteIn(m.Arguments);
+						break;
                     default:
                         throw new NotSupportedException(
                             string.Format("Querying on '{0}' is not currently supported",
@@ -121,7 +124,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void WriteBetween(string lower, string upper)
         {
-			HandleCarriedUnary();
             _qsb.AppendFormat("BETWEEN {0} AND {1}",
                 string.Format(valueFormat, CreateUserValueString(lower)),
                 string.Format(valueFormat, CreateUserValueString(upper)));
@@ -137,6 +139,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     CreateUserValueString(term),
                     append));
         }
+
+		private void WriteIn (IEnumerable<Expression> arguments)
+		{
+			throw new NotImplementedException();
+		}
 
         private void HandleCarriedUnary()
         {

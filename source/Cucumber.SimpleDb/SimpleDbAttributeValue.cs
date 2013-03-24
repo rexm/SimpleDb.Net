@@ -57,6 +57,26 @@ namespace Cucumber.SimpleDb
             return new SimpleDbAttributeValue(EveryValueComparer, _values);
         }
 
+		/// <summary>
+		/// Gets whether the value occurs within the specified set.
+		/// </summary>
+		/// <param name="values">The set of values</param>
+		/// <returns>True if the value occurs within the set; otherwise false.</returns>
+		public bool In(params object[] values)
+		{
+			foreach(var setValue in values)
+			{
+				foreach(var attValue in LiftValuesToType(_values, setValue.GetType()))
+				{
+					if(attValue == setValue)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
         /// <summary>
         /// Gets whether the value starts with the specified value.
         /// </summary>
@@ -70,36 +90,6 @@ namespace Cucumber.SimpleDb
                 throw new ArgumentNullException("partialValue");
             }
             return _values.Any(val => val.StartsWith(partialValue));
-        }
-
-        /// <summary>
-        /// Gets whether the value ends with the specified value.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="partialValue"/> is null or empty.</exception>
-        /// <param name="partialValue">The partial value to search for.</param>
-        /// <returns>True if the value ends with the specified value; otherwise false.</returns>
-        public bool EndsWith(string partialValue)
-        {
-            if (string.IsNullOrEmpty(partialValue))
-            {
-                throw new ArgumentNullException("partialValue");
-            }
-            return _values.Any(val => val.EndsWith(partialValue));
-        }
-
-        /// <summary>
-        /// Gets whether the value contains the specified value.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="partialValue"/> is null or empty.</exception>
-        /// <param name="partialValue">The partial value to search for.</param>
-        /// <returns>True if the value contains the specified value; otherwise false.</returns>
-        public bool Contains(string partialValue)
-        {
-            if (string.IsNullOrEmpty(partialValue))
-            {
-                throw new ArgumentNullException("partialValue");
-            }
-            return _values.Any(val => val.Contains(partialValue));
         }
 
         /// <summary>
