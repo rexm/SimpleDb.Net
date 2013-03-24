@@ -327,7 +327,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
 		private string CreateUserValueString(object value)
 		{
-			return value.ToSafeString()
+			var stringValue = value.ToSafeString();
+			if(value.GetType() == typeof(DateTime))
+			{
+				stringValue = ((DateTime)value).ToString("o");
+			}
+			return stringValue
 				.Replace("\\", "\\\\")
 				.Replace("\"", "\\\"");
 		}
