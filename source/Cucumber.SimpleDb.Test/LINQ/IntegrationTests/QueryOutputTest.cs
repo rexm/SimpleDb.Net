@@ -25,6 +25,24 @@ namespace Cucumber.SimpleDb.Test
 		}
 
 		[Test]
+		public void WhereContainsString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+                   i["TestAtt1"].StartsWith("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"searchFor%\"", query);
+		}
+
+		[Test]
+		public void WhereNotStartsWithString()
+		{
+			var query = GetQueryString(context =>
+               context.Domains["TestDomain1"].Items.Where(i =>
+                   i["TestAtt1"].StartsWith("searchFor") == false));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` NOT LIKE \"searchFor%\"", query);
+		}
+
+		[Test]
 		public void WhereNumberBasic()
 		{
 			var query = GetQueryString (context =>

@@ -86,7 +86,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method.DeclaringType == typeof(SimpleDbAttributeValue))
+            if (IsAttributeValueMethod(m))
             {
                 switch (m.Method.Name)
                 {
@@ -96,14 +96,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     case "StartsWith":
                         Visit(m.Object);
                         WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "", "%");
-                        break;
-                    case "EndsWith":
-                        Visit(m.Object);
-                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "");
-                        break;
-                    case "Contains":
-                        Visit(m.Object);
-                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "%");
                         break;
                     case "Between":
                         Visit(m.Object);
@@ -121,8 +113,15 @@ namespace Cucumber.SimpleDb.Linq.Translation
             return base.VisitMethodCall(m);
         }
 
+		private bool IsAttributeValueMethod(Expression exp)
+		{
+			var m = exp as MethodCallExpression;
+			return m != null && m.Method.DeclaringType == typeof(SimpleDbAttributeValue);
+		}
+
         private void WriteBetween(string lower, string upper)
         {
+			HandleCarriedUnary();
             _qsb.AppendFormat("BETWEEN {0} AND {1}",
                 string.Format(valueFormat, CreateUserValueString(lower)),
                 string.Format(valueFormat, CreateUserValueString(upper)));
@@ -212,7 +211,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 HandleNull(node);
                 return node;
-            }
+			}
+			if (IsNegatedValueMethod(node))
+			{
+				Visit (ConvertToNotUnary(node));
+				return node;
+			}
             string op = GetOperator(node.NodeType);
             if(string.IsNullOrEmpty(op))
             {
@@ -256,6 +260,36 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             return (left is AttributeExpression && right is ConstantExpression && ((ConstantExpression)right).Value == null);
         }
+
+		private bool IsNegatedValueMethod (BinaryExpression node)
+		{
+			var oneIsAttributeMethod = IsAttributeValueMethod(node.Left) || IsAttributeValueMethod(node.Right);
+			return oneIsAttributeMethod && CanTreatAsNegatedUnary(node);
+		}
+
+		private bool CanTreatAsNegatedUnary(BinaryExpression node)
+		{
+			var booleanConstant = node.Left as ConstantExpression ?? node.Right as ConstantExpression;
+			if(booleanConstant == null || booleanConstant.Value == null || booleanConstant.Value.GetType () != typeof(bool))
+			{
+				return false;
+			}
+			var value = (bool)booleanConstant.Value;
+			return (value == true && node.NodeType == ExpressionType.NotEqual)
+				|| (value == false && node.NodeType == ExpressionType.Equal);
+		}
+
+		private UnaryExpression ConvertToNotUnary(BinaryExpression node)
+		{
+			var operandNode = node.Left.NodeType == ExpressionType.Constant ? node.Right : node.Left;
+			return Expression.Not(operandNode);
+		}
+
+		private bool IsBooleanConstant(Expression exp)
+		{
+			var constant = exp as ConstantExpression;
+			return constant != null && constant.Value.GetType() == typeof(bool);
+		}
 
         private void VisitBinaryMember(Expression expr)
         {
