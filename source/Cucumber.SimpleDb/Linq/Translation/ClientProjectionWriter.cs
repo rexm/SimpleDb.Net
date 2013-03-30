@@ -42,25 +42,25 @@ namespace Cucumber.SimpleDb.Linq.Translation
             return projector;
         }
 
-		private readonly ParameterExpression _parameter;
-		
-		private ClientProjectionWriter(ParameterExpression parameter)
-		{
-			_parameter = parameter;
-		}
-		
-		protected override Expression VisitSimpleDbAttribute(AttributeExpression aex)
-		{
-			return CreateItemAccessor(aex);
-		}
-		
-		private Expression CreateItemAccessor(AttributeExpression aex)
-		{
-			return Expression.MakeIndex(
-				_parameter,
-				typeof(ISimpleDbItem).GetProperty("Item"),
-				new[] { Expression.Constant(aex.Name) }
-			);
-		}
+        private readonly ParameterExpression _parameter;
+        
+        private ClientProjectionWriter(ParameterExpression parameter)
+        {
+            _parameter = parameter;
+        }
+        
+        protected override Expression VisitSimpleDbAttribute(AttributeExpression aex)
+        {
+            return CreateItemAccessor(aex);
+        }
+        
+        private Expression CreateItemAccessor(AttributeExpression aex)
+        {
+            return Expression.MakeIndex(
+                _parameter,
+                typeof(ISimpleDbItem).GetProperty("Item"),
+                new[] { Expression.Constant(aex.Name) }
+            );
+        }
     }
 }

@@ -51,14 +51,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
             var order = aggregator.AggregatedOrderBy;
             var select = aggregator.AggregatedSelect;
             var projector = aggregator.Projector;
-			var limit = aggregator.Limit;
+            var limit = aggregator.Limit;
             return SimpleDbExpression.Project(
                 SimpleDbExpression.Query(
                     select,
                     domain,
                     where,
                     order,
-					limit),
+                    limit),
                 projector);
         }
 
@@ -84,10 +84,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 get { return _projector; }
             }
 
-			public Expression Limit
-			{
-				get { return _limit; }
-			}
+            public Expression Limit
+            {
+                get { return _limit; }
+            }
 
             public Expression Source
             {
@@ -99,7 +99,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             private List<OrderExpression> _aggregatedOrderBy = new List<OrderExpression>();
             private Expression _projector;
             private Expression _source;
-			private Expression _limit;
+            private Expression _limit;
 
             protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
             {
@@ -125,10 +125,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 {
                     _aggregatedOrderBy.InsertRange(0, ssex.OrderBy);
                 }
-				if(ssex.Limit != null)
-				{
-					_limit = ssex.Limit;
-				}
+                if(ssex.Limit != null)
+                {
+                    _limit = ssex.Limit;
+                }
                 Visit(ssex.Select);
                 _source = ssex.Source;
                 if (_source is QueryExpression)

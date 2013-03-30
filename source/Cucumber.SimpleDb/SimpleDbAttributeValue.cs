@@ -57,25 +57,25 @@ namespace Cucumber.SimpleDb
             return new SimpleDbAttributeValue(EveryValueComparer, _values);
         }
 
-		/// <summary>
-		/// Gets whether the value occurs within the specified set.
-		/// </summary>
-		/// <param name="values">The set of values</param>
-		/// <returns>True if the value occurs within the set; otherwise false.</returns>
-		public bool In(params object[] values)
-		{
-			foreach(var setValue in values)
-			{
-				foreach(var attValue in LiftValuesToType(_values, setValue.GetType()))
-				{
-					if(attValue == setValue)
-					{
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+        /// <summary>
+        /// Gets whether the value occurs within the specified set.
+        /// </summary>
+        /// <param name="values">The set of values</param>
+        /// <returns>True if the value occurs within the set; otherwise false.</returns>
+        public bool In(params object[] values)
+        {
+            foreach(var setValue in values)
+            {
+                foreach(var attValue in LiftValuesToType(_values, setValue.GetType()))
+                {
+                    if(attValue == setValue)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         /// <summary>
         /// Gets whether the value starts with the specified value.

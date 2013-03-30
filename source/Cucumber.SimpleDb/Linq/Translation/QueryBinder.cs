@@ -26,8 +26,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         return BindWhere(m);
                     case "Select":
                         return BindSelect(m);
-					case "Take":
-						return BindTake(m);
+                    case "Take":
+                        return BindTake(m);
                     case "OrderBy":
                     case "OrderByDescending":
                         return BindOrderBy(m);
@@ -101,25 +101,25 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     source,
                     null,
                     null,
-					null),
+                    null),
                 projector);
         }
 
-		private Expression BindTake (MethodCallExpression m)
-		{
-			var limitExpression = this.Visit(m.Arguments[1]) as ConstantExpression;
-			if(limitExpression == null)
-			{
-				throw new InvalidOperationException("Cannot use an expression to determine the query LIMIT");
-			}
-			return SimpleDbExpression.Query(
-				null, m.Arguments[0], null, null, limitExpression);
-		}
+        private Expression BindTake (MethodCallExpression m)
+        {
+            var limitExpression = this.Visit(m.Arguments[1]) as ConstantExpression;
+            if(limitExpression == null)
+            {
+                throw new InvalidOperationException("Cannot use an expression to determine the query LIMIT");
+            }
+            return SimpleDbExpression.Query(
+                null, m.Arguments[0], null, null, limitExpression);
+        }
 
-		private Expression BindJoin (MethodCallExpression m)
-		{
-			throw new NotImplementedException ();
-		}
+        private Expression BindJoin (MethodCallExpression m)
+        {
+            throw new NotImplementedException ();
+        }
 
         private Expression BindOrderBy(MethodCallExpression m)
         {
@@ -138,20 +138,20 @@ namespace Cucumber.SimpleDb.Linq.Translation
             Expression orderByBody = Visit(selector.Body);
             orderByBody = IndexedAttributeMapper.Eval(orderByBody);
             var attributes = SelectionCollector.Collect(orderByBody);
-			if(attributes.Count () < 1)
-			{
-				throw new InvalidOperationException("No attribute references found in the OrderBy expression");
-			}
-			if(attributes.Count () > 1)
-			{
-				throw new NotSupportedException("Currently only ordering by one column per order expression is supported");
-			}
+            if(attributes.Count () < 1)
+            {
+                throw new InvalidOperationException("No attribute references found in the OrderBy expression");
+            }
+            if(attributes.Count () > 1)
+            {
+                throw new NotSupportedException("Currently only ordering by one column per order expression is supported");
+            }
             return SimpleDbExpression.Query(
                 null,
                 source,
                 null,
                 new[] { new OrderExpression(attributes.First(), sortDirection) },
-				null);
+                null);
         }
 
         private ProjectionExpression VisitSequence(Expression expr)

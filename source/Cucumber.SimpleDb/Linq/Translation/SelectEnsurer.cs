@@ -34,7 +34,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     qex.Source,
                     qex.Where,
                     qex.OrderBy,
-					qex.Limit);
+                    qex.Limit);
             }
             return base.VisitSimpleDbQuery(qex);
         }

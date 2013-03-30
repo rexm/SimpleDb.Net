@@ -41,7 +41,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             VisitSimpleDbDomain((DomainExpression)qex.Source);
             VisitWhere(qex.Where);
             VisitOrder(qex.OrderBy);
-			VisitLimit(qex.Limit);
+            VisitLimit(qex.Limit);
             return qex;
         }
 
@@ -104,9 +104,9 @@ namespace Cucumber.SimpleDb.Linq.Translation
                             ((ConstantExpression)m.Arguments[0]).Value.ToString(),
                             ((ConstantExpression)m.Arguments[1]).Value.ToString());
                         break;
-					case "In":
-						WriteIn(m);
-						break;
+                    case "In":
+                        WriteIn(m);
+                        break;
                     default:
                         throw new NotSupportedException(
                             string.Format("Querying on '{0}' is not currently supported",
@@ -117,11 +117,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
             return base.VisitMethodCall(m);
         }
 
-		private bool IsAttributeValueMethod(Expression exp)
-		{
-			var m = exp as MethodCallExpression;
-			return m != null && m.Method.DeclaringType == typeof(SimpleDbAttributeValue);
-		}
+        private bool IsAttributeValueMethod(Expression exp)
+        {
+            var m = exp as MethodCallExpression;
+            return m != null && m.Method.DeclaringType == typeof(SimpleDbAttributeValue);
+        }
 
         private void WriteBetween(string lower, string upper)
         {
@@ -141,11 +141,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     append));
         }
 
-		private void WriteIn (MethodCallExpression m)
-		{
-			VisitSimpleDbAttribute((AttributeExpression)m.Object);
-			_qsb.Append("IN(");
-		}
+        private void WriteIn (MethodCallExpression m)
+        {
+            VisitSimpleDbAttribute((AttributeExpression)m.Object);
+            _qsb.Append("IN(");
+        }
 
         private void HandleCarriedUnary()
         {
@@ -170,10 +170,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void VisitWhere(Expression where)
         {
-			if(where == null)
-			{
-				return;
-			}
+            if(where == null)
+            {
+                return;
+            }
             _qsb.Append("WHERE");
             Visit(where);
         }
@@ -189,32 +189,32 @@ namespace Cucumber.SimpleDb.Linq.Translation
             _qsb.AppendFormat(nameFormat, CreateSystemNameString(nex.Name));
         }
 
-		private void VisitLimit(Expression expression)
-		{
-			var limitConstant = expression as ConstantExpression;
-			if(limitConstant != null && limitConstant.Value != null && limitConstant.GetType() == typeof(int))
-			{
-				_qsb.AppendFormat("LIMIT {0}", limitConstant.Value);
-			}
-		}
+        private void VisitLimit(Expression expression)
+        {
+            var limitConstant = expression as ConstantExpression;
+            if(limitConstant != null && limitConstant.Value != null && limitConstant.GetType() == typeof(int))
+            {
+                _qsb.AppendFormat("LIMIT {0}", limitConstant.Value);
+            }
+        }
 
         private void VisitOrder(IEnumerable<OrderExpression> orderBys)
         {
-			bool first = true;
-			foreach(var orderBy in orderBys)
-			{
-				if(first)
-				{
-					first = false;
-					_qsb.Append("ORDERBY");
-				}
-				else
-				{
-					_qsb.Append(",");
-				}
-				WriteSimpleDbAttribute(orderBy.Attribute);
-				_qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
-			}
+            bool first = true;
+            foreach(var orderBy in orderBys)
+            {
+                if(first)
+                {
+                    first = false;
+                    _qsb.Append("ORDERBY");
+                }
+                else
+                {
+                    _qsb.Append(",");
+                }
+                WriteSimpleDbAttribute(orderBy.Attribute);
+                _qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
+            }
         }
 
         protected override Expression VisitUnary(UnaryExpression u)
@@ -229,12 +229,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 HandleNull(node);
                 return node;
-			}
-			if (IsNegatedValueMethod(node))
-			{
-				Visit (ConvertToNotUnary(node));
-				return node;
-			}
+            }
+            if (IsNegatedValueMethod(node))
+            {
+                Visit (ConvertToNotUnary(node));
+                return node;
+            }
             string op = GetOperator(node.NodeType);
             if(string.IsNullOrEmpty(op))
             {
@@ -279,35 +279,35 @@ namespace Cucumber.SimpleDb.Linq.Translation
             return (left is AttributeExpression && right is ConstantExpression && ((ConstantExpression)right).Value == null);
         }
 
-		private bool IsNegatedValueMethod (BinaryExpression node)
-		{
-			var oneIsAttributeMethod = IsAttributeValueMethod(node.Left) || IsAttributeValueMethod(node.Right);
-			return oneIsAttributeMethod && CanTreatAsNegatedUnary(node);
-		}
+        private bool IsNegatedValueMethod (BinaryExpression node)
+        {
+            var oneIsAttributeMethod = IsAttributeValueMethod(node.Left) || IsAttributeValueMethod(node.Right);
+            return oneIsAttributeMethod && CanTreatAsNegatedUnary(node);
+        }
 
-		private bool CanTreatAsNegatedUnary(BinaryExpression node)
-		{
-			var booleanConstant = node.Left as ConstantExpression ?? node.Right as ConstantExpression;
-			if(booleanConstant == null || booleanConstant.Value == null || booleanConstant.Value.GetType () != typeof(bool))
-			{
-				return false;
-			}
-			var value = (bool)booleanConstant.Value;
-			return (value == true && node.NodeType == ExpressionType.NotEqual)
-				|| (value == false && node.NodeType == ExpressionType.Equal);
-		}
+        private bool CanTreatAsNegatedUnary(BinaryExpression node)
+        {
+            var booleanConstant = node.Left as ConstantExpression ?? node.Right as ConstantExpression;
+            if(booleanConstant == null || booleanConstant.Value == null || booleanConstant.Value.GetType () != typeof(bool))
+            {
+                return false;
+            }
+            var value = (bool)booleanConstant.Value;
+            return (value == true && node.NodeType == ExpressionType.NotEqual)
+                || (value == false && node.NodeType == ExpressionType.Equal);
+        }
 
-		private UnaryExpression ConvertToNotUnary(BinaryExpression node)
-		{
-			var operandNode = node.Left.NodeType == ExpressionType.Constant ? node.Right : node.Left;
-			return Expression.Not(operandNode);
-		}
+        private UnaryExpression ConvertToNotUnary(BinaryExpression node)
+        {
+            var operandNode = node.Left.NodeType == ExpressionType.Constant ? node.Right : node.Left;
+            return Expression.Not(operandNode);
+        }
 
-		private bool IsBooleanConstant(Expression exp)
-		{
-			var constant = exp as ConstantExpression;
-			return constant != null && constant.Value.GetType() == typeof(bool);
-		}
+        private bool IsBooleanConstant(Expression exp)
+        {
+            var constant = exp as ConstantExpression;
+            return constant != null && constant.Value.GetType() == typeof(bool);
+        }
 
         private void VisitBinaryMember(Expression expr)
         {
@@ -325,23 +325,23 @@ namespace Cucumber.SimpleDb.Linq.Translation
             }
         }
 
-		private string CreateUserValueString(object value)
-		{
-			var stringValue = value.ToSafeString();
-			if(value.GetType() == typeof(DateTime))
-			{
-				stringValue = ((DateTime)value).ToString("o");
-			}
-			return stringValue
-				.Replace("\\", "\\\\")
-				.Replace("\"", "\\\"");
-		}
+        private string CreateUserValueString(object value)
+        {
+            var stringValue = value.ToSafeString();
+            if(value.GetType() == typeof(DateTime))
+            {
+                stringValue = ((DateTime)value).ToString("o");
+            }
+            return stringValue
+                .Replace("\\", "\\\\")
+                .Replace("\"", "\\\"");
+        }
 
-		private string CreateSystemNameString(string name)
-		{
-			return name.ToSafeString()
-				.Replace("`", "``");
-		}
+        private string CreateSystemNameString(string name)
+        {
+            return name.ToSafeString()
+                .Replace("`", "``");
+        }
 
         private string GetOperator(ExpressionType type)
         {
@@ -381,10 +381,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
             public QueryStringBuilder Append(string value)
             {
-				if(value.StartsWith(",") == false)
-				{
-                	_sb.Append(" ");
-				}
+                if(value.StartsWith(",") == false)
+                {
+                   _sb.Append(" ");
+                }
                 _sb.Append(value);
                 return this;
             }

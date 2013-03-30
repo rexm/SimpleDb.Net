@@ -40,7 +40,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             return Expression.Call(
                 Expression.Constant(this),
                 this.GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
-					.MakeGenericMethod(projector.Body.Type),
+                    .MakeGenericMethod(projector.Body.Type),
                 Expression.Constant(new QueryCommand(pex.Source)),
                 projector
             );

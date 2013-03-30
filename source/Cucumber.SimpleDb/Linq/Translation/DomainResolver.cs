@@ -28,7 +28,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         SimpleDbExpression.Domain(((ISimpleDbItemCollection)source.Value).Domain),
                         qex.Where,
                         qex.OrderBy,
-						qex.Limit);
+                        qex.Limit);
                 }
                 else
                 {
@@ -45,7 +45,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     source,
                     qex.Where,
                     qex.OrderBy,
-					qex.Limit);
+                    qex.Limit);
             }
         }
 

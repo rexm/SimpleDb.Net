@@ -31,11 +31,11 @@ namespace Cucumber.SimpleDb.Linq.Structure
         }
 
         public static QueryExpression Query(
-			SelectExpression select,
-			Expression source,
-			Expression where,
-			IEnumerable<OrderExpression> orderBy,
-			Expression limit)
+            SelectExpression select,
+            Expression source,
+            Expression where,
+            IEnumerable<OrderExpression> orderBy,
+            Expression limit)
         {
             return new QueryExpression(select, source, where, orderBy, limit);
         }
