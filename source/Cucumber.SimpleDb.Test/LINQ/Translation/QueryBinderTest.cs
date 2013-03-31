@@ -6,6 +6,7 @@ using Cucumber.SimpleDb.Linq.Translation;
 using System.Linq.Expressions;
 using Cucumber.SimpleDb.Linq.Structure;
 using Moq;
+using System.Collections.Generic;
 
 namespace Cucumber.SimpleDb.Test
 {
@@ -49,7 +50,36 @@ namespace Cucumber.SimpleDb.Test
                 Expression.Constant(source),
                 Expression.Quote(lambda));
             var resultExpression = binder.AccessVisitMethodCall(whereMethod);
-            Assert.AreSame(whereMethod, resultExpression);
+            Assert.IsInstanceOf<MethodCallExpression>(resultExpression);
+            Assert.AreEqual(whereMethod.Arguments[1], ((MethodCallExpression)resultExpression).Arguments[1]);
+        }
+
+        [Test]
+        public void ClientMethodsGuardedByEnumerable()
+        {
+            var source = new Mock<IQueryable<string>>().Object;
+            var binder = new QueryBinderAccessor();
+            var lambda = Expression.Lambda(
+                Expression.Constant(true),
+                Expression.Parameter(typeof(string)));
+            var whereMethod = Expression.Call(
+                typeof(Queryable).GetMethod ("Where", typeof(IQueryable<Ref.T1>), typeof(Expression<Func<Ref.T1, bool>>))
+                .MakeGenericMethod(typeof(string)),
+                Expression.Constant(source),
+                Expression.Quote(lambda));
+            var resultExpression = binder.AccessVisitMethodCall(whereMethod);
+            var resultAsMethodCall = resultExpression as MethodCallExpression;
+            Assert.IsInstanceOf<MethodCallExpression>(resultAsMethodCall.Arguments[0]);
+            Assert.AreSame(
+                typeof(Queryable).GetMethod ("AsQueryable", typeof(IEnumerable<Ref.T1>))
+                    .MakeGenericMethod(typeof(string)),
+                ((MethodCallExpression)resultAsMethodCall.Arguments[0]).Method);
+            Assert.IsInstanceOf<MethodCallExpression>(
+                ((MethodCallExpression)resultAsMethodCall.Arguments[0]).Arguments[0]);
+            Assert.AreSame(
+                typeof(Enumerable).GetMethod("AsEnumerable", typeof(IEnumerable<Ref.T1>))
+                    .MakeGenericMethod(typeof(string)),
+                ((MethodCallExpression)((MethodCallExpression)resultAsMethodCall.Arguments[0]).Arguments[0]).Method);
         }
 
         private class QueryBinderAccessor : QueryBinder
