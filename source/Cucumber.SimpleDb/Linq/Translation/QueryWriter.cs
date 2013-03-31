@@ -145,6 +145,48 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             VisitSimpleDbAttribute((AttributeExpression)m.Object);
             _qsb.Append("IN(");
+            var sequenceArgument = GetValueArray(m.Arguments[0]);
+            if(sequenceArgument.Type != typeof(object[]))
+            {
+                throw new NotSupportedException(string.Format(
+                    "Cannot use value type '{0}' with IN operator",
+                    sequenceArgument.Type.Name));
+            }
+            WriteCommaSeparatedSequence(
+                (IEnumerable<object>)sequenceArgument.Value, value => {
+                _qsb.AppendFormat(valueFormat, CreateUserValueString(value));
+            });
+            _qsb.Append(")");
+        }
+
+        private ConstantExpression GetValueArray (Expression exp)
+        {
+            if(exp is NewArrayExpression)
+            {
+                var values = new List<object>();
+                foreach(var valueExpression in ((NewArrayExpression)exp).Expressions)
+                {
+                    var visitedValueExpression = Visit (valueExpression);
+                    if((visitedValueExpression is ConstantExpression) == false)
+                    {
+                        throw new NotSupportedException(string.Format(
+                            "Cannot use expression type '{0}' in literal value array",
+                            visitedValueExpression.NodeType));
+                    }
+                    values.Add(((ConstantExpression)visitedValueExpression).Value);
+                }
+                return Expression.Constant(values.ToArray());
+            }
+            else if (exp is ConstantExpression)
+            {
+                return (ConstantExpression)exp;
+            }
+            else
+            {
+                throw new NotSupportedException(string.Format(
+                    "Cannot convert expression type '{0}' to a literal value array",
+                    exp.NodeType));
+            }
         }
 
         private void HandleCarriedUnary()
@@ -200,22 +242,33 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void VisitOrder(IEnumerable<OrderExpression> orderBys)
         {
-            bool first = true;
-            foreach(var orderBy in orderBys)
-            {
+			if(orderBys.Any() == false)
+			{
+				return;
+			}
+			_qsb.Append("ORDERBY");
+			WriteCommaSeparatedSequence(orderBys, orderBy => {
+				WriteSimpleDbAttribute(orderBy.Attribute);
+				_qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
+			});
+        }
+
+		private void WriteCommaSeparatedSequence<T>(IEnumerable<T> sequence, Action<T> writeItem)
+		{
+			bool first = true;
+			foreach(var item in sequence)
+			{
+				if(!first)
+				{
+					_qsb.Append(",");
+				}
+				writeItem(item);
                 if(first)
                 {
                     first = false;
-                    _qsb.Append("ORDERBY");
                 }
-                else
-                {
-                    _qsb.Append(",");
-                }
-                WriteSimpleDbAttribute(orderBy.Attribute);
-                _qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
-            }
-        }
+			}
+		}
 
         protected override Expression VisitUnary(UnaryExpression u)
         {
