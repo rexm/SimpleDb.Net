@@ -233,10 +233,18 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void VisitLimit(Expression expression)
         {
+            if(expression == null)
+            {
+                return;
+            }
             var limitConstant = expression as ConstantExpression;
             if(limitConstant != null && limitConstant.Value != null && limitConstant.Type == typeof(int))
             {
                 _qsb.AppendFormat("LIMIT {0}", limitConstant.Value);
+            }
+            else
+            {
+                throw new NotSupportedException("LIMIT must be a literal integer value");
             }
         }
 
