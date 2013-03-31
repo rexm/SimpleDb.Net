@@ -107,13 +107,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private Expression BindTake (MethodCallExpression m)
         {
+            var source = this.Visit(m.Arguments[0]);
             var limitExpression = this.Visit(m.Arguments[1]) as ConstantExpression;
             if(limitExpression == null)
             {
-                throw new InvalidOperationException("Cannot use an expression to determine the query LIMIT");
+                throw new NotSupportedException("Cannot use an expression to determine the query LIMIT");
             }
             return SimpleDbExpression.Query(
-                null, m.Arguments[0], null, null, limitExpression);
+                null, source, null, null, limitExpression);
         }
 
         private Expression BindJoin (MethodCallExpression m)

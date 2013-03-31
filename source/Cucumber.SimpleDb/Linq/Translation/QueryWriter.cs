@@ -234,7 +234,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         private void VisitLimit(Expression expression)
         {
             var limitConstant = expression as ConstantExpression;
-            if(limitConstant != null && limitConstant.Value != null && limitConstant.GetType() == typeof(int))
+            if(limitConstant != null && limitConstant.Value != null && limitConstant.Type == typeof(int))
             {
                 _qsb.AppendFormat("LIMIT {0}", limitConstant.Value);
             }
