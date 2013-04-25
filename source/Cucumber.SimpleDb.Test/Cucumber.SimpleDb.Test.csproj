@@ -50,7 +50,9 @@
     <Compile Include="LINQ\Translation\ClientProjectionWriterTest.cs" />
     <Compile Include="LINQ\IntegrationTests\QueryOutputTest.cs" />
     <Compile Include="LINQ\IntegrationTests\QueryOutputCaptureService.cs" />
+    <Compile Include="LINQ\Translation\WhereQueryBinderTest.cs" />
     <Compile Include="LINQ\Translation\QueryBinderTest.cs" />
+    <Compile Include="LINQ\Translation\SelectQueryBinderTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
