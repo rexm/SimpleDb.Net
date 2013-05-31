@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace Cucumber.SimpleDb.Test
 {
     [TestFixture]
-    public class QueryBinderTest
+    public class WhereQueryBinderTest : QueryBinderTest
     {
         [Test]
         public void WhereMethodIsTranslatable ()
@@ -80,14 +80,6 @@ namespace Cucumber.SimpleDb.Test
                 typeof(Enumerable).GetMethod("AsEnumerable", typeof(IEnumerable<Ref.T1>))
                     .MakeGenericMethod(typeof(string)),
                 ((MethodCallExpression)((MethodCallExpression)resultAsMethodCall.Arguments[0]).Arguments[0]).Method);
-        }
-
-        private class QueryBinderAccessor : QueryBinder
-        {
-            public Expression AccessVisitMethodCall(MethodCallExpression m)
-            {
-                return this.VisitMethodCall(m);
-            }
         }
     }
 }

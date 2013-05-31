@@ -10,8 +10,15 @@ using System.Collections.Generic;
 
 namespace Cucumber.SimpleDb.Test
 {
-	public class QueryBinderTest
+	public abstract class QueryBinderTest
 	{
+        protected class QueryBinderAccessor : QueryBinder
+        {
+            public Expression AccessVisitMethodCall(MethodCallExpression m)
+            {
+                return this.VisitMethodCall(m);
+            }
+        }
 	}
 
 }
