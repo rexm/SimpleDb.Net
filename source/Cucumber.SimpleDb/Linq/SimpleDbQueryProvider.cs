@@ -43,7 +43,9 @@ namespace Cucumber.SimpleDb.Linq
             }
             catch (Exception ex)
             {
-                throw new NotSupportedException("Could not convert the query to valid SimpleDB syntax", ex);
+                throw new NotSupportedException(
+                    string.Format("Could not convert the query to valid SimpleDB syntax: {0}", ex.Message),
+                    ex);
             }
         }
 
