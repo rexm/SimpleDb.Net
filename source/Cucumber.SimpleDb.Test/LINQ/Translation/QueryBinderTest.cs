@@ -12,7 +12,7 @@ namespace Cucumber.SimpleDb.Test
 {
 	public abstract class QueryBinderTest
 	{
-        protected class QueryBinderAccessor : QueryBinder
+        internal class QueryBinderAccessor : QueryBinder
         {
             public Expression AccessVisitMethodCall(MethodCallExpression m)
             {

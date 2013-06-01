@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -104,6 +104,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     null),
                 projector);
         }
+
 
         private Expression BindTake (MethodCallExpression m)
         {
