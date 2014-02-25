@@ -65,7 +65,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <Import Project="$(SolutionDir).nuget\nuget.targets" />
   <ItemGroup>
     <Folder Include="LINQ\IntegrationTests\" />
   </ItemGroup>
