@@ -53,6 +53,7 @@
     <Compile Include="LINQ\Translation\WhereQueryBinderTest.cs" />
     <Compile Include="LINQ\Translation\QueryBinderTest.cs" />
     <Compile Include="LINQ\Translation\SelectQueryBinderTest.cs" />
+    <Compile Include="Utilities\EnumerableExtensionsTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -68,5 +69,6 @@
   <Import Project="$(SolutionDir).nuget\NuGet.targets" />
   <ItemGroup>
     <Folder Include="LINQ\IntegrationTests\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 </Project>
