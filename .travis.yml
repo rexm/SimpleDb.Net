@@ -7,7 +7,7 @@ install:
   - sudo apt-get install mono-devel mono-gmcs nunit-console
 
 script:
-  - xbuild source/Cucumber.SimpleDb.sln
+  - xbuild /p:Configuration=Release source/Cucumber.SimpleDb.sln
   - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
 
 notifications:
