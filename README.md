@@ -3,10 +3,10 @@
 A .NET library that lets you work with [AWS SimpleDB][1] using a familiar entity-like model and LINQ queries.
 
 The goals of SimpleDb.NET are:
-* Surface 100% of SimpleDB's capabilities through an easy, "just works" .NET API - no falling back to "low-level" REST for some operations.
-* Provide robust LINQ querying and session-based change tracking.
-* Good or better performance compared to rolling your own AWS REST calls from your app.
-* No dependencies on third-party libraries (including the AWS SDK).
+* Surface 100% of SimpleDB's capabilities through an easy, "**just works**" .NET API - no falling back to "low-level" REST for some operations.
+* Provide robust **LINQ querying** and session-based **change tracking**.
+* Good or better **performance** compared to rolling your own AWS REST calls from your app.
+* **No dependencies** on third-party libraries (including the AWS SDK).
 * Platform-independence (basically, runs anywhere [Mono][3] does :) )
 
 # Installation
@@ -23,18 +23,20 @@ Download `Cucumber.SimpleDb.dll` from the root directory. That always reflects t
 
 SimpleDb.NET doesn't require any configuration. To begin using it, just call `SimpleDbContext.Create`:
 
-    using(var simpleDb = SimpleDbContext.Create("publicKey", "privateKey"))
-    {
-      var items = from item in simpleDb.Domains["myDomain"].Items
-                  where item["Status"] == "Hot" && item["LastUpdated"] > DateTime.Now.AddDays(-1)
-                  orderby item => item["LastUpdated"] descending
-                  select item;
-        
-      foreach(var item in items)
-      {
-        Console.WriteLine(item["MyOtherAttribute"]);
-      }
-    }
+```C#
+using(var simpleDb = SimpleDbContext.Create("publicKey", "privateKey"))
+{
+  var items = from item in simpleDb.Domains["myDomain"].Items
+              where item["Status"] == "Hot" && item["LastUpdated"] > DateTime.Now.AddDays(-1)
+              orderby item => item["LastUpdated"] descending
+              select item;
+    
+  foreach(var item in items)
+  {
+    Console.WriteLine(item["MyOtherAttribute"]);
+  }
+}
+```
 
 If you've used LINQ to SQL (or pretty much any LINQ-friendly ORM) this should look fairly familiar. We've left it up to you to decide where to store your AWS public and private keys.
 
@@ -48,9 +50,11 @@ Although AWS SimpleDB is not a relational data store, SimpleDb.NET supports rela
 
 All changes to items, as well as additions and deletions from a domain, are tracked and batch-sent over the wire once `SubmitChanges()` is called:
 
-    var newItem = myDomain.Items.Add("SomeItem");
-    newItem["SomeAttribute"] = "we really are schema-less!";
-    simpleDb.SubmitChanges();
+```C#
+var newItem = myDomain.Items.Add("SomeItem");
+newItem["SomeAttribute"] = "we really are schema-less!";
+simpleDb.SubmitChanges();
+```
     
 Changes to Domains (currently only deleting Domains is supported) are executed immediately.
 
