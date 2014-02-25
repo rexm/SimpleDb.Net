@@ -106,17 +106,6 @@ namespace Cucumber.SimpleDb.Test
             Assert.AreEqual ("SELECT * FROM `TestDomain1` WHERE every( `TestAtt1` ) > \"1\"", query);
         }
 
-        [Test]
-        public void BasicIntersection()
-        {
-            var query = GetQueryString (context =>
-                context.Domains ["TestDomain1"].Items
-                    .Where (i => i ["TestAtt1"].Intersection (
-                        v => v == "Hello",
-                        v => v == "World")));
-            Assert.AreEqual ("", query);
-        }
-
         private string GetQueryString(Func<ISimpleDbContext, IQueryable> query)
         {
             string output = null;

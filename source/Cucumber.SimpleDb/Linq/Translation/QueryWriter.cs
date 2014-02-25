@@ -107,9 +107,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     case "In":
                         WriteIn(m);
                         break;
-                    case "Intersection":
-                        WriteIntersection(m);
-                        break;
                     default:
                         throw new NotSupportedException(
                             string.Format("Querying on '{0}' is not currently supported",
@@ -160,24 +157,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 _qsb.AppendFormat(valueFormat, CreateUserValueString(value));
             });
             _qsb.Append(")");
-        }
-
-        private void WriteIntersection (MethodCallExpression m)
-        {
-            bool first = true;
-            foreach (var predicate in ((NewArrayExpression)m.Arguments[0]).Expressions)
-            {
-                if(first)
-                {
-                    first = false;
-                }
-                else
-                {
-                    _qsb.Append("INTERSECTION");
-                }
-                var body = ValueAttributeReferenceReplacer.Replace(((LambdaExpression)predicate).Body);
-                Visit(body);
-            }
         }
 
         private ConstantExpression GetValueArray (Expression exp)

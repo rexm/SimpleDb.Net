@@ -95,7 +95,6 @@
     <Compile Include="ISimpleDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\SessionSimpleDbDomainCollection.cs" />
-    <Compile Include="Linq\Translation\IntersectionConverter.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

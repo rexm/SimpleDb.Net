@@ -15,8 +15,7 @@ namespace Cucumber.SimpleDb.Linq.Structure
         Projection = 2002,
         Order = 2003,
         Domain = 2004,
-        Select = 2005,
-        Intersection = 2006
+        Select = 2005
     }
 
     internal abstract class SimpleDbExpression : Expression

@@ -124,23 +124,6 @@ namespace Cucumber.SimpleDb
             return LiftValuesToType<double>(_values).Any(v => v >= lower && v <= upper);
         }
 
-        /// <summary>
-        /// Gets whether all predicates are true for the current multi-attribute value.
-        /// </summary>
-        /// <param name="predicates">Predicates.</param>
-        public bool Intersection(params Func<SimpleDbAttributeValue, bool>[] predicates)
-        {
-            foreach (var predicate in predicates)
-            {
-                if(_values.Select(v => new SimpleDbAttributeValue(v)).Any(predicate))
-                {
-                    continue;
-                }
-                return false;
-            }
-            return true;
-        }
-
         public static implicit operator SimpleDbAttributeValue(SimpleDbAttributeValue[] values)
         {
             return new SimpleDbAttributeValue(values.SelectMany(v => v._values).ToArray());
