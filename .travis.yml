@@ -6,6 +6,7 @@ install:
 script:
   - xbuild source/Cucumber.SimpleDb.sln
   - nunit-console source/Cucumber.SimpleDb.Test/Debug/Cucumber.SimpleDb.Test.dll
+
 notifications:
   email:
     - rex@rexmorgan.net
