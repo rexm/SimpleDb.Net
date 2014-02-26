@@ -1,5 +1,33 @@
 language: c
 
+before_script:
+  - echo -n $id_rsa_{00..30} >> ~/.ssh/id_rsa_base64
+  - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
+install:
+  - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
+  - sudo apt-get install mono-devel mono-gmcs nunit-console
+  - mozroots --import --sync
+
+script:
+  - xbuild /p:Configuration=Release source/Cucumber.SimpleDb.sln
+  - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
+  
+after_success:
+  - git config --global user.email "travis@travis-ci.org"
+  - git config --global user.name "travis-ci"
+  - git remote set-url origin git@github.com:rexm/SimpleDb.Net.git
+  - git checkout master
+  - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
+  - git commit Cucumber.SimpleDb.dll -m "Update binary [ci skip]"
+  - git push origin master
+  
+notifications:
+  email:
+    - rex@rexmorgan.net
+
 env:
   global:
     - EnableNuGetPackageRestore=true
@@ -29,31 +57,3 @@ env:
     - secure: "JKanv1QLHxR58Ys1SDsZzx/0ed6wUN+wNDWhabzY0ZVBaapV9WZzd8REFBMYEY+zI3yHxHfvjI9dh+pLX2Rsg/6dd7bBs2+eAu6CsiAQOSPXhUAQ4dxwxeDtsPhqUZBiBsAgWoByvG/fxa30RaOO1y4e6L74P6EqsGQMG3bZg0w="
     - secure: "n2x/MCgW6FFPEUjSCt8/GF3S32q7ks4ccEvNWc066+cqtQZ7SqeRcGPvTE+47dDq3Ft1pVxtCLmUfRlabx/OYmdFvGQyJAestBbnAH0x16AKixCMTzIPc1cgBkXEsiTSmPXGAq08mX/lRbZaNgeL9TLXXyDB4dTSxfaGAlKfcxQ="
     - secure: "OVgL6EsDWIsxq7MGNi7fochcZp+TfjOrgE03J8nkb1XI4hOLmTRzu9Mq9C68P17XdMpH4FPzWmEVXtMDPlexIZCI+OnpfJvcFmEEVxS5yK1KXDmpeJTsuEOQjmUGv7aS9hHse5boABbr+E731xPcuSBBF4hP4hQUqGEb1fayNX0="
-
-before_script:
-  - echo -n $id_rsa_{00..30} >> ~/.ssh/id_rsa_base64
-  - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-
-install:
-  - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
-  - sudo apt-get install mono-devel mono-gmcs nunit-console
-  - mozroots --import --sync
-
-script:
-  - xbuild /p:Configuration=Release source/Cucumber.SimpleDb.sln
-  - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
-  
-after_success:
-  - git config --global user.email "travis@travis-ci.org"
-  - git config --global user.name "travis-ci"
-  - git remote set-url origin git@github.com:rexm/SimpleDb.Net.git
-  - git checkout master
-  - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
-  - git commit Cucumber.SimpleDb.dll -m "Updating binary [ci skip]"
-  - git push origin master
-  
-notifications:
-  email:
-    - rex@rexmorgan.net
