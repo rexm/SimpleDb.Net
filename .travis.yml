@@ -20,7 +20,7 @@ script:
 after_success:
   - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll /
   - git commit Cucumber.SimpleDb.dll
-  - git push -m Updating binary [ci skip]
+  - git push origin master -m Updating binary [ci skip]
   
 
 
