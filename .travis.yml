@@ -1,7 +1,9 @@
 language: c
 
-before_install:
-  - export EnableNuGetPackageRestore=true
+env:
+  global:
+    - EnableNuGetPackageRestore=true
+    - secure: "kAjCa/ak9jmwWKPfkX4z82zbodLYW4vg2+BYvM82/eliFbV/FFogM96/dvie0mIZZtXLc6orMl66VuiOaTZlLhyTWfCgB3s5+iBQlj4DpdRkSS269FsbRB9EB9riXdcDU8Mu6sMA72Vj2m3eq6AzDcj2Mnuut1lPl1wE/k/nuWM="
 
 install:
   - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
@@ -11,6 +13,7 @@ install:
 script:
   - xbuild /p:Configuration=Release source/Cucumber.SimpleDb.sln
   - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
+
 
 notifications:
   email:
