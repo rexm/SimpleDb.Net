@@ -10,20 +10,17 @@ install:
   - sudo apt-get install mono-devel mono-gmcs nunit-console
   - mozroots --import --sync
 
-before_script:
-  - 
-
 script:
   - xbuild /p:Configuration=Release source/Cucumber.SimpleDb.sln
   - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
   
 after_success:
   - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
+  - git config --global user.email "travis@travis-ci.org"
+  - git config --global user.name "travis-ci"
   - git commit Cucumber.SimpleDb.dll
   - git push origin master -m Updating binary [ci skip]
   
-
-
 notifications:
   email:
     - rex@rexmorgan.net
