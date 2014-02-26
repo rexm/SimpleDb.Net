@@ -3,7 +3,8 @@ language: c
 env:
   global:
     - EnableNuGetPackageRestore=true
-    - secure: "kAjCa/ak9jmwWKPfkX4z82zbodLYW4vg2+BYvM82/eliFbV/FFogM96/dvie0mIZZtXLc6orMl66VuiOaTZlLhyTWfCgB3s5+iBQlj4DpdRkSS269FsbRB9EB9riXdcDU8Mu6sMA72Vj2m3eq6AzDcj2Mnuut1lPl1wE/k/nuWM="
+    - secure: "ELyKUHs/L741xa6Xh5NWtCLB8if0M9f/7mDDrXvpBJI07i+0V0Ku+zi+d0uj46m6MNAPMMQ2rrpVU2cpZQQn2x64bPp9H0r3eGNrdUJkH/Dr6uSaOMJqVHr05BU/S/jtlxaEoTjl9GJsvZfb/woZVprviUxqthLqo8kmgw85dT0="
+    - secure: "Sxer2TJAzjbc3OIqJdtF6r9cUpRBNhZYv3v2TtBDyIvTHnsuHTMedbYb9q0z9A2kUgA37b39tRgICD35IkCVq0dc4v+p72lH95K6MoAwg148IMGMNII3V9NEtRnIN/sj0udSVWDOyrBBWz/Kk/twLIg667Lro/kvtuTn5XHHWCE="
 
 install:
   - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
@@ -18,7 +19,7 @@ after_success:
   - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "travis-ci"
-  - git remote set-url origin https://github.com/rexm/SimpleDb.Net.git
+  - git remote set-url origin https://${GITHUB_TOKEN}@github.com:rexm/SimpleDb.Net.git
   - git commit Cucumber.SimpleDb.dll -m "Updating binary [ci skip]"
   - git push origin master
   
