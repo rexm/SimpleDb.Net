@@ -1,0 +1,1 @@
+sed -i -r 's/Version(".*")/Version("${BUILD_NUM}")/g' source/Cucumber.SimpleDb/Properties/AssemblyInfo.cs
