@@ -5,6 +5,37 @@ env:
     - EnableNuGetPackageRestore=true
     - secure: "ELyKUHs/L741xa6Xh5NWtCLB8if0M9f/7mDDrXvpBJI07i+0V0Ku+zi+d0uj46m6MNAPMMQ2rrpVU2cpZQQn2x64bPp9H0r3eGNrdUJkH/Dr6uSaOMJqVHr05BU/S/jtlxaEoTjl9GJsvZfb/woZVprviUxqthLqo8kmgw85dT0="
     - secure: "Sxer2TJAzjbc3OIqJdtF6r9cUpRBNhZYv3v2TtBDyIvTHnsuHTMedbYb9q0z9A2kUgA37b39tRgICD35IkCVq0dc4v+p72lH95K6MoAwg148IMGMNII3V9NEtRnIN/sj0udSVWDOyrBBWz/Kk/twLIg667Lro/kvtuTn5XHHWCE="
+    # SSH
+    - secure: "r3JGE5DlxBS/IIu0xgCtkEQBWCj0k3rpsZtvvjnrvy2rB9BEB3O1HVVHUj3DfKF9+bSlc2ZATrEWqi2d0Sl546PjR3hcf4VfaDjgDEKCUkxgwlYDz+rcZ/hoKQkhNAalZmMfULmmP2A42etMt32yxSVxhaT6q46fmvjkOL4MnsQ="
+    - secure: "SfXed0Ap0lj/FvnKtXqt7O+sTwwi3OpiPhqAo7PUptAb9gLyAKk5yb2pHdlTJp9cgKjz92WzbD6AJV76yeGmZwE+bz5GTZl78sAhDqUJHYzpAJwQcab/z1JvQ0cFxa555xl0eNrXi20tYmopjf99rdN5EuC5vmTRTDmzXrc9hX8="
+    - secure: "yH7D04X9n5+7JN5fDOG136IaYG/xWOxHAdIIWEq/LtQ30hGkeYC725P+BUkQnZO/ZyumZc7EoGnrOzXd1q+c5Rsts+ddg5fCqdJrZBGNXRce+IGhRsxqBKcMs4MaZ8ghpHhvYNR0vFVILb8rzY41DswiPELEMIIwFCTgR6CR2ZY="
+    - secure: "AeOsSWAFsEadqLGaq3sYkgTqiZrWjQP9N3hsmDlrOG8IYs+jRQqEfgTo3R7TMLFAQmJjV23xly4vNHc4+UIls3BP+Okl+okjncK+lWW/7qOEJqLz0yyVX0eUnQXVjeiwt9PxoJNbMtk95/q+geYFj1TB3DjQ+BNFTX4KMr1WMkU="
+    - secure: "PCDot/f8YurT542hvOobhU8KrE+NKOCVTIzS1koKY0ArysgOX+iai9djvL9n2TFGWoshkMpZZn7IiU5LILxc5CzSy0F+MDL89plM/uB9tde9shgrIXYwnctTnMx4Q8gIfaImxuxg7IoFySfrINhlyMQT3yHX+dKsXfsAVX5OTj8="
+    - secure: "r+68XwEPeKykZkUlxLJmlYW8Gnz3rtheaABYLxw+B3AS31/FldBuref5f7C9BwV+aM/Clx3mMb9P8wCM6xJBkWOu9GwPaAejzF7mwLONYuwJLGHmndgVMrHg9gzJjy6d2gypPvYZaVZ9hKljOaTQa1bmYbncdIIzwueGzEXUaTs="
+    - secure: "a/E6PQPhnQ/xzkhysezPxpE5+LGU7Nr4Eo98ap8rGj1xOb1DqCkKoUq+IIf7Z8UJG8tahdgCtEXBOGj+QBIdI7VLHnUzN5+Sh7utBwdqVGZpu9nHygXjrzxiqBKWDsTsprynB8hSvozHlZIBC3HdbU1BhmD2aps7WbJ0he8ME0w="
+    - secure: "iP5nzg3LG22SmWP/PngTBW50HEAc1Q+vvayyJf8E9e366AzAOhhoQKzosIrTCaNxQj/+5Ha/g2BfhOlJ8+MsUuDlge4YW++ClFThcdzvw55h/Kbud1WzSP1OqAuA58GgIvzN3h0YyaVCospYkUvU6MUq3jk5JgSpm1P89idXm6w="
+    - secure: "vRuecnMJ3yMYuMA7V4OGDFuWo7HyMdShalSDn8KbKW+llLPR7lW7nTLBJWcNjf+TENxEb3hJEOkBjUgqjDiTsg8B7AvHQHMHfnOr2Q+vG1w0GXVomYp/juASB9JcOSvmDS0SuK8EgtkKu9q1xyczLfz9d3gShh4rZZ+a8Qk+TE8="
+    - secure: "06MMF/wnbGMT9Bx48MayCyQVS1QGgOJIJOZgTR4xtZjhdO8FpNpGcYcysBbUmt3vkqHON5dsQKV6h3eWQW7foWoARfbItBV9JQdzx0/vVzW13BfVpUx9bN948onNmt9ksgw+mTo8fvbq6B46rbvvNcWo1P9ahmnWOj+XNVi1Q9g="
+    - secure: "eM34RuCQVjaJIAHX3Gk0CPuU3FKTKdE46Sr2iN0+q4smMM1nT1j72fgBR5gkj549YZ+BZP3J9iOpyjAAkDEsV0mN3Ai/kRMznhE64GP6OEzaaUjiMvRyCXapRyxhiEajkBC+DwHanv2hOPqgeNnaazPkgKy0daIwTfsB9U/4jLo="
+    - secure: "PoNDOmw1qZcldoS9SXOkoZwGRf/7BEsTNh4T+TrI93CVTNFntiYpIfxNRxqG2m6gVXRhase9+GXXXj4igwYzqKvJwTXUov/D3PhV+AnOosasJ+NTdAc25I5GMJgELPi8zIWq+3TaArDycfDxwwFsBs69CAJsqChadaPhcHZIRjc="
+    - secure: "ild653B6SkwSZE4uojrVf/4em5fVg3VbAKyTIHDRCnjj+NNNi4qq6jlhuoNrHPrzSHa+1kcCkeYrrRudSbcDCKvBf13MPjN1Prxqw4rLnQtpQk+hmwW3NQP3pJkUoc7PAGEtA8wslYl4UQQ2js6wtxfoa49ttiDn2Mk2xjrZQXU="
+    - secure: "0VLfDIOAH24Q55ZKIMLNS/u3bTAvkMSVGqRl2G4onNvFrBjbLkRRgDA4e/UqfAdCnyX+EKHV7JyAke2CL9SVOL5Yq+cJeU0X2Ac0Ehw2OMeQL9iG+FxbEo3kX4918sBmi2uc3K4Y2KcSEBkM3AC6jor7KOCSF++myx1SmIGhKcM="
+    - secure: "naC3iXaR+KYrQXIYKvGOJuFbMZq4ipoj8nIafW8y42cSDefxEFf9lFWWzT19WXEQtsQ7Tim9S19TcFlCW01Yqr5pyJFfte1x6ZPUM+igUBAUxD1hqSTOCSib6nF5SXqIAHh2m7jF1MKokf2kIu1n/Oa5UksdbO2eDb9DT4q28zY="
+    - secure: "ZwVwZj05tPGlphPETn7LdqPXV8uNz5mi+iF7LIdKrq3QKHn+4PUZvk/JZSZ3uQiOGZbyxGU8530EFnQnFQ2RqSuhDBDbRsb9kDY3Bo2Y8LqSRMHJVdXPJL5qSPokLdgm/REYoiDyu4Mh6kQD5t/HsG65h4Mim71WlTH9klU9+hA="
+    - secure: "gzy7QY0q7U7hn3XJo1YNMPN9kxKkrYvjAeg2MwG/HoxW3pE4b0PeYqJ5Q7iHoY1n28WOzA1ZEhnKhY+lsRfD7YaHciAwBlAn7VBJ+bJRB2O12B3lf6tQPiroIOTW6RWVGpLS9FbndzvoHGpf1v0hKEkZ7t6N+1Vzgzl7a7V16CU="
+    - secure: "VbH+U8LWmsyZ7h+luuXoxHgdXzTCLSxaPQ3Fr2wdqsnkks8MCSOZjDFD10/4/gE6+4r2JBJxnzZReSlkLkzcTJVLDC3TR5t9PDwRLq9Wsyu4cqmunu2EkkXccxBLR8SxSligUjzPlDMSzkq0RjuS84djDV4oc3YSmusH23znN2g="
+    - secure: "j/j6wRw0RoPLZ6+9hh5FrAdcwOg6iQda2BL4xo6JMojf/h4D6cpo/4WtuPtspFNWB5esnh+tRRiiyOCXvWG5iPF3c2XO7cVN+2Xhv1OR+4MPcOo6Nn8D8RY+unhnTDgQSRU1SY+9O5uwO13kWNRc8tFLkubRgGeCoHTC1t5dHf4="
+    - secure: "UKuec3FneMJdDnOEuAzUC9yn4KU5KtRAOIBxpdUssLmWF0XX3hYrll1SvOughV2xIMsTp4/C4ZHHFYZiDa2YclCz6U7r8AH+l0U9Evx0qnpF/UXFiZu6BLI+3elZyH4NvTp8pFNCqL9gv8GaYwefLecGOb1WNcK9HuItW30xM6Q="
+    - secure: "t1gjXnRChyTbSLBK9ldzszdnhzFYQdBOr2MNtKAyatNEAMm+KIK9EPLYujH3BGAvGf703tagJ7qgv1G42drhmVOkMZ/ORtyHdZIo0VzJK7XA1GWQLBnsGqMDyfX0JXNvbAiWm/6/284tKtoZi6xvkiDYSRvUoWspmFGUY70EOTI="
+    - secure: "JuQ8AJnvPqKFxVkLjjZppqjhDsY0kGq/Ns+tVIaBoZpuNRk9Uveb+VLybBOBR2Mn8diV0xSCReANn6s1SMH9X/9TaHM3yE4BjbmnDXetycoWMvVFl9n78jyk3alBCGaJP/2GfsnWo2ntW3EVD5BvqOp/fbPJllWIN8w6lZfG16w="
+    - secure: "c/X1B8w2AMCDHg8tsWaS5aub0AYDd1ZctOfcq/uri/isQAIEieCMjdy3VGj4kQe2vEFYp9Juns8yRwjhoJjgSL1fIjhAG7nmBlIO7M26KPnP2yPKn4ePI68l2Zde2vlWKxUG7TpA6IiZaaKG8KIg6q6LXxCU9YEC1FxXNG66IOs="
+    - secure: "ZDmJGiuAE3Gy/DA4ZDl3BCgXkfflAcbEk0ucpQ9Q3R7JI300UfygvM1UeZWIghPRfTXyGv9XQPXgQjEgLvkFjM8DSSuQK6+9GzgVhiMhz1zYwPG/o1brkgoI/pmE0ZotsZeLvlOEex9ZVESWaFb6qfNU82p95vlSo/dQylBl4ak="
+    
+before_script:
+  - echo -n $id_rsa_{00..30} >> ~/.ssh/id_rsa_base64
+  - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 install:
   - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
@@ -17,7 +48,6 @@ script:
   
 after_success:
   - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "travis-ci"
   - git remote set-url origin git@github.com:rexm/SimpleDb.Net.git
