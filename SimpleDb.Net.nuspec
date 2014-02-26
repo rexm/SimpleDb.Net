@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>SimpleDb.Net</id>
+        <version>2.0.3</version>
+        <title>SimpleDb.Net</title>
+        <authors>Rex Morgan</authors>
+        <projectUrl>https://github.com/rexm/SimpleDb.Net</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A .NET library that lets you work with Amazon Web Services' SimpleDB, using a familiar entity-like model and LINQ queries.</description>
+        <summary>A full-featured LINQ library for AWS SimpleDB</summary>
+    </metadata>
+</package>
