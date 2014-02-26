@@ -17,9 +17,10 @@ script:
   
 after_success:
   - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - git config --global user.email "travis@travis-ci.org"
   - git config --global user.name "travis-ci"
-  - git remote set-url origin https://${GITHUB_TOKEN}@github.com:rexm/SimpleDb.Net.git
+  - git remote set-url origin git@github.com:rexm/SimpleDb.Net.git
   - git commit Cucumber.SimpleDb.dll -m "Updating binary [ci skip]"
   - git push origin master
   
