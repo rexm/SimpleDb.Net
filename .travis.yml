@@ -18,7 +18,7 @@ script:
   - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
   
 after_success:
-  - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll /
+  - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
   - git commit Cucumber.SimpleDb.dll
   - git push origin master -m Updating binary [ci skip]
   
