@@ -7,3 +7,4 @@ do
 done
 BUILD_NUM += VERS_INCREMENT
 echo "$BUILD_NUM" > "version.txt"
+EXPORT BUILD_NUM
