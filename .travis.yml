@@ -1,9 +1,9 @@
 language: c
 
 before_script:
-  - sh build/SetupSSH.sh
-  - sh build/SetBuildNumber.sh
-  - sh build/SetAssemblyVersion.sh
+  - bash build/SetupSSH.sh
+  - bash build/SetBuildNumber.sh
+  - bash build/SetAssemblyVersion.sh
 
 install:
   - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
@@ -15,8 +15,8 @@ script:
   - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
   
 after_success:
-  - sh build/CommitUpdatedAssembly.sh
-  - sh build/PublishNuGetPackage.sh
+  - bash build/CommitUpdatedAssembly.sh
+  - bash build/PublishNuGetPackage.sh
   
 notifications:
   email:
