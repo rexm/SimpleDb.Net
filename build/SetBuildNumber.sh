@@ -1,9 +1,13 @@
-IFS = '.' read -ra VER_SEG <<< $(cat "version.txt")
-VERS_INCREMENT = ${VER_SEG[${#VER_SEG[@]}-1]} + 1
-BUILD_NUM = ""
-for((i=0; i<${#VER_SEG[@]}-1; i++ ));
+IFS='.'
+read -ra VERS_SEG < "../version.txt"
+VERS_INCREMENT=${VERS_SEG[${#VERS_SEG[@]}-1]}
+let VERS_INCREMENT+=1
+BUILD_NUM=""
+for((i=0; i<${#VERS_SEG[@]}-1; i++ ));
 do
-  BUILD_NUM += "${VER_SEG[$i]}."
+  BUILD_NUM+="${VERS_SEG[$i]}."
 done
-BUILD_NUM += VERS_INCREMENT
-echo "$BUILD_NUM" > "version.txt"
+BUILD_NUM+=$VERS_INCREMENT
+echo "Build number: $BUILD_NUM"
+export BUILD_NUM
+unset IFS
