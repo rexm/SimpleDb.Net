@@ -1,4 +1,4 @@
-IFS = '.' read -ra VER_SEG <<< $(cat "version.txt")
+IFS = '.' $(cat "version.txt") | read -ra VER_SEG
 VERS_INCREMENT = ${VER_SEG[${#VER_SEG[@]}-1]} + 1
 BUILD_NUM = ""
 for((i=0; i<${#VER_SEG[@]}-1; i++ ));
