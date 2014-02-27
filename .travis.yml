@@ -1,10 +1,9 @@
 language: c
 
 before_script:
-  - echo -n $id_rsa_{00..30} >> ~/.ssh/id_rsa_base64
-  - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - sh build/SetupSSH.sh
+  - sh build/SetBuildNumber.sh
+  - sh build/SetAssemblyVersion.sh
 
 install:
   - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
@@ -16,13 +15,8 @@ script:
   - nunit-console source/Cucumber.SimpleDb.Test/bin/Release/Cucumber.SimpleDb.Test.dll
   
 after_success:
-  - git config --global user.email "travis@travis-ci.org"
-  - git config --global user.name "travis-ci"
-  - git remote set-url origin git@github.com:rexm/SimpleDb.Net.git
-  - git checkout master
-  - cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
-  - git commit Cucumber.SimpleDb.dll -m "Update binary [ci skip]"
-  - git push origin master
+  - sh build/CommitUpdatedAssembly.sh
+  - sh build/PublishNuGetPackage.sh
   
 notifications:
   email:
