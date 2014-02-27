@@ -4,5 +4,6 @@ git remote set-url origin git@github.com:rexm/SimpleDb.Net.git
 git checkout master
 cp -f source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll .
 echo -e $BUILD_NUM > version.txt
-git commit Cucumber.SimpleDb.dll version.txt -m "Update binary [ci skip]"
+git commit Cucumber.SimpleDb.dll -m "Update binary [ci skip]"
+git commit version.txt -m "Update version number [ci skip]"
 git push origin master
