@@ -25,8 +25,8 @@ notifications:
 env:
   global:
     - EnableNuGetPackageRestore=true
-    - secure: "ELyKUHs/L741xa6Xh5NWtCLB8if0M9f/7mDDrXvpBJI07i+0V0Ku+zi+d0uj46m6MNAPMMQ2rrpVU2cpZQQn2x64bPp9H0r3eGNrdUJkH/Dr6uSaOMJqVHr05BU/S/jtlxaEoTjl9GJsvZfb/woZVprviUxqthLqo8kmgw85dT0="
-    - secure: "Sxer2TJAzjbc3OIqJdtF6r9cUpRBNhZYv3v2TtBDyIvTHnsuHTMedbYb9q0z9A2kUgA37b39tRgICD35IkCVq0dc4v+p72lH95K6MoAwg148IMGMNII3V9NEtRnIN/sj0udSVWDOyrBBWz/Kk/twLIg667Lro/kvtuTn5XHHWCE="
+    # NuGet
+    - secure: "ncQSFClG5yQKJjNX14DkxKmOW6Wirh6dT0JCLiwFCos/WaSRngVPXnZu1rjojb2JA9iAjtd0A3HR6GXi24/1U8b8gBCykHGnN6iRH2WumnPEdY2cb0VM0T4oQqRna3e0HZGJUH7qz0grVqAS4mrsZVVCOVyVLQEe8rmeU9RWsCM="
     # SSH
     - secure: "W4ZSAojMFLIxl0K33vGAs0WnKN/xZeRznu9cgIxl10PYylt8RtwXdvhXvHOU2QI1igDl6imCQi+Xn7zK3Rtf2n5kkP6X3l0QZVSNklV5W73tA8QTBPKV4NUMauEjT/PgZfNnmwBFkHOviGkyuvIuC0iHMfGx5ldHhYkv4TCCdEM="
     - secure: "MPqyKBcZUZFs7jJgiUHKjpYb3bBaZkjqGSVu3nSqg8vL9fLc5NGcxSZHaercKvoqI98R4xn0ubirxSPCKfvOceYz4VamEcnVR34GUnSFzKINToJgI10hEcgYCj9H0mb/3/xk/atxnYP79ST4W/a3DEB/LprJvR/HAGCSTF6gUqE="
