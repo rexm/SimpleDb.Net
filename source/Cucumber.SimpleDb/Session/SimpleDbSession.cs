@@ -60,7 +60,7 @@ namespace Cucumber.SimpleDb.Session
             var deleteBatches = domainSet.Where(i => i.State == SessionItemState.Delete).GroupsOf(25);
             foreach (var deleteBatch in deleteBatches)
             {
-                yield return service => service.BatchDeleteAttributes(domainSet.Key.Name, deleteBatch);
+                yield return service => service.BatchDeleteAttributes(domainSet.Key.Name, deleteBatch.Cast<object>().ToArray());
             }
         }
 
@@ -69,7 +69,7 @@ namespace Cucumber.SimpleDb.Session
             var putBatches = domainSet.Where(i => i.State == SessionItemState.Create || i.State == SessionItemState.Update).GroupsOf(25);
             foreach (var putBatch in putBatches)
             {
-                yield return service => service.BatchPutAttributes(domainSet.Key.Name, putBatch);
+                yield return service => service.BatchPutAttributes(domainSet.Key.Name, putBatch.Cast<object>().ToArray());
             }
         }
     }

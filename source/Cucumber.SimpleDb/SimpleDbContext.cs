@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Cucumber.SimpleDb.ServiceBus;
+using Cucumber.SimpleDb.Transport;
 using Cucumber.SimpleDb.Session;
 
 namespace Cucumber.SimpleDb
@@ -31,7 +31,7 @@ namespace Cucumber.SimpleDb
             {
                 throw new ArgumentNullException("privateKey");
             }
-            return Create(new SimpleDbRestService(publicKey, privateKey));
+            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey, new WebRequestProvider())));
         }
 
         /// <summary>

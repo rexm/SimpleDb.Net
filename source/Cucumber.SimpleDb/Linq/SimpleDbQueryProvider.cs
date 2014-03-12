@@ -8,7 +8,7 @@ using System.Text;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Linq.Structure;
 using Cucumber.SimpleDb.Linq.Translation;
-using Cucumber.SimpleDb.ServiceBus;
+using Cucumber.SimpleDb.Transport;
 using Cucumber.SimpleDb.Utilities;
 using Cucumber.SimpleDb.Session;
 

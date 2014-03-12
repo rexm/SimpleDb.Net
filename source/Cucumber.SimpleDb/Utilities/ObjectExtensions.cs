@@ -56,6 +56,11 @@ namespace Cucumber.SimpleDb.Utilities
             return new XElement(name, children);
         }
 
+        public static bool HasMember(this object item, string memberName)
+        {
+            return item.GetType().GetMember(memberName).Length > 0;
+        }
+
         public static IReflectionExtensionPoint Reflect(this object item)
         {
             return new ReflectionExtensionPoint(item);
@@ -69,16 +74,6 @@ namespace Cucumber.SimpleDb.Utilities
             {
                 this.Instance = instance;
             }
-        }
-
-        public static dynamic HasMember(this IReflectionExtensionPoint item)
-        {
-            return new HasMemberTester(item.Instance);
-        }
-
-        public static dynamic Call(this IReflectionExtensionPoint item)
-        {
-            return item.Instance;
         }
 
         private class HasMemberTester : DynamicObject

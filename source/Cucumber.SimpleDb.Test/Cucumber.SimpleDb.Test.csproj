@@ -10,7 +10,7 @@
     <RootNamespace>Cucumber.SimpleDb.Test</RootNamespace>
     <AssemblyName>Cucumber.SimpleDb.Test</AssemblyName>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
+    <RestorePackages>false</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -54,6 +54,11 @@
     <Compile Include="LINQ\Translation\QueryBinderTest.cs" />
     <Compile Include="LINQ\Translation\SelectQueryBinderTest.cs" />
     <Compile Include="Utilities\EnumerableExtensionsTests.cs" />
+    <Compile Include="Session\SimpleDbSessionTests.cs" />
+    <Compile Include="Transport\SimpleDbRestServiceTests.cs" />
+    <Compile Include="Transport\PassThroughAwsRestService.cs" />
+    <Compile Include="Transport\AwsRestServiceTest.cs" />
+    <Compile Include="Transport\CaptureUriRequestProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -70,5 +75,7 @@
   <ItemGroup>
     <Folder Include="LINQ\IntegrationTests\" />
     <Folder Include="Utilities\" />
+    <Folder Include="Session\" />
+    <Folder Include="Transport\" />
   </ItemGroup>
 </Project>

@@ -105,7 +105,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 projector);
         }
 
-
         private Expression BindTake (MethodCallExpression m)
         {
             var source = this.Visit(m.Arguments[0]);

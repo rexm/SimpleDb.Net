@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <GenerateDocumentation>True</GenerateDocumentation>
+    <DocumentationFile>bin\Debug\Cucumber.SimpleDb.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,7 +45,6 @@
     <Compile Include="Session\ISessionItem.cs" />
     <Compile Include="Session\ISession.cs" />
     <Compile Include="IInternalContext.cs" />
-    <Compile Include="Session\ISessionSimpleDbItemCollection.cs" />
     <Compile Include="Session\SessionNewSimpleDbItem.cs" />
     <Compile Include="Session\SessionSimpleDbContext.cs" />
     <Compile Include="Session\SessionSimpleDbItemCollection.cs" />
@@ -84,7 +83,6 @@
     <Compile Include="Utilities\TypeUtilities.cs" />
     <Compile Include="Session\ProxySimpleDbDomain.cs" />
     <Compile Include="ISimpleDbService.cs" />
-    <Compile Include="ServiceBus\SimpleDbRestService.cs" />
     <Compile Include="Session\SessionSimpleDbAttribute.cs" />
     <Compile Include="Session\SessionSimpleDbAttributeCollection.cs" />
     <Compile Include="SimpleDbAttributeValue.cs" />
@@ -95,6 +93,11 @@
     <Compile Include="ISimpleDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\SessionSimpleDbDomainCollection.cs" />
+    <Compile Include="Transport\IAwsRestService.cs" />
+    <Compile Include="Transport\AwsRestService.cs" />
+    <Compile Include="Transport\SimpleDbRestService.cs" />
+    <Compile Include="Transport\WebRequestProvider.cs" />
+    <Compile Include="Transport\IWebRequestProvider.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

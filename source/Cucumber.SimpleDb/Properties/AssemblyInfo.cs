@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 //     Major: breaking API changes
 //     Minor: non-breaking API changes
 //     Patch: backward-compatible internal changes
-[assembly: AssemblyVersion("")]
-[assembly: AssemblyFileVersion("")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Cucumber.SimpleDb.Test")]

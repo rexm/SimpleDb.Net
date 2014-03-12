@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Cucumber.SimpleDb.Linq;
-using Cucumber.SimpleDb.ServiceBus;
+using Cucumber.SimpleDb.Transport;
 using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb.Session

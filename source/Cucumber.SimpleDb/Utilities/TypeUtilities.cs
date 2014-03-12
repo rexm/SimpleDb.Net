@@ -21,6 +21,18 @@ namespace Cucumber.SimpleDb.Utilities
             return type.GetCustomAttributes(typeof(T), true).OfType<T>().ToArray();
         }
 
+        public static bool IsSubclassOfGenericType(Type genericType, Type subclass)
+        {
+            while (subclass != null && subclass != typeof(object)) {
+                var current = subclass.IsGenericType ? subclass.GetGenericTypeDefinition() : subclass;
+                if (genericType == current) {
+                    return true;
+                }
+                subclass = subclass.BaseType;
+            }
+            return false;
+        }
+
         public static Type FindIEnumerable(Type seqType)
         {
             if (seqType == null || seqType == typeof(string))
