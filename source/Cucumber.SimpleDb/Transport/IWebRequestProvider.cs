@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Cucumber.SimpleDb
+namespace Cucumber.SimpleDb.Transport
 {
     internal interface IWebRequestProvider
     {

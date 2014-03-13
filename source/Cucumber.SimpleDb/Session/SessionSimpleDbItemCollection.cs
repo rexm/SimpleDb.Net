@@ -9,7 +9,6 @@ namespace Cucumber.SimpleDb.Session
 {
     internal class SessionSimpleDbItemCollection : Query<ISimpleDbItem>, ISimpleDbItemCollection
     {
-        private readonly IQueryProvider _queryProvider;
         private readonly ISimpleDbDomain _domain;
         private readonly IInternalContext _context;
         private readonly Dictionary<string, ISimpleDbItem> _fetchedItems;
@@ -18,7 +17,6 @@ namespace Cucumber.SimpleDb.Session
             : base(queryProvider)
         {
             _context = context;
-            _queryProvider = queryProvider;
             _domain = domain;
             _fetchedItems = new Dictionary<string, ISimpleDbItem>();
         }

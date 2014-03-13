@@ -11,12 +11,10 @@ namespace Cucumber.SimpleDb.Session
     {
         private readonly SimpleDbAttributeValue _originalValue;
         private SimpleDbAttributeValue _newValue;
-        private readonly SessionSimpleDbItem _item;
         private readonly string _name;
 
         internal SessionSimpleDbAttribute(SessionSimpleDbItem item, string name, params string[] values)
         {
-            _item = item;
             _name = name;
             _originalValue = new SimpleDbAttributeValue(values);
             _newValue = _originalValue;

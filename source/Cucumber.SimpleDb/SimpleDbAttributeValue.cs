@@ -124,61 +124,89 @@ namespace Cucumber.SimpleDb
             return LiftValuesToType<double>(_values).Any(v => v >= lower && v <= upper);
         }
 
+        /// <param name="values">Values.</param>
         public static implicit operator SimpleDbAttributeValue(SimpleDbAttributeValue[] values)
         {
             return new SimpleDbAttributeValue(values.SelectMany(v => v._values).ToArray());
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(string value)
         {
             return new SimpleDbAttributeValue(value, typeof(string));
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(int value)
         {
             return new SimpleDbAttributeValue(value.ToString(), typeof(int));
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(long value)
         {
             return new SimpleDbAttributeValue(value.ToString(), typeof(long));
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(float value)
         {
             return new SimpleDbAttributeValue(value.ToString(), typeof(float));
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(double value)
         {
             return new SimpleDbAttributeValue(value.ToString(), typeof(double));
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(decimal value)
         {
             return new SimpleDbAttributeValue(value.ToString(), typeof(decimal));
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(DateTime value)
         {
             return new SimpleDbAttributeValue(value.ToString(), typeof(DateTime));
         }
 
+        /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(bool value)
         {
             return new SimpleDbAttributeValue(value.ToString(), typeof(bool));
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents the current <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// If the attribute is multi-value, will contain the first value.
+        /// If the attribute has no values, will return an empty string.
+        /// </summary>
+        /// <returns>A <see cref="System.String"/> that represents the current <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.</returns>
         public override string ToString()
         {
             return _values.Concat(new[] { "" }).First();
         }
 
+        /// <summary>
+        /// Serves as a hash function for a <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/> object.
+        /// </summary>
+        /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
+        /// hash table.</returns>
         public override int GetHashCode()
         {
             return string.Join ("", this._values).GetHashCode ();
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// For multi-value attributes, returns true if any one value is matched in both attributes,
+        /// unless preceded by Every()
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+        /// <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
             SimpleDbAttributeValue left = this;
@@ -190,6 +218,13 @@ namespace Cucumber.SimpleDb
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the first <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/> is greater than the second  <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// For multi-value attributes, returns true if the condition is true for any one pairing,
+        /// unless preceded by Every()
+        /// </summary>
+        /// <param name="left">Left.</param>
+        /// <param name="right">Right.</param>
         public static bool operator >(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
             if ((object)left != null && (object)right != null)
@@ -199,6 +234,13 @@ namespace Cucumber.SimpleDb
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the first <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/> is less than the second  <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// For multi-value attributes, returns true if the condition is true for any one pairing,
+        /// unless preceded by Every()
+        /// </summary>
+        /// <param name="left">Left.</param>
+        /// <param name="right">Right.</param>
         public static bool operator <(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
             if ((object)left != null && (object)right != null)
@@ -208,6 +250,13 @@ namespace Cucumber.SimpleDb
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the first <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/> is greater than or equal to the second  <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// For multi-value attributes, returns true if the condition is true for any one pairing,
+        /// unless preceded by Every()
+        /// </summary>
+        /// <param name="left">Left.</param>
+        /// <param name="right">Right.</param>
         public static bool operator >=(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
             if ((object)left != null && (object)right != null)
@@ -217,6 +266,13 @@ namespace Cucumber.SimpleDb
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the first <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/> is less than or equal to the second <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// For multi-value attributes, returns true if the condition is true for any one pairing,
+        /// unless preceded by Every()
+        /// </summary>
+        /// <param name="left">Left.</param>
+        /// <param name="right">Right.</param>
         public static bool operator <=(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
             if ((object)left != null && (object)right != null)
@@ -226,6 +282,13 @@ namespace Cucumber.SimpleDb
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the first <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/> is equal to the second <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// For multi-value attributes, returns true if the condition is true for any one pairing,
+        /// unless preceded by Every()
+        /// </summary>
+        /// <param name="left">Left.</param>
+        /// <param name="right">Right.</param>
         public static bool operator ==(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
             if ((object)left != null)
@@ -239,6 +302,13 @@ namespace Cucumber.SimpleDb
             return true;
         }
 
+        /// <summary>
+        /// Determines whether the first <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/> is not equal to the second <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
+        /// For multi-value attributes, returns true if the condition is true for any one pairing,
+        /// unless preceded by Every()
+        /// </summary>
+        /// <param name="left">Left.</param>
+        /// <param name="right">Right.</param>
         public static bool operator !=(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
             return !(left == right);

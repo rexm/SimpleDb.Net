@@ -8,17 +8,13 @@ namespace Cucumber.SimpleDb.Session
 {
     internal sealed class SessionSimpleDbAttributeCollection : ISimpleDbAttributeCollection
     {
-        private readonly XElement _data;
-        private readonly IInternalContext _context;
         private readonly SessionSimpleDbItem _item;
         private Dictionary<string, SessionSimpleDbAttribute> _attributes = new Dictionary<string, SessionSimpleDbAttribute>();
         private bool _complete;
 
         internal SessionSimpleDbAttributeCollection(IInternalContext context, SessionSimpleDbItem item, XElement data, bool complete)
         {
-            _context = context;
             _item = item;
-            _data = data;
             _complete = complete;
             try
             {

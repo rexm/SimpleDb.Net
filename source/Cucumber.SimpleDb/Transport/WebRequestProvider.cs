@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
 
-namespace Cucumber.SimpleDb
+namespace Cucumber.SimpleDb.Transport
 {
-    public class WebRequestProvider : IWebRequestProvider
+    internal class WebRequestProvider : IWebRequestProvider
     {
         public System.Net.WebRequest Create (string uri)
         {

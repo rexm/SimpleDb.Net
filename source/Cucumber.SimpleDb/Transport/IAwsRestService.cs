@@ -2,9 +2,9 @@
 using System.Collections.Specialized;
 using System.Xml.Linq;
 
-namespace Cucumber.SimpleDb
+namespace Cucumber.SimpleDb.Transport
 {
-    public interface IAwsRestService
+    internal interface IAwsRestService
     {
         XElement ExecuteRequest (NameValueCollection arguments);
     }

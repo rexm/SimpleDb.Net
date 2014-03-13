@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Cucumber.SimpleDb
+namespace Cucumber.SimpleDb.Transport
 {
     internal class AwsRestService : IAwsRestService
     {
@@ -47,7 +47,10 @@ namespace Cucumber.SimpleDb
                     "Error {0} {1}: AWS returned the following:\n{2}",
                     (int)response.StatusCode,
                     response.StatusCode,
-                    string.Join("\n", errors.Descendants("Error").Select(error => string.Format("{0}:{1}", error.Element("Code").Value, error.Element("Message").Value)))),
+                    string.Join("\n", errors.Descendants("Error")
+                        .Select(error => string.Format("{0}: {1}",
+                            error.Element("Code").Value,
+                            error.Element("Message").Value)))),
                     ex);
             }
         }
