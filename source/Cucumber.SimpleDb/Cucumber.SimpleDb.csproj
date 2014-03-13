@@ -98,6 +98,7 @@
     <Compile Include="Transport\SimpleDbRestService.cs" />
     <Compile Include="Transport\WebRequestProvider.cs" />
     <Compile Include="Transport\IWebRequestProvider.cs" />
+    <Compile Include="Linq\Translation\ImplicitSelect.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

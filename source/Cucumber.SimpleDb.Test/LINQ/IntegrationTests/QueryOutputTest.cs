@@ -8,6 +8,14 @@ namespace Cucumber.SimpleDb.Test
     public class QueryOutputTest
     {
         [Test]
+        public void ImplicitSelect()
+        {
+            var query = GetQueryString (context =>
+                context.Domains ["TestDomain1"].Items);
+            Assert.AreEqual ("SELECT * FROM `TestDomain1`", query);
+        }
+
+        [Test]
         public void WhereStringBasic ()
         {
             var query = GetQueryString(context => 

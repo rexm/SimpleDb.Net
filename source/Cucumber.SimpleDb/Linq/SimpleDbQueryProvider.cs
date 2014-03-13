@@ -35,6 +35,7 @@ namespace Cucumber.SimpleDb.Linq
             {
                 expression = PartialEvaluator.Eval(expression, CanBeEvaluatedLocally);
                 expression = QueryBinder.Eval(expression);
+                expression = ImplicitSelect.EnsureQuery(expression);
                 expression = DomainResolver.Resolve(expression);
                 expression = QueryReducer.Reduce(expression);
                 expression = SelectEnsurer.Ensure(expression);
