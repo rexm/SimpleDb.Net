@@ -2,6 +2,7 @@
 using System.Net;
 using System.IO;
 using System.Text;
+using Cucumber.SimpleDb.Transport;
 
 namespace Cucumber.SimpleDb.Test
 {

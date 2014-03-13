@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Xml.Linq;
+using Cucumber.SimpleDb.Transport;
 
 namespace Cucumber.SimpleDb.Test
 {
