@@ -60,7 +60,12 @@ namespace Cucumber.SimpleDb.Session
             {
                 throw new ArgumentNullException("name");
             }
-            throw new NotImplementedException();
+            _session.Service.CreateDomain (name);
+            if (_domains != null)
+            {
+                _domains.Add (name, new ProxySimpleDbDomain (name, _domains, _session));
+            }
+            return this [name];
         }
 
         public bool HasDomain(string name)
