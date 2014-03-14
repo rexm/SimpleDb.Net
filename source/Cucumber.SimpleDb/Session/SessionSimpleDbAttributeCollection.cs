@@ -18,7 +18,7 @@ namespace Cucumber.SimpleDb.Session
             _complete = complete;
             try
             {
-                _attributes = data.Elements("Attribute").Select(
+                _attributes = data.Descendants("Attribute").Select(
                         x => new SessionSimpleDbAttribute(
                             _item,
                             x.Element("Name").Value,

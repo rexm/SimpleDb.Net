@@ -35,20 +35,23 @@ namespace Cucumber.SimpleDb.Session
         {
             get
             {
-                if (!_fetchedItems.ContainsKey(name))
+                if (_fetchedItems.ContainsKey(name) == false)
                 {
                     var element = _context.Service.GetAttributes(_domain.Name, name, false);
-                    if (element.HasElements)
+                    if (element.Descendants ("GetAttributesResult").First ().HasElements)
                     {
-                        _fetchedItems.Add(name,
-                            new SessionSimpleDbItem(
+                        _fetchedItems.Add (name,
+                            new SessionSimpleDbItem (
                                 _context,
                                 _domain,
                                 name,
                                 element,
                                 true));
                     }
-                    return null;
+                    else
+                    {
+                        return null;
+                    }
                 }
                 return _fetchedItems[name];
             }
