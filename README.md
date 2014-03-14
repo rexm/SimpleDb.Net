@@ -56,7 +56,7 @@ newItem["SomeAttribute"] = "we really are schema-less!";
 simpleDb.SubmitChanges();
 ```
     
-Changes to Domains (currently only deleting Domains is supported) are executed immediately.
+Creating and deleting Domains are executed immediately.
 
 ## Contributing
 
