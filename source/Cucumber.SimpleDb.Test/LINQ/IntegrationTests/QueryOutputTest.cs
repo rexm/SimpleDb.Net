@@ -78,7 +78,7 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
-        public void BasicLimit()
+        public void LimitBasic()
         {
             var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items
@@ -88,7 +88,7 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
-        public void BasicIn()
+        public void InBasic()
         {
             var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items
@@ -97,7 +97,7 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
-        public void BasicBetween()
+        public void BetweenBasic()
         {
             var query = GetQueryString (context =>
                 context.Domains ["TestDomain1"].Items
@@ -106,7 +106,7 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
-        public void BasicEvery()
+        public void Every()
         {
             var query = GetQueryString (context =>
                 context.Domains ["TestDomain1"].Items
@@ -115,12 +115,30 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
-        public void BasicCountWhere()
+        public void CountBasic()
+        {
+            var query = GetQueryString (context =>
+                context.Domains ["TestDomain1"].Items
+                .Count ());
+            Assert.AreEqual ("SELECT COUNT(*) FROM `TestDomain1`", query);
+        }
+
+        [Test]
+        public void CountWhere()
         {
             var query = GetQueryString (context =>
                 context.Domains ["TestDomain1"].Items
                 .Where(i => i["TestAtt1"] > 1)
                 .Count ());
+            Assert.AreEqual ("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
+        }
+
+        [Test]
+        public void CountWithPredicate()
+        {
+            var query = GetQueryString (context =>
+                context.Domains ["TestDomain1"].Items
+                .Count (i => i["TestAtt1"] > 1));
             Assert.AreEqual ("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
         }
 
