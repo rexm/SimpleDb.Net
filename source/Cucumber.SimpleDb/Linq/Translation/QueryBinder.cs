@@ -22,6 +22,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 switch (m.Method.Name)
                 {
+                    case "Count":
+                        return BindCount (m);
                     case "Where":
                         return BindWhere(m);
                     case "Select":
@@ -59,6 +61,39 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         this.Visit(arg)
                     )
                 ));
+        }
+
+        private Expression BindCount (MethodCallExpression m)
+        {
+            if (ShouldTransformMethod (m))
+            {
+                var source = m.Arguments [0];
+                var elementType = TypeUtilities.GetElementType (m.Arguments [0].Type);
+                if (m.Arguments.Count > 1)
+                {
+                    var predicate = (LambdaExpression)StripQuotes (m.Arguments [1]);
+                    source = Expression.Call (
+                        typeof(Queryable).GetMethod ("Where", 
+                            typeof(IQueryable<>).MakeGenericType (elementType),
+                            typeof(Func<,>).MakeGenericType (elementType, typeof(bool))
+                        ).MakeGenericMethod (elementType),
+                        source,
+                        predicate);
+                }
+                return BindCount (m.Type, source);
+            }
+            return BindDefaultEnumerable (m);
+        }
+
+        private Expression BindCount(Type type, Expression source)
+        {
+            source = this.Visit (source);
+            return SimpleDbExpression.Query (
+                SimpleDbExpression.Count (),
+                source,
+                null,
+                null,
+                null);
         }
 
         private Expression BindWhere(MethodCallExpression m)
@@ -205,9 +240,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
             protected override Expression VisitMethodCall(MethodCallExpression m)
             {
-                var argument = StripQuotes(m.Arguments[1]);
-                var lambda = argument as LambdaExpression;
-                if (lambda != null && MethodIsSupported(m.Method) && typeof(ISimpleDbItem).IsAssignableFrom(lambda.Parameters[0].Type))
+                if (MethodIsSupported(m.Method) && AdditionalArgumentsAreSupported(m))
                 {
                     Visit(m.Arguments[0]);
                 }
@@ -224,7 +257,22 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     && supportedMethodNames.Contains(m.Name);
             }
 
-            private static readonly string[] supportedMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending" };
+            private bool AdditionalArgumentsAreSupported(MethodCallExpression mex)
+            {
+                if (mex.Arguments.Count > 1)
+                {
+                    return AdditionalArgumentIsLambdaCandidate (mex);
+                }
+                return true;
+            }
+
+            private bool AdditionalArgumentIsLambdaCandidate(MethodCallExpression mex)
+            {
+                var lambda = StripQuotes (mex.Arguments [1]) as LambdaExpression;
+                return lambda != null && typeof(ISimpleDbItem).IsAssignableFrom (lambda.Parameters [0].Type);
+            }
+
+            private static readonly string[] supportedMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count" };
         }
     }
 }

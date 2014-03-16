@@ -37,35 +37,56 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             pex = ClientProjectionWriter.Rewrite(pex);
             var projector = pex.Projector as LambdaExpression;
-            return Expression.Call(
-                Expression.Constant(this),
-                this.GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .MakeGenericMethod(projector.Body.Type),
-                Expression.Constant(new QueryCommand(pex.Source)),
-                projector
-            );
+            if (pex.Source.Select is ScalarExpression)
+            {
+                return Expression.Call (
+                    Expression.Constant (this),
+                    this.GetType ().GetMethod ("ExecuteScalar", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .MakeGenericMethod (pex.Source.Select.Type),
+                    Expression.Constant (new QueryCommand (pex.Source)));
+            }
+            else
+            {
+                return Expression.Call (
+                    Expression.Constant (this),
+                    this.GetType ().GetMethod ("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .MakeGenericMethod (projector.Body.Type),
+                    Expression.Constant (new QueryCommand (pex.Source)),
+                    projector
+                );
+            }
+        }
+
+        protected virtual T ExecuteScalar<T>(QueryCommand query)
+        {
+            var result = ExecuteQuery (query).FirstOrDefault ();
+            if (result == null)
+            {
+                throw new InvalidOperationException ("Query did not return a scalar value in the result");
+            }
+            return (T)Convert.ChangeType (result.Element("Attribute").Element("Value").Value, typeof(T));
         }
 
         protected virtual IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
         {
-            foreach (var item in HydrateItems(query))
+            foreach (var itemData in ExecuteQuery(query))
             {
-                yield return projector(item);
+                yield return projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect));
             }
         }
 
-        protected virtual IEnumerable<ISimpleDbItem> HydrateItems(QueryCommand query)
+        protected virtual IEnumerable<XElement> ExecuteQuery(QueryCommand query)
         {
             XElement result = null;
             string nextPageToken = null;
             do
             {
-                result = _context.Service.Select(query.QueryText, false, nextPageToken);
+                result = _context.Service.Select(query.QueryText, false, nextPageToken).Element("SelectResult");
                 foreach (var itemNode in result.Elements("Item"))
                 {
-                    yield return new SessionSimpleDbItem(_context, query.Domain, itemNode, query.ExplicitSelect);
+                    yield return itemNode;
                 }
-                nextPageToken = result.Elements("NextPageToken").Select(x => x.Value).FirstOrDefault();
+                nextPageToken = result.Elements("NextToken").Select(x => x.Value).FirstOrDefault();
             } while (!string.IsNullOrEmpty(nextPageToken));
         }
     }

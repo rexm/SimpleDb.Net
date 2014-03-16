@@ -28,7 +28,7 @@ namespace Cucumber.SimpleDb.Session
 
         public int Count
         {
-            get { throw new NotSupportedException(); }
+            get { return this.Count (); }
         }
 
         public ISimpleDbItem this[string name]

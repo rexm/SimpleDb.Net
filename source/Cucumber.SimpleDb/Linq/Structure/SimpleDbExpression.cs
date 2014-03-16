@@ -15,7 +15,8 @@ namespace Cucumber.SimpleDb.Linq.Structure
         Projection = 2002,
         Order = 2003,
         Domain = 2004,
-        Select = 2005
+        Select = 2005,
+        Count = 2006
     }
 
     internal abstract class SimpleDbExpression : Expression
@@ -48,6 +49,11 @@ namespace Cucumber.SimpleDb.Linq.Structure
         public static ProjectionExpression Project(QueryExpression query, Expression projector)
         {
             return new ProjectionExpression(query, projector);
+        }
+
+        public static CountExpression Count()
+        {
+            return new CountExpression ();
         }
 
         public override string ToString()

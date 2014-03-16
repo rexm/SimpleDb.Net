@@ -258,7 +258,7 @@ namespace Cucumber.SimpleDb.Transport
         public XElement BatchDeleteAttributes(string domain, params object[] items)
         {
             if (items.Length < 1) {
-                throw new ArgumentOutOfRangeException ("Must put at least 1 item");
+                throw new ArgumentOutOfRangeException ("Must delete at least 1 item");
             }
             var values = new NameValueCollection
             {

@@ -7,7 +7,7 @@ using Cucumber.SimpleDb.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
-    internal class SimpleDbExpressionVisitor : ExpressionVisitor
+    internal abstract class SimpleDbExpressionVisitor : ExpressionVisitor
     {
         public override Expression Visit(Expression exp)
         {
@@ -23,6 +23,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     return VisitSimpleDbQuery((QueryExpression)exp);
                 case SimpleDbExpressionType.Projection:
                     return VisitSimpleDbProjection((ProjectionExpression)exp);
+                case SimpleDbExpressionType.Count:
+                    return VisitSimpleDbCount ((CountExpression)exp);
                 case SimpleDbExpressionType.Select:
                     return VisitSimpleDbSelect((SelectExpression)exp);
                 case SimpleDbExpressionType.Order:
@@ -47,6 +49,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
         protected virtual Expression VisitSimpleDbSelect(SelectExpression sex)
         {
             return sex;
+        }
+
+        protected virtual Expression VisitSimpleDbCount(CountExpression cex)
+        {
+            return cex;
         }
 
         protected virtual Expression VisitSimpleDbQuery(QueryExpression qex)

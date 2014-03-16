@@ -37,12 +37,18 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitSimpleDbQuery(QueryExpression qex)
         {
-            VisitSimpleDbSelect(qex.Select);
-            VisitSimpleDbDomain((DomainExpression)qex.Source);
+            Visit(qex.Select);
+            Visit((DomainExpression)qex.Source);
             VisitWhere(qex.Where);
             VisitOrder(qex.OrderBy);
             VisitLimit(qex.Limit);
             return qex;
+        }
+
+        protected override Expression VisitSimpleDbCount (CountExpression cex)
+        {
+            _qsb.Append ("SELECT COUNT(*)");
+            return cex;
         }
 
         protected override Expression VisitSimpleDbSelect(SelectExpression sex)

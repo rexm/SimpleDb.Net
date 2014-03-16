@@ -114,15 +114,32 @@ namespace Cucumber.SimpleDb.Test
             Assert.AreEqual ("SELECT * FROM `TestDomain1` WHERE every( `TestAtt1` ) > \"1\"", query);
         }
 
-        private string GetQueryString(Func<ISimpleDbContext, IQueryable> query)
+        [Test]
+        public void BasicCountWhere()
+        {
+            var query = GetQueryString (context =>
+                context.Domains ["TestDomain1"].Items
+                .Where(i => i["TestAtt1"] > 1)
+                .Count ());
+            Assert.AreEqual ("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
+        }
+
+        private string GetQueryString<T>(Func<ISimpleDbContext, T> query)
         {
             string output = null;
             var captureService = new QueryOutputCaptureService(val => output = val);
             using(var context = SimpleDbContext.Create(captureService))
             {
-                foreach(var item in query(context))
+                if (typeof(IQueryable).IsAssignableFrom(typeof(T)))
                 {
-                    //no results
+                    foreach (var item in query(context) as IQueryable)
+                    {
+                        //no results
+                    }
+                }
+                else
+                {
+                    query (context);
                 }
             }
             return output;

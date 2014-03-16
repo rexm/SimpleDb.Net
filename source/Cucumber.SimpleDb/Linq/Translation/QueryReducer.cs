@@ -66,7 +66,17 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             public SelectExpression AggregatedSelect
             {
-                get { return new SelectExpression(_aggregatedSelect); }
+                get
+                {
+                    if (_scalarExpression != null)
+                    {
+                        return _scalarExpression;
+                    }
+                    else
+                    {
+                        return new SelectExpression (_aggregatedAttributes);
+                    }
+                }
             }
 
             public IEnumerable<OrderExpression> AggregatedOrderBy
@@ -94,7 +104,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 get { return _source; }
             }
 
-            private List<AttributeExpression> _aggregatedSelect = new List<AttributeExpression>();
+            private HashSet<AttributeExpression> _aggregatedAttributes = new HashSet<AttributeExpression>();
+            private ScalarExpression _scalarExpression = null;
             private Expression _aggregatedWhere;
             private List<OrderExpression> _aggregatedOrderBy = new List<OrderExpression>();
             private Expression _projector;
@@ -144,9 +155,18 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 return dex;
             }
 
-            protected override Expression VisitSimpleDbSelect(SelectExpression sex)
+            protected override Expression VisitSimpleDbCount (CountExpression cex)
             {
-                _aggregatedSelect.AddRange(sex.Attributes.Where(att => !_aggregatedSelect.Contains(att)));
+                _scalarExpression = cex;
+                return cex;
+            }
+
+            protected override Expression VisitSimpleDbSelect (SelectExpression sex)
+            {
+                foreach (var att in sex.Attributes)
+                {
+                    _aggregatedAttributes.Add (att);
+                }
                 return sex;
             }
         }

@@ -26,6 +26,7 @@ namespace Cucumber.SimpleDb.Linq
         public virtual object Execute(Expression expression)
         {
             Expression plan = CreateExecutionPlan(expression);
+            plan = Expression.Convert(plan, typeof(object));
             return Expression.Lambda<Func<object>>(plan, null).Compile()();
         }
 
