@@ -1,5 +1,5 @@
 IFS='.'
-read -ra VERS_SEG < "version.txt"
+read -ra VERS_SEG < "build/version.txt"
 VERS_INCREMENT=${VERS_SEG[${#VERS_SEG[@]}-1]}
 let VERS_INCREMENT+=1
 BUILD_NUM=""
