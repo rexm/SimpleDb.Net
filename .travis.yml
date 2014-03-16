@@ -2,6 +2,7 @@ language: c
 
 before_script:
   - bash build/SetupSSH.sh
+  - bash build/GitSetup.sh
   - source build/SetBuildNumber.sh
   - bash build/SetAssemblyVersion.sh
 
