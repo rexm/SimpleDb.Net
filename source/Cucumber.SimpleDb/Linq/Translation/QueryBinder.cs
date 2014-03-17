@@ -73,11 +73,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 {
                     var predicate = (LambdaExpression)StripQuotes (m.Arguments [1]);
                     source = Expression.Call (
-                        typeof(Queryable).GetMethod(
-                            "Where", 
-                            typeof(IQueryable<Ref.T1>), 
-                            typeof(Expression<Func<Ref.T1, bool>>)
-                        ).MakeGenericMethod (elementType),
+                        new Func<IQueryable<object>,
+                            Expression<Func<object, bool>>,
+                            IQueryable<object>>(Queryable.Where<object>)
+                        .Method.GetGenericMethodDefinition().MakeGenericMethod(elementType),
                         source,
                         predicate);
                 }

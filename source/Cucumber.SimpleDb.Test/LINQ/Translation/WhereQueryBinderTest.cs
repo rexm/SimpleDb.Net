@@ -23,7 +23,9 @@ namespace Cucumber.SimpleDb.Test
                 Expression.Constant(true),
                 lambdaParameter);
             var whereMethod = Expression.Call(
-                typeof(Queryable).GetMethod ("Where", typeof(IQueryable<Ref.T1>), typeof(Expression<Func<Ref.T1, bool>>))
+                new Func<IQueryable<object>, Expression<Func<object, bool>>, IQueryable<object>>(
+                    Queryable.Where).Method
+                    .GetGenericMethodDefinition()
                     .MakeGenericMethod(typeof(ISimpleDbItem)),
                 Expression.Constant(source),
                 Expression.Quote(lambda));
@@ -45,8 +47,10 @@ namespace Cucumber.SimpleDb.Test
                 Expression.Constant(true),
                 Expression.Parameter(typeof(string)));
             var whereMethod = Expression.Call(
-                typeof(Queryable).GetMethod ("Where", typeof(IQueryable<Ref.T1>), typeof(Expression<Func<Ref.T1, bool>>))
-                    .MakeGenericMethod(typeof(string)),
+                new Func<IQueryable<object>, Expression<Func<object, bool>>, IQueryable<object>>(
+                    Queryable.Where).Method
+                .GetGenericMethodDefinition()
+                .MakeGenericMethod(typeof(string)),
                 Expression.Constant(source),
                 Expression.Quote(lambda));
             var resultExpression = binder.AccessVisitMethodCall(whereMethod);
@@ -63,7 +67,9 @@ namespace Cucumber.SimpleDb.Test
                 Expression.Constant(true),
                 Expression.Parameter(typeof(string)));
             var whereMethod = Expression.Call(
-                typeof(Queryable).GetMethod ("Where", typeof(IQueryable<Ref.T1>), typeof(Expression<Func<Ref.T1, bool>>))
+                new Func<IQueryable<object>, Expression<Func<object, bool>>, IQueryable<object>>(
+                    Queryable.Where).Method
+                .GetGenericMethodDefinition()
                 .MakeGenericMethod(typeof(string)),
                 Expression.Constant(source),
                 Expression.Quote(lambda));
@@ -71,13 +77,15 @@ namespace Cucumber.SimpleDb.Test
             var resultAsMethodCall = resultExpression as MethodCallExpression;
             Assert.IsInstanceOf<MethodCallExpression>(resultAsMethodCall.Arguments[0]);
             Assert.AreSame(
-                typeof(Queryable).GetMethod ("AsQueryable", typeof(IEnumerable<Ref.T1>))
+                new Func<IEnumerable<object>, IQueryable<object>>(Queryable.AsQueryable)
+                    .Method.GetGenericMethodDefinition()
                     .MakeGenericMethod(typeof(string)),
                 ((MethodCallExpression)resultAsMethodCall.Arguments[0]).Method);
             Assert.IsInstanceOf<MethodCallExpression>(
                 ((MethodCallExpression)resultAsMethodCall.Arguments[0]).Arguments[0]);
             Assert.AreSame(
-                typeof(Enumerable).GetMethod("AsEnumerable", typeof(IEnumerable<Ref.T1>))
+                new Func<IEnumerable<object>, IEnumerable<object>>(Enumerable.AsEnumerable)
+                    .Method.GetGenericMethodDefinition()
                     .MakeGenericMethod(typeof(string)),
                 ((MethodCallExpression)((MethodCallExpression)resultAsMethodCall.Arguments[0]).Arguments[0]).Method);
         }

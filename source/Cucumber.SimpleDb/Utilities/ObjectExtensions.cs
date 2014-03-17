@@ -61,21 +61,6 @@ namespace Cucumber.SimpleDb.Utilities
             return item.GetType().GetMember(memberName).Length > 0;
         }
 
-        public static IReflectionExtensionPoint Reflect(this object item)
-        {
-            return new ReflectionExtensionPoint(item);
-        }
-
-        private class ReflectionExtensionPoint : IReflectionExtensionPoint
-        {
-            public object Instance { get; private set; }
-
-            public ReflectionExtensionPoint(object instance)
-            {
-                this.Instance = instance;
-            }
-        }
-
         private class HasMemberTester : DynamicObject
         {
             private object instance;
@@ -92,14 +77,5 @@ namespace Cucumber.SimpleDb.Utilities
             }
         }
             
-    }
-
-    internal interface IExtensionPoint
-    {
-        object Instance { get; }
-    }
-
-    internal interface IReflectionExtensionPoint : IExtensionPoint
-    {
     }
 }
