@@ -101,6 +101,7 @@
     <Compile Include="Linq\Translation\ImplicitSelect.cs" />
     <Compile Include="Linq\Structure\CountExpression.cs" />
     <Compile Include="Linq\Structure\ScalarExpression.cs" />
+    <Compile Include="Utilities\StringUtilities.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cucumber.SimpleDb.Utilities;
+using System.IO;
 
 namespace Cucumber.SimpleDb.Transport
 {
@@ -15,6 +17,7 @@ namespace Cucumber.SimpleDb.Transport
         private readonly string _publicKey;
         private readonly string _privateKey;
         private readonly IWebRequestProvider _webRequest;
+        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         public AwsRestService(string publicKey, string privateKey, IWebRequestProvider webRequest)
         {
@@ -47,10 +50,10 @@ namespace Cucumber.SimpleDb.Transport
                     "Error {0} {1}: AWS returned the following:\n{2}",
                     (int)response.StatusCode,
                     response.StatusCode,
-                    string.Join("\n", errors.Descendants("Error")
+                    string.Join("\n", errors.Descendants(sdbNs + "Error")
                         .Select(error => string.Format("{0}: {1}",
-                            error.Element("Code").Value,
-                            error.Element("Message").Value)))),
+                            error.Element(sdbNs + "Code").Value,
+                            error.Element(sdbNs + "Message").Value)))),
                     ex);
             }
         }
@@ -61,15 +64,27 @@ namespace Cucumber.SimpleDb.Transport
             {
                 try
                 {
-                    return XDocument.Load (stream).Root;
+                    return XDocument.Load(stream).Root;
                 }
                 catch (XmlException xmlex)
                 {
-                    throw new SimpleDbException ("AWS returned invalid XML", xmlex);
+                    using (var reader = new StreamReader (stream, Encoding.UTF8))
+                    {
+                        var content = reader.ReadToEnd ();
+                        throw new SimpleDbException (string.Format(
+                                "AWS returned invalid XML:\n{0}", content)
+                            , xmlex);
+                    }
                 }
                 catch (InvalidOperationException invalidex)
                 {
-                    throw new SimpleDbException ("AWS returned invalid XML", invalidex);
+                    using (var reader = new StreamReader (stream, Encoding.UTF8))
+                    {
+                        var content = reader.ReadToEnd ();
+                        throw new SimpleDbException (string.Format(
+                            "AWS returned invalid XML:\n{0}", content)
+                            , invalidex);
+                    }
                 }
             }
         }
@@ -80,23 +95,24 @@ namespace Cucumber.SimpleDb.Transport
             newArguments.Add("AWSAccessKeyId", _publicKey);
             newArguments.Add("SignatureVersion", "2");
             newArguments.Add("SignatureMethod","HmacSHA256");
-            newArguments.Add("Timestamp", DateTime.UtcNow.ToString("s"));
+            newArguments.Add("Timestamp", DateTime.UtcNow.ToString("o"));
             newArguments.Add("Version", "2009-04-15");
             return newArguments;
+        }
+
+        private string WriteQueryString(NameValueCollection arguments)
+        {
+            string argumentString = string.Join("&", arguments.AllKeys
+                .Select(k => k + "=" + arguments[k].ToRfc3986()));
+            argumentString += GetRequestSignature(arguments);
+            return argumentString;
         }
 
         private string GetRequestSignature(NameValueCollection arguments)
         {
             string requestDescription = GetRequestDescription(arguments);
-            string signature = GetRequestSignature(requestDescription);
-            return "&Signature=" + Uri.EscapeDataString(signature);
-        }
-
-        private string WriteQueryString(NameValueCollection arguments)
-        {
-            string argumentString = string.Join("&", arguments.AllKeys.Select(k => k + "=" + Uri.EscapeDataString(arguments[k])));
-            argumentString += GetRequestSignature(arguments);
-            return argumentString;
+            string signature = HashString(requestDescription);
+            return "&Signature=" + signature.ToRfc3986();
         }
 
         private string GetRequestDescription(NameValueCollection arguments)
@@ -107,11 +123,11 @@ namespace Cucumber.SimpleDb.Transport
                 string.Join("&",
                     arguments.AllKeys.OrderBy(k => k, new NaturalByteComparer())
                     .Select(k => string.Format("{0}={1}",
-                        Uri.EscapeDataString(k),
-                        Uri.EscapeDataString(arguments[k])))));
+                        k.ToRfc3986(),
+                        arguments[k].ToRfc3986()))));
         }
 
-        private string GetRequestSignature(string requestDescription)
+        private string HashString(string requestDescription)
         {
             using (HMACSHA256 hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_privateKey)))
             {
