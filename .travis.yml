@@ -22,6 +22,11 @@ after_success:
 notifications:
   email:
     - rex@rexmorgan.net
+    
+branches:
+  only:
+    - master
+    - /^rc-.*$/
 
 env:
   global:
