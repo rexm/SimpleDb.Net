@@ -14,9 +14,10 @@ namespace Cucumber.SimpleDb.Session
         private readonly SessionSimpleDbAttributeCollection _attributes;
         private readonly ISimpleDbDomain _domain;
         private bool _deleted;
+        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         internal SessionSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, XElement data, bool complete)
-            : this(context, domain, data.Element("Name").Value, data, complete)
+            : this(context, domain, data.Element(sdbNs + "Name").Value, data, complete)
         {
         }
 

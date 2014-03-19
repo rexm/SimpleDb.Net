@@ -61,13 +61,14 @@ namespace Cucumber.SimpleDb.Test
         public XElement Select (string query, bool useConsistency, string nextPageToken)
         {
             _output(query);
-            return new XElement("SelectResponse", new XElement("SelectResult", new XElement[]
+            XNamespace ns = "http://sdb.amazonaws.com/doc/2009-04-15/";
+            return new XElement(ns + "SelectResponse", new XElement(ns + "SelectResult", new XElement[]
                 {
-                    new XElement("Item", new XElement[]{
-                        new XElement("Name", "ItemName1"),
-                        new XElement("Attribute", new XElement[] {
-                            new XElement("Name", "Count"),
-                            new XElement("Value", 1)
+                    new XElement(ns + "Item", new XElement[]{
+                        new XElement(ns + "Name", "ItemName1"),
+                        new XElement(ns + "Attribute", new XElement[] {
+                            new XElement(ns + "Name", "Count"),
+                            new XElement(ns + "Value", 1)
                         })
                     })
                 }));

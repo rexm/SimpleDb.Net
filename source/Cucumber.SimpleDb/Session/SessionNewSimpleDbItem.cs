@@ -9,14 +9,10 @@ namespace Cucumber.SimpleDb.Session
 {
     internal class SessionNewSimpleDbItem : SessionSimpleDbItem, ISessionItem
     {
-        internal SessionNewSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, string name)
-            : this(context, domain, name, Enumerable.Empty<KeyValuePair<string, SimpleDbAttributeValue>>().ToDictionary())
-        {
-        }
-
         internal SessionNewSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, string name, Dictionary<string, SimpleDbAttributeValue> values)
             : base(context, domain, name, ToXElement(values), true)
         {
+            context.Session.Attach (this);
         }
 
         SessionItemState ISessionItem.State

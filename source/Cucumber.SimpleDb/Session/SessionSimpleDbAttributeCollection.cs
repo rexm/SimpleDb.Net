@@ -11,6 +11,7 @@ namespace Cucumber.SimpleDb.Session
         private readonly SessionSimpleDbItem _item;
         private Dictionary<string, SessionSimpleDbAttribute> _attributes = new Dictionary<string, SessionSimpleDbAttribute>();
         private bool _complete;
+        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         internal SessionSimpleDbAttributeCollection(IInternalContext context, SessionSimpleDbItem item, XElement data, bool complete)
         {
@@ -18,11 +19,11 @@ namespace Cucumber.SimpleDb.Session
             _complete = complete;
             try
             {
-                _attributes = data.Descendants("Attribute").Select(
+                _attributes = data.Descendants(sdbNs + "Attribute").Select(
                         x => new SessionSimpleDbAttribute(
                             _item,
-                            x.Element("Name").Value,
-                            x.Elements("Value").Select(val => val.Value).ToArray()
+                            x.Element(sdbNs + "Name").Value,
+                            x.Elements(sdbNs + "Value").Select(val => val.Value).ToArray()
                         )
                     ).ToDictionary(
                         att => att.Name,
@@ -43,12 +44,7 @@ namespace Cucumber.SimpleDb.Session
                 {
                     throw new ArgumentNullException("attributeName");
                 }
-                if (!_complete)
-                {
-                    throw new NotImplementedException(
-                        "Lazy-completing partially hydrated items is not yet supported");
-                }
-                if (!this.HasAttribute(attributeName))
+                if (this.HasAttribute(attributeName) == false)
                 {
                     throw new KeyNotFoundException(
                         string.Format("The attribute '{0}' is not present on the item '{1}'",
@@ -65,12 +61,16 @@ namespace Cucumber.SimpleDb.Session
             {
                 throw new ArgumentNullException("attributeName");
             }
-            if (!_complete)
+            if (_attributes.ContainsKey (attributeName) == false)
             {
-                throw new NotImplementedException(
-                    "Lazy-completing partially hydrated items is not yet supported");
+                if (_complete == false)
+                {
+                    throw new NotImplementedException(
+                        "Lazy-completing partially hydrated items is not yet supported");
+                }
+                return false;
             }
-            return _attributes.ContainsKey(attributeName);
+            return true;
         }
 
         public void Add(string attributeName, SimpleDbAttributeValue value)

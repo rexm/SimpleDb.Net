@@ -19,6 +19,7 @@ namespace Cucumber.SimpleDb.Session
         private readonly long _totalAttributeValueSize;
         private readonly long _totalAttributeNameSize;
         private readonly long _itemCount;
+        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         internal SessionSimpleDbDomain(IInternalContext context, string name, XElement data)
         {
@@ -27,12 +28,12 @@ namespace Cucumber.SimpleDb.Session
             _context = context;
             try
             {
-                _attributeNameCount = long.Parse(_data.Element("AttributeNameCount").Value);
-                _attributeValueCount = long.Parse(_data.Element("AttributeValueCount").Value);
-                _totalItemNameSize = long.Parse(_data.Element("TotalItemNameSize").Value);
-                _totalAttributeValueSize = long.Parse(_data.Element("TotalAttributeValueSize").Value);
-                _totalAttributeNameSize = long.Parse(_data.Element("TotalAttributeNameSize").Value);
-                _itemCount = long.Parse(_data.Element("ItemCount").Value);
+                _attributeNameCount = long.Parse(_data.Element(sdbNs + "AttributeNameCount").Value);
+                _attributeValueCount = long.Parse(_data.Element(sdbNs + "AttributeValueCount").Value);
+                _totalItemNameSize = long.Parse(_data.Element(sdbNs + "TotalItemNameSize").Value);
+                _totalAttributeValueSize = long.Parse(_data.Element(sdbNs + "TotalAttributeValueSize").Value);
+                _totalAttributeNameSize = long.Parse(_data.Element(sdbNs + "TotalAttributeNameSize").Value);
+                _itemCount = long.Parse(_data.Element(sdbNs + "ItemCount").Value);
             }
             catch (Exception ex)
             {

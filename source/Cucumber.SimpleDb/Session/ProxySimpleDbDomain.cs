@@ -73,7 +73,10 @@ namespace Cucumber.SimpleDb.Session
         public void Delete()
         {
             _context.Service.DeleteDomain(_name); //TODO: switch to deferred/command pattern
-            _loadedDomains.Remove(_name);
+            if (_loadedDomains != null)
+            {
+                _loadedDomains.Remove (_name);
+            }
             _realDomain = null;
         }
 

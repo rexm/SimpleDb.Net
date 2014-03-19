@@ -64,7 +64,9 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 throw new InvalidOperationException ("Query did not return a scalar value in the result");
             }
-            return (T)Convert.ChangeType (result.Element("Attribute").Element("Value").Value, typeof(T));
+            return (T)Convert.ChangeType (result
+                .Element(sdbNs + "Attribute")
+                .Element(sdbNs + "Value").Value, typeof(T));
         }
 
         protected virtual IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
@@ -81,13 +83,16 @@ namespace Cucumber.SimpleDb.Linq.Translation
             string nextPageToken = null;
             do
             {
-                result = _context.Service.Select(query.QueryText, false, nextPageToken).Element("SelectResult");
-                foreach (var itemNode in result.Elements("Item"))
+                result = _context.Service.Select(query.QueryText, false, nextPageToken)
+                    .Element(sdbNs + "SelectResult");
+                foreach (var itemNode in result.Elements(sdbNs + "Item"))
                 {
                     yield return itemNode;
                 }
-                nextPageToken = result.Elements("NextToken").Select(x => x.Value).FirstOrDefault();
+                nextPageToken = result.Elements(sdbNs + "NextToken").Select(x => x.Value).FirstOrDefault();
             } while (!string.IsNullOrEmpty(nextPageToken));
         }
+
+        private readonly static XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
     }
 }
