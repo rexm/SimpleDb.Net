@@ -11,6 +11,6 @@
         <summary>A full-featured LINQ library for AWS SimpleDB</summary>
     </metadata>
     <files>
-        <file src="../source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll" target="lib/Cucumber.SimpleDb.dll" />
+        <file src="source/Cucumber.SimpleDb/bin/Release/Cucumber.SimpleDb.dll" target="lib/Cucumber.SimpleDb.dll" />
     </files>
 </package>
