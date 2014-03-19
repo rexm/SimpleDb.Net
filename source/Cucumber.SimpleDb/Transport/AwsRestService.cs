@@ -94,7 +94,7 @@ namespace Cucumber.SimpleDb.Transport
 
         private string WriteQueryString(NameValueCollection arguments)
         {
-            string argumentString = string.Join("&", arguments.AllKeys.Select(k => k + "=" + Uri.EscapeDataString(arguments[k])));
+            string argumentString = string.Join("&", arguments.AllKeys.Select(k => k + "=" + UriEscapeWithAsterisk(arguments[k])));
             argumentString += GetRequestSignature(arguments);
             return argumentString;
         }
@@ -108,7 +108,7 @@ namespace Cucumber.SimpleDb.Transport
                     arguments.AllKeys.OrderBy(k => k, new NaturalByteComparer())
                     .Select(k => string.Format("{0}={1}",
                         Uri.EscapeDataString(k),
-                        Uri.EscapeDataString(arguments[k])))));
+                        UriEscapeWithAsterisk(arguments[k])))));
         }
 
         private string GetRequestSignature(string requestDescription)
@@ -119,6 +119,11 @@ namespace Cucumber.SimpleDb.Transport
                 return signature;
             }
         }
+
+		private string UriEscapeWithAsterisk(string str) 
+		{
+			return Uri.EscapeDataString(str).Replace("*", "%2A");
+		}
 
         private class NaturalByteComparer : IComparer<string>
         {
