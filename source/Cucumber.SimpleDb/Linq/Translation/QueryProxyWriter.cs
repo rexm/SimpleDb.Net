@@ -43,7 +43,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     Expression.Constant (this),
                     this.GetType ().GetMethod ("ExecuteScalar", BindingFlags.NonPublic | BindingFlags.Instance)
                     .MakeGenericMethod (pex.Source.Select.Type),
-                    Expression.Constant (new QueryCommand (pex.Source)));
+                    Expression.Constant (new QueryCommand (pex.Source)),
+                    Expression.Constant(_context.UseConsistency));
             }
             else
             {
@@ -52,14 +53,15 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     this.GetType ().GetMethod ("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
                     .MakeGenericMethod (projector.Body.Type),
                     Expression.Constant (new QueryCommand (pex.Source)),
-                    projector
+                    projector,
+                    Expression.Constant(_context.UseConsistency)
                 );
             }
         }
 
-        protected virtual T ExecuteScalar<T>(QueryCommand query)
+        protected virtual T ExecuteScalar<T>(QueryCommand query, bool useConsistency)
         {
-            var result = ExecuteQuery (query).FirstOrDefault ();
+            var result = ExecuteQuery (query, useConsistency).FirstOrDefault ();
             if (result == null)
             {
                 throw new InvalidOperationException ("Query did not return a scalar value in the result");
@@ -69,21 +71,21 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 .Element(sdbNs + "Value").Value, typeof(T));
         }
 
-        protected virtual IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
+        protected virtual IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<ISimpleDbItem, T> projector, bool useConsistency)
         {
-            foreach (var itemData in ExecuteQuery(query))
+            foreach (var itemData in ExecuteQuery(query, useConsistency))
             {
                 yield return projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect));
             }
         }
 
-        protected virtual IEnumerable<XElement> ExecuteQuery(QueryCommand query)
+        protected virtual IEnumerable<XElement> ExecuteQuery(QueryCommand query, bool useConsistency)
         {
             XElement result = null;
             string nextPageToken = null;
             do
             {
-                result = _context.Service.Select(query.QueryText, false, nextPageToken)
+                result = _context.Service.Select(query.QueryText, useConsistency, nextPageToken)
                     .Element(sdbNs + "SelectResult");
                 foreach (var itemNode in result.Elements(sdbNs + "Item"))
                 {
