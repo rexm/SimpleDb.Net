@@ -36,9 +36,10 @@ namespace Cucumber.SimpleDb.Linq.Structure
             Expression source,
             Expression where,
             IEnumerable<OrderExpression> orderBy,
-            Expression limit)
+            Expression limit,
+            bool useConsistency)
         {
-            return new QueryExpression(select, source, where, orderBy, limit);
+            return new QueryExpression(select, source, where, orderBy, limit, useConsistency);
         }
 
         public static SelectExpression Select(IEnumerable<AttributeExpression> attributes)

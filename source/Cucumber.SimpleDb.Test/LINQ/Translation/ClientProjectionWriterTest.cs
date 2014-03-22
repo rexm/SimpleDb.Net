@@ -14,7 +14,7 @@ namespace Cucumber.SimpleDb.Test
         [Test]
         public void EnsureSourceExpressionIsUntouched()
         {
-            var sourceExpression = SimpleDbExpression.Query(null, null, null, null, null);
+            var sourceExpression = SimpleDbExpression.Query(null, null, null, null, null, false);
             var projectionExpression = SimpleDbExpression.Project(sourceExpression, null);
             var resultExpression = ClientProjectionWriter.Rewrite(projectionExpression);
             Assert.IsNotNull(resultExpression);

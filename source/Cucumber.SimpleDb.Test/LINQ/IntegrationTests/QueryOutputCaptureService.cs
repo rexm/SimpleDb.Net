@@ -1,11 +1,13 @@
 using System;
 using System.Xml.Linq;
+using Cucumber.SimpleDb.Transport;
 
 namespace Cucumber.SimpleDb.Test
 {
     internal class QueryOutputCaptureService : ISimpleDbService
     {
         private readonly Action<string> _output;
+        private readonly IAwsRestService _service;
 
         public QueryOutputCaptureService(Action<string> output)
         {

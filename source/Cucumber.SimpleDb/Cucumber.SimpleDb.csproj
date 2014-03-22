@@ -102,6 +102,7 @@
     <Compile Include="Linq\Structure\CountExpression.cs" />
     <Compile Include="Linq\Structure\ScalarExpression.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
+    <Compile Include="SimpleDbQueryable.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

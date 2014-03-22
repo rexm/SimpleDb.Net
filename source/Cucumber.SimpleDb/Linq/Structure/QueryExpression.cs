@@ -14,14 +14,16 @@ namespace Cucumber.SimpleDb.Linq.Structure
         private readonly Expression _source;
         private readonly Expression _where;
         private readonly IEnumerable<OrderExpression> _orderBy;
+        private readonly bool _useConsistency;
 
-        public QueryExpression(SelectExpression select, Expression source, Expression where, IEnumerable<OrderExpression> orderBy, Expression limit)
+        public QueryExpression(SelectExpression select, Expression source, Expression where, IEnumerable<OrderExpression> orderBy, Expression limit, bool useConsistency)
         {
             _select = select;
             _source = source;
             _where = where;
             _orderBy = orderBy ?? new List<OrderExpression>();
             _limit = limit;
+            _useConsistency = useConsistency;
         }
 
         public SelectExpression Select
@@ -61,6 +63,14 @@ namespace Cucumber.SimpleDb.Linq.Structure
             get
             {
                 return _limit; 
+            }
+        }
+
+        public bool UseConsistency
+        {
+            get
+            {
+                return _useConsistency;
             }
         }
 
