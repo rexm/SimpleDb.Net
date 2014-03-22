@@ -30,6 +30,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
             }
         }
 
+        public bool UseConsistency
+        {
+            get
+            {
+                return _query.UseConsistency;
+            }
+        }
+
         public ISimpleDbDomain Domain
         {
             get

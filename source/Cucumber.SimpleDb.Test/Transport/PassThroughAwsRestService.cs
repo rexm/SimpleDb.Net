@@ -8,6 +8,10 @@ namespace Cucumber.SimpleDb.Test
 {
     public class PassThroughAwsRestService : IAwsRestService
     {
+        public PassThroughAwsRestService()
+        {
+        }
+
         public XElement ExecuteRequest (NameValueCollection arguments)
         {
             var doc = new XDocument (

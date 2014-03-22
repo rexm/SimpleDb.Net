@@ -52,13 +52,15 @@ namespace Cucumber.SimpleDb.Linq.Translation
             var select = aggregator.AggregatedSelect;
             var projector = aggregator.Projector;
             var limit = aggregator.Limit;
+            var useConsistency = aggregator.UseConsistency;
             return SimpleDbExpression.Project(
                 SimpleDbExpression.Query(
                     select,
                     domain,
                     where,
                     order,
-                    limit),
+                    limit,
+                    useConsistency),
                 projector);
         }
 
@@ -104,6 +106,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 get { return _source; }
             }
 
+            public bool UseConsistency
+            {
+                get { return _useConsistency; }
+            }
+
             private HashSet<AttributeExpression> _aggregatedAttributes = new HashSet<AttributeExpression>();
             private ScalarExpression _scalarExpression = null;
             private Expression _aggregatedWhere;
@@ -111,6 +118,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             private Expression _projector;
             private Expression _source;
             private Expression _limit;
+            private bool _useConsistency;
 
             protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
             {
@@ -145,6 +153,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 if (_source is QueryExpression)
                 {
                     Visit(ssex.Source);
+                }
+                if (ssex.UseConsistency == true)
+                {
+                    _useConsistency = true;
                 }
                 return ssex;
             }

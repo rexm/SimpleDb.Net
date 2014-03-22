@@ -9,21 +9,14 @@ namespace Cucumber.SimpleDb.Session
     {
         private readonly ISimpleDbService _service;
         private readonly ISession _session;
-        private readonly bool _useConsistency;
 
         ISimpleDbService IInternalContext.Service { get { return _service; } }
 
         ISession IInternalContext.Session { get { return _session; } }
 
-        public bool UseConsistency
-        {
-            get { return _useConsistency; }
-        }
-
-        internal SessionSimpleDbContext(ISimpleDbService service, bool useConsistency)
+        internal SessionSimpleDbContext(ISimpleDbService service)
         {
             _service = service;
-            _useConsistency = useConsistency;
             _session = new SimpleDbSession(_service);
         }
 

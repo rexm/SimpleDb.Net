@@ -37,6 +37,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         return BindDefaultEnumerable(m);
                 }
             }
+            if (m.Method.DeclaringType == typeof(SimpleDbQueryable))
+            {
+                switch (m.Method.Name)
+                {
+                    case "WithConsistency":
+                        return BindUsingConsistency (m);
+                }
+            }
             return base.VisitMethodCall(m);
         }
 
@@ -93,7 +101,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 source,
                 null,
                 null,
-                null);
+                null,
+                false);
         }
 
         private Expression BindWhere(MethodCallExpression m)
@@ -111,7 +120,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             source = this.Visit(source);
             Expression where = Visit(predicate.Body);
             where = IndexedAttributeMapper.Eval(where);
-            return SimpleDbExpression.Query(null, source, where, null, null);
+            return SimpleDbExpression.Query(null, source, where, null, null, false);
         }
 
         private Expression BindSelect(MethodCallExpression m)
@@ -136,7 +145,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     source,
                     null,
                     null,
-                    null),
+                    null,
+                    false),
                 projector);
         }
 
@@ -149,7 +159,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 throw new NotSupportedException("Cannot use an expression to determine the query LIMIT");
             }
             return SimpleDbExpression.Query(
-                null, source, null, null, limitExpression);
+                null, source, null, null, limitExpression, false);
         }
 
         private Expression BindJoin (MethodCallExpression m)
@@ -187,7 +197,20 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 source,
                 null,
                 new[] { new OrderExpression(attributes.First(), sortDirection) },
-                null);
+                null,
+                false);
+        }
+
+        private Expression BindUsingConsistency (MethodCallExpression m)
+        {
+            var source = Visit (m.Arguments [0]);
+            return SimpleDbExpression.Query (
+                null,
+                source,
+                null,
+                null,
+                null,
+                true);
         }
 
         private ProjectionExpression VisitSequence(Expression expr)
@@ -251,13 +274,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 return m;
             }
 
-            private bool MethodIsSupported(MethodInfo m)
+            private static bool MethodIsSupported(MethodInfo m)
             {
-                return (m.DeclaringType == typeof(Queryable) || m.DeclaringType == typeof(Enumerable))
-                    && supportedMethodNames.Contains(m.Name);
+                return IsSupportedLinqMethod (m) || IsSupportedSimpleDbExtension (m);
             }
 
-            private bool AdditionalArgumentsAreSupported(MethodCallExpression mex)
+            private static bool AdditionalArgumentsAreSupported(MethodCallExpression mex)
             {
                 if (mex.Arguments.Count > 1)
                 {
@@ -266,13 +288,24 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 return true;
             }
 
-            private bool AdditionalArgumentIsLambdaCandidate(MethodCallExpression mex)
+            private static bool AdditionalArgumentIsLambdaCandidate(MethodCallExpression mex)
             {
                 var lambda = StripQuotes (mex.Arguments [1]) as LambdaExpression;
                 return lambda != null && typeof(ISimpleDbItem).IsAssignableFrom (lambda.Parameters [0].Type);
             }
 
-            private static readonly string[] supportedMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count" };
+            private static bool IsSupportedLinqMethod (MethodInfo m)
+            {
+                return (m.DeclaringType == typeof(Queryable) || m.DeclaringType == typeof(Enumerable))
+                    && supportedLinqMethodNames.Contains (m.Name);
+            }
+
+            private static bool IsSupportedSimpleDbExtension (MethodInfo m)
+            {
+                return m.DeclaringType == typeof(SimpleDbQueryable);
+            }
+
+            private static readonly string[] supportedLinqMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count" };
         }
     }
 }

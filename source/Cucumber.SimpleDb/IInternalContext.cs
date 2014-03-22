@@ -11,6 +11,5 @@ namespace Cucumber.SimpleDb
     {
         ISimpleDbService Service { get; }
         ISession Session { get; }
-        bool UseConsistency { get; }
     }
 }
