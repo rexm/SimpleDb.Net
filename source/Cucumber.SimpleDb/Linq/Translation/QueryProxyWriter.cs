@@ -52,8 +52,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     this.GetType ().GetMethod ("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
                     .MakeGenericMethod (projector.Body.Type),
                     Expression.Constant (new QueryCommand (pex.Source)),
-                    projector
-                );
+                    projector);
             }
         }
 
@@ -83,7 +82,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             string nextPageToken = null;
             do
             {
-                result = _context.Service.Select(query.QueryText, false, nextPageToken)
+                result = _context.Service.Select(query.QueryText, query.UseConsistency, nextPageToken)
                     .Element(sdbNs + "SelectResult");
                 foreach (var itemNode in result.Elements(sdbNs + "Item"))
                 {

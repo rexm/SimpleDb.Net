@@ -26,7 +26,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     node,
                     null,
                     null,
-                    null);
+                    null,
+                    false);
             }
             else
             {

@@ -56,10 +56,12 @@
     <Compile Include="Utilities\EnumerableExtensionsTests.cs" />
     <Compile Include="Session\SimpleDbSessionTests.cs" />
     <Compile Include="Transport\SimpleDbRestServiceTests.cs" />
-    <Compile Include="Transport\PassThroughAwsRestService.cs" />
     <Compile Include="Transport\AwsRestServiceTest.cs" />
     <Compile Include="Transport\CaptureUriRequestProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LINQ\Translation\SimpleDbQueryableTest.cs" />
+    <Compile Include="Transport\PassThroughAwsRestService.cs" />
+    <Compile Include="Transport\CaptureArgumentsRestService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
