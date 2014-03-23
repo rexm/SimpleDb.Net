@@ -1,16 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using Cucumber.SimpleDb.Transport;
 
 namespace Cucumber.SimpleDb.Session
 {
     internal sealed class SessionSimpleDbDomainCollection : ISimpleDbDomainCollection
     {
+        private readonly IInternalContext _session;
         private Dictionary<string, ISimpleDbDomain> _domains;
-        private IInternalContext _session;
 
         internal SessionSimpleDbDomainCollection(IInternalContext session)
         {
@@ -25,7 +23,7 @@ namespace Cucumber.SimpleDb.Session
                 {
                     PopulateDomains();
                 }
-                return this._domains.Count;
+                return _domains.Count;
             }
         }
 
@@ -46,11 +44,11 @@ namespace Cucumber.SimpleDb.Session
                 }
                 else
                 {
-                    return new ProxySimpleDbDomain(name, this._domains, _session);
+                    return new ProxySimpleDbDomain(name, _domains, _session);
                 }
                 throw new KeyNotFoundException(
                     string.Format("A domain named '{0}' does not exist",
-                    name));
+                        name));
             }
         }
 
@@ -60,12 +58,12 @@ namespace Cucumber.SimpleDb.Session
             {
                 throw new ArgumentNullException("name");
             }
-            _session.Service.CreateDomain (name);
+            _session.Service.CreateDomain(name);
             if (_domains != null)
             {
-                _domains.Add (name, new ProxySimpleDbDomain (name, _domains, _session));
+                _domains.Add(name, new ProxySimpleDbDomain(name, _domains, _session));
             }
-            return this [name];
+            return this[name];
         }
 
         public bool HasDomain(string name)
@@ -87,22 +85,21 @@ namespace Cucumber.SimpleDb.Session
             {
                 PopulateDomains();
             }
-            return this._domains.Select(kvp => kvp.Value).GetEnumerator();
+            return _domains.Select(kvp => kvp.Value).GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         private void PopulateDomains()
         {
             _domains = new Dictionary<string, ISimpleDbDomain>(StringComparer.OrdinalIgnoreCase);
-            XElement result = null;
             string nextPageToken = null;
             do
             {
-                result = _session.Service.ListDomains(nextPageToken);
+                var result = _session.Service.ListDomains(nextPageToken);
                 foreach (var domainNode in result.Elements("DomainName"))
                 {
                     _domains.Add(domainNode.Value, new ProxySimpleDbDomain(domainNode.Value, _domains, _session));

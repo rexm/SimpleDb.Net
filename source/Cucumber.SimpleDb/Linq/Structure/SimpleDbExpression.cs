@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using System.Diagnostics;
-using System.ComponentModel;
 
 namespace Cucumber.SimpleDb.Linq.Structure
 {
@@ -54,12 +50,12 @@ namespace Cucumber.SimpleDb.Linq.Structure
 
         public static CountExpression Count()
         {
-            return new CountExpression ();
+            return new CountExpression();
         }
 
         public override string ToString()
         {
-            return Enum.GetName(typeof(SimpleDbExpressionType), this.NodeType);
+            return Enum.GetName(typeof (SimpleDbExpressionType), NodeType);
         }
     }
 }

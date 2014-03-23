@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Linq.Expressions;
 using Cucumber.SimpleDb.Linq.Structure;
 using Cucumber.SimpleDb.Utilities;
@@ -17,20 +14,18 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method == typeof(ISimpleDbItem).GetMethod("get_Item"))
-            {
-                return GenerateAttributeExpression((ConstantExpression)m.Arguments[0].ReduceTotally());
-            }
-            return base.VisitMethodCall(m);
+            return m.Method == typeof (ISimpleDbItem).GetMethod("get_Item") 
+                ? GenerateAttributeExpression((ConstantExpression) m.Arguments[0].ReduceTotally()) 
+                : base.VisitMethodCall(m);
         }
 
         protected override Expression VisitUnary(UnaryExpression u)
         {
-            Expression operand = this.Visit(u.Operand);
+            var operand = Visit(u.Operand);
             if (operand != u.Operand)
             {
-                AttributeExpression attributeExpression = operand as AttributeExpression;
-                if (attributeExpression != null && attributeExpression.Type == typeof(SimpleDbAttributeValue))
+                var attributeExpression = operand as AttributeExpression;
+                if (attributeExpression != null && attributeExpression.Type == typeof (SimpleDbAttributeValue))
                 {
                     return SimpleDbExpression.Attribute(attributeExpression.Name, u.Type);
                 }
@@ -41,17 +36,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitNew(NewExpression n)
         {
-            var replacedArguments = new List<Expression>();
-            foreach (var argument in n.Arguments)
-            {
-                replacedArguments.Add(this.Visit(argument));
-            }
-            return Expression.New(n.Constructor, replacedArguments.ToArray());
+            return Expression.New(n.Constructor, n.Arguments.Select(Visit).ToArray());
         }
 
-        private AttributeExpression GenerateAttributeExpression(ConstantExpression expression)
+        private static AttributeExpression GenerateAttributeExpression(ConstantExpression expression)
         {
-            return SimpleDbExpression.Attribute(expression.Value as string, typeof(SimpleDbAttributeValue));
+            return SimpleDbExpression.Attribute(expression.Value as string, typeof (SimpleDbAttributeValue));
         }
     }
 }

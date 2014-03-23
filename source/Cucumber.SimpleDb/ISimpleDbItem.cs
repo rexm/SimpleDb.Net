@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Cucumber.SimpleDb
+﻿namespace Cucumber.SimpleDb
 {
     /// <summary>
     /// Represents a single instance of a SimpleDb item.

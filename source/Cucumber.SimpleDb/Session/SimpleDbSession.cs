@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Cucumber.SimpleDb.Utilities;
 
 namespace Cucumber.SimpleDb.Session
 {
     internal class SimpleDbSession : ISession
     {
-        private readonly HashSet<ISessionItem> _trackedItems;
         private readonly ISimpleDbService _service;
+        private readonly HashSet<ISessionItem> _trackedItems;
 
         public SimpleDbSession(ISimpleDbService service)
         {
@@ -29,48 +28,36 @@ namespace Cucumber.SimpleDb.Session
 
         public void SubmitChanges()
         {
-            try
+            foreach (var operation in CollectOperations())
             {
-                foreach (var operation in CollectOperations())
-                {
-                    operation(_service);
-                }
-            }
-            catch
-            {
-                throw;
+                operation(_service);
             }
         }
 
         private IEnumerable<Action<ISimpleDbService>> CollectOperations()
         {
             var domainSets = _trackedItems.GroupBy(item => item.Domain, (x, y) => x.Name == y.Name);
-            foreach(var action in domainSets.SelectMany(domainSet => CollectDeleteOperations(domainSet)))
+            var enumerable = domainSets as IList<IGrouping<ISimpleDbDomain, ISessionItem>> ?? domainSets.ToList();
+            foreach (var action in enumerable.SelectMany(CollectDeleteOperations))
             {
                 yield return action;
             }
-            foreach (var action in domainSets.SelectMany(domainSet => CollectUpsertOperations(domainSet)))
+            foreach (var action in enumerable.SelectMany(CollectUpsertOperations))
             {
                 yield return action;
             }
         }
 
-        private IEnumerable<Action<ISimpleDbService>> CollectDeleteOperations(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
+        private static IEnumerable<Action<ISimpleDbService>> CollectDeleteOperations(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
         {
             var deleteBatches = domainSet.Where(i => i.State == SessionItemState.Delete).GroupsOf(25);
-            foreach (var deleteBatch in deleteBatches)
-            {
-                yield return service => service.BatchDeleteAttributes(domainSet.Key.Name, deleteBatch.Cast<object>().ToArray());
-            }
+            return deleteBatches.Select(deleteBatch => (Action<ISimpleDbService>) (service => service.BatchDeleteAttributes(domainSet.Key.Name, deleteBatch.Cast<object>().ToArray())));
         }
 
-        private IEnumerable<Action<ISimpleDbService>> CollectUpsertOperations(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
+        private static IEnumerable<Action<ISimpleDbService>> CollectUpsertOperations(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
         {
             var putBatches = domainSet.Where(i => i.State == SessionItemState.Create || i.State == SessionItemState.Update).GroupsOf(25);
-            foreach (var putBatch in putBatches)
-            {
-                yield return service => service.BatchPutAttributes(domainSet.Key.Name, putBatch.Cast<object>().ToArray());
-            }
+            return putBatches.Select(putBatch => (Action<ISimpleDbService>) (service => service.BatchPutAttributes(domainSet.Key.Name, putBatch.Cast<object>().ToArray())));
         }
     }
 }

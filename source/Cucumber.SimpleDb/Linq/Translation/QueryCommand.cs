@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Cucumber.SimpleDb.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
     internal class QueryCommand
     {
-        private readonly string _queryText;
         private readonly QueryExpression _query;
+        private readonly string _queryText;
 
         internal QueryCommand(QueryExpression query)
         {
@@ -24,26 +21,17 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         public bool ExplicitSelect
         {
-            get
-            {
-                return _query.Select.Attributes.Count() > 0;
-            }
+            get { return _query.Select.Attributes.Any(); }
         }
 
         public bool UseConsistency
         {
-            get
-            {
-                return _query.UseConsistency;
-            }
+            get { return _query.UseConsistency; }
         }
 
         public ISimpleDbDomain Domain
         {
-            get
-            {
-                return ((DomainExpression)_query.Source).Domain;
-            }
+            get { return ((DomainExpression) _query.Source).Domain; }
         }
     }
 }

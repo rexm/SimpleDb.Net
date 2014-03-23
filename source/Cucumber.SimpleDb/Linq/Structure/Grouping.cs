@@ -1,15 +1,13 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections;
 
 namespace Cucumber.SimpleDb.Linq.Structure
 {
     internal class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
     {
-        private readonly TKey _key;
         private readonly IEnumerable<TElement> _group;
+        private readonly TKey _key;
 
         public Grouping(TKey key, IEnumerable<TElement> group)
         {

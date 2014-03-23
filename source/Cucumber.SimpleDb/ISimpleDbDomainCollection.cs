@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Cucumber.SimpleDb
 {
@@ -36,7 +33,7 @@ namespace Cucumber.SimpleDb
         /// <summary>
         /// Gets whether a domain with the speified name exists
         /// </summary>
-        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="attributeName"/> is null or empty</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="name"/> is null or empty</exception>
         /// <param name="name">The name of the domain to search for</param>
         /// <returns>True if a domain with the specified name exists; otherwise false</returns>
         bool HasDomain(string name);

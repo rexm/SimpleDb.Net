@@ -1,6 +1,4 @@
-using System;
 using NUnit.Framework;
-using Moq;
 
 namespace Cucumber.SimpleDb.Test
 {
@@ -8,9 +6,8 @@ namespace Cucumber.SimpleDb.Test
     public class SelectQueryBinderTest
     {
         [Test]
-        public void TestCase ()
+        public void TestCase()
         {
         }
     }
 }
-

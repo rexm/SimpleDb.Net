@@ -1,22 +1,20 @@
-﻿using System;
+﻿using System.Globalization;
 using System.Text;
-using System.Globalization;
 
 namespace Cucumber.SimpleDb.Utilities
 {
     internal static class StringUtilities
     {
-        private const string rfc3986validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+        private const string Rfc3986ValidChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
 
         public static string ToRfc3986(this string input)
         {
-            StringBuilder encoded = new StringBuilder(input.Length * 2);
-            foreach (char symbol in System.Text.Encoding.UTF8.GetBytes(input))
+            var encoded = new StringBuilder(input.Length*2);
+            foreach (char symbol in Encoding.UTF8.GetBytes(input))
             {
-                if (rfc3986validChars.IndexOf(symbol) == -1)
+                if (Rfc3986ValidChars.IndexOf(symbol) == -1)
                 {
-                    encoded.Append("%").Append(string.Format(CultureInfo.InvariantCulture, "{0:X2}", (int)symbol));
-
+                    encoded.Append("%").Append(string.Format(CultureInfo.InvariantCulture, "{0:X2}", (int) symbol));
                 }
                 else
                 {
@@ -28,4 +26,3 @@ namespace Cucumber.SimpleDb.Utilities
         }
     }
 }
-

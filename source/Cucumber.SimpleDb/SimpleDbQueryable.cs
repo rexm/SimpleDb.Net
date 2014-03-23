@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Cucumber.SimpleDb
 {
@@ -19,21 +19,20 @@ namespace Cucumber.SimpleDb
         /// <typeparam name="TSource">The type of the query.</typeparam>
         public static IQueryable<TSource> WithConsistency<TSource>(this IQueryable<TSource> source)
         {
-            return source.Provider.CreateQuery<TSource> (
-                StaticCall (
-                    MakeGeneric (MethodBase.GetCurrentMethod (), typeof (TSource)),
+            return source.Provider.CreateQuery<TSource>(
+                StaticCall(
+                    MakeGeneric(MethodBase.GetCurrentMethod(), typeof (TSource)),
                     source.Expression));
         }
 
-        private static MethodInfo MakeGeneric (MethodBase method, params Type [] parameters)
+        private static MethodInfo MakeGeneric(MethodBase method, params Type[] parameters)
         {
-            return ((MethodInfo) method).MakeGenericMethod (parameters);
+            return ((MethodInfo) method).MakeGenericMethod(parameters);
         }
 
-        private static Expression StaticCall (MethodInfo method, params Expression [] expressions)
+        private static Expression StaticCall(MethodInfo method, params Expression[] expressions)
         {
-            return Expression.Call (null, method, expressions);
+            return Expression.Call(null, method, expressions);
         }
     }
 }
-
