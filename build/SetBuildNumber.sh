@@ -11,6 +11,3 @@ BUILD_NUM+=$VERS_INCREMENT
 echo "Build number: $BUILD_NUM"
 export BUILD_NUM
 unset IFS
-echo -e $BUILD_NUM > build/version.txt
-git commit build/version.txt -m "Update version number [ci skip]"
-git push origin master
