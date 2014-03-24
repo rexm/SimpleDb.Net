@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb", "Cucumber.SimpleDb\Cucumber.SimpleDb.csproj", "{9DA30BCD-FE40-4215-A513-3434608C20E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb.Test", "Cucumber.SimpleDb.Test\Cucumber.SimpleDb.Test.csproj", "{7C915ED2-81D2-4DAF-BB3E-503441CBD922}"
@@ -11,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{214F97
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cucumber.SimpleDb.Async", "Cucumber.SimpleDb.Async\Cucumber.SimpleDb.Async.csproj", "{247DAE56-5C9C-4A53-B18D-8FEE2949657B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,16 @@ Global
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.ActiveCfg = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.Build.0 = Release|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
