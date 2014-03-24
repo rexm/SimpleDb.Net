@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Linq.Structure
 {
     internal class OrderExpression : SimpleDbExpression, IEqualityComparer<OrderExpression>
     {
-        public SortDirection Direction { get { return _direction; } }
-
-        public AttributeExpression Attribute { get { return _attribute; } }
-
-        private readonly SortDirection _direction;
         private readonly AttributeExpression _attribute;
+        private readonly SortDirection _direction;
 
         public OrderExpression(AttributeExpression attribute, SortDirection direction)
         {
@@ -21,20 +15,24 @@ namespace Cucumber.SimpleDb.Linq.Structure
             _direction = direction;
         }
 
+        public SortDirection Direction
+        {
+            get { return _direction; }
+        }
+
+        public AttributeExpression Attribute
+        {
+            get { return _attribute; }
+        }
+
         public override ExpressionType NodeType
         {
-            get
-            {
-                return (ExpressionType)SimpleDbExpressionType.Order;
-            }
+            get { return (ExpressionType) SimpleDbExpressionType.Order; }
         }
 
         public override Type Type
         {
-            get
-            {
-                return typeof(SimpleDbAttributeValue);
-            }
+            get { return typeof (SimpleDbAttributeValue); }
         }
 
         public bool Equals(OrderExpression x, OrderExpression y)
@@ -43,10 +41,7 @@ namespace Cucumber.SimpleDb.Linq.Structure
             {
                 return x._attribute == y._attribute;
             }
-            else
-            {
-                return (object)x == (object)y;
-            }
+            return x == y;
         }
 
         public int GetHashCode(OrderExpression obj)

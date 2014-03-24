@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Cucumber.SimpleDb
 {
@@ -10,6 +8,24 @@ namespace Cucumber.SimpleDb
     /// </summary>
     public interface ISimpleDbItemCollection : IQueryable<ISimpleDbItem>
     {
+        /// <summary>
+        /// Gets the item with the specified name.
+        /// <para>If no item with the specified name exists, null will be returned.</para>
+        /// </summary>
+        /// <param name="itemName">The name of the item to return.</param>
+        /// <returns>The <c>Cucumber.SimpleDb.ISimpleDbItem</c> instance if exists; otherwise null.</returns>
+        ISimpleDbItem this[string itemName] { get; }
+
+        /// <summary>
+        /// Gets the total number of items in the collection.
+        /// </summary>
+        int Count { get; }
+
+        /// <summary>
+        /// Gets the parent domain.
+        /// </summary>
+        ISimpleDbDomain Domain { get; }
+
         /// <summary>
         /// Creates a new item.
         /// </summary>
@@ -49,23 +65,5 @@ namespace Cucumber.SimpleDb
         /// <param name="conditionValue">The expected value of the conditional attribute.</param>
         /// <returns>The new item.</returns>
         ISimpleDbItem AddWhen(string name, string conditionAttribute, SimpleDbAttributeValue conditionValue);
-
-        /// <summary>
-        /// Gets the item with the specified name.
-        /// <para>If no item with the specified name exists, null will be returned.</para>
-        /// </summary>
-        /// <param name="itemName">The name of the item to return.</param>
-        /// <returns>The <c>Cucumber.SimpleDb.ISimpleDbItem</c> instance if exists; otherwise null.</returns>
-        ISimpleDbItem this[string itemName] { get; }
-
-        /// <summary>
-        /// Gets the total number of items in the collection.
-        /// </summary>
-        int Count { get; }
-
-        /// <summary>
-        /// Gets the parent domain.
-        /// </summary>
-        ISimpleDbDomain Domain { get; }
     }
 }

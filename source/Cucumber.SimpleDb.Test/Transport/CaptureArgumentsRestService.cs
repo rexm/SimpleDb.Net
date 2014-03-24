@@ -15,28 +15,29 @@ namespace Cucumber.SimpleDb.Test
             _captureResult = captureResult;
         }
 
-        public XElement ExecuteRequest (NameValueCollection arguments)
+        public XElement ExecuteRequest(NameValueCollection arguments)
         {
-            var doc = new XDocument (
-                  new XElement ("Arguments", 
-                              arguments.OfType<string> ().Select (key =>
-                        new XElement ("Argument",
-                                  new XElement ("Key", key),
-                                  new XElement ("Value", arguments [key])))
-                    .OfType<object> ().ToArray ()));
-            _captureResult (doc.Root);
+            var doc = new XDocument(
+                new XElement("Arguments",
+                    arguments.OfType<string>().Select(key =>
+                        new XElement("Argument",
+                            new XElement("Key", key),
+                            new XElement("Value", arguments[key])))
+                        .OfType<object>().ToArray()));
+            _captureResult(doc.Root);
             XNamespace ns = "http://sdb.amazonaws.com/doc/2009-04-15/";
-            return new XElement(ns + "SelectResponse", new XElement(ns + "SelectResult", new XElement[]
+            return new XElement(ns + "SelectResponse", new XElement(ns + "SelectResult", new[]
+            {
+                new XElement(ns + "Item", new[]
                 {
-                    new XElement(ns + "Item", new XElement[]{
-                        new XElement(ns + "Name", "ItemName1"),
-                        new XElement(ns + "Attribute", new XElement[] {
-                            new XElement(ns + "Name", "Count"),
-                            new XElement(ns + "Value", 1)
-                        })
+                    new XElement(ns + "Name", "ItemName1"),
+                    new XElement(ns + "Attribute", new[]
+                    {
+                        new XElement(ns + "Name", "Count"),
+                        new XElement(ns + "Value", 1)
                     })
-                }));
+                })
+            }));
         }
     }
 }
-

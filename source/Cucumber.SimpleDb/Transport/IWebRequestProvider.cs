@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
 namespace Cucumber.SimpleDb.Transport
 {
@@ -8,4 +7,3 @@ namespace Cucumber.SimpleDb.Transport
         WebRequest Create(string uri);
     }
 }
-

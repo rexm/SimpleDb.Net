@@ -1,41 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb.Session
 {
     internal class SessionSimpleDbItem : ISimpleDbItem, ISessionItem
     {
-        private readonly XElement _data;
-        private readonly IInternalContext _context;
-        private readonly string _name;
+        private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
         private readonly SessionSimpleDbAttributeCollection _attributes;
         private readonly ISimpleDbDomain _domain;
+        private readonly string _name;
         private bool _deleted;
-        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         internal SessionSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, XElement data, bool complete)
-            : this(context, domain, data.Element(sdbNs + "Name").Value, data, complete)
+            : this(context, domain, data.Element(SdbNs + "Name").Value, data, complete)
         {
         }
 
-        internal SessionSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, string name, XElement data, bool complete)
+        internal SessionSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, string name, XContainer data, bool complete)
         {
             _domain = domain;
-            _context = context;
-            _data = data;
             try
             {
                 _name = name;
-                _attributes = new SessionSimpleDbAttributeCollection(_context, this, _data, complete);
+                _attributes = new SessionSimpleDbAttributeCollection(this, data, complete);
             }
             catch (Exception ex)
             {
                 throw new SimpleDbException("The response from SimpleDB was not valid", ex);
             }
-            _context.Session.Attach(this);
+            context.Session.Attach(this);
+        }
+
+        IEnumerable<ISimpleDbAttribute> ISessionItem.Attributes
+        {
+            get { return _attributes.Where(att => ((ISessionAttribute) att).IsDirty); }
+        }
+
+        SessionItemState ISessionItem.State
+        {
+            get
+            {
+                if (_deleted)
+                {
+                    return SessionItemState.Delete;
+                }
+                return ((ISessionItem) this).Attributes.Any() ? SessionItemState.Update : SessionItemState.Unchanged;
+            }
+        }
+
+        ISimpleDbDomain ISessionItem.Domain
+        {
+            get { return _domain; }
         }
 
         public string Name
@@ -52,11 +69,7 @@ namespace Cucumber.SimpleDb.Session
         {
             get
             {
-                if (!_attributes.HasAttribute(attributeName))
-                {
-                    return null;
-                }
-                return _attributes[attributeName].Value;
+                return !_attributes.HasAttribute(attributeName) ? null : _attributes[attributeName].Value;
             }
             set
             {
@@ -79,31 +92,6 @@ namespace Cucumber.SimpleDb.Session
         public void DeleteWhen(string attributeName, SimpleDbAttributeValue expectedValue)
         {
             throw new NotImplementedException();
-        }
-
-        IEnumerable<ISimpleDbAttribute> ISessionItem.Attributes
-        {
-            get
-            {
-                return _attributes.Where(att => ((ISessionAttribute)att).IsDirty);
-            }
-        }
-
-        SessionItemState ISessionItem.State
-        {
-            get
-            {
-                if (_deleted)
-                {
-                    return SessionItemState.Delete;
-                }
-                return ((ISessionItem)this).Attributes.Count() > 0 ? SessionItemState.Update : SessionItemState.Unchanged;
-            }
-        }
-
-        ISimpleDbDomain ISessionItem.Domain
-        {
-            get { return _domain; }
         }
     }
 }

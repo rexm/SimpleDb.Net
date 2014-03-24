@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq.Expressions;
 using Cucumber.SimpleDb.Linq.Structure;
-using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
     internal class ClientProjectionWriter : SimpleDbExpressionVisitor
     {
+        private readonly ParameterExpression _parameter;
+
+        private ClientProjectionWriter(ParameterExpression parameter)
+        {
+            _parameter = parameter;
+        }
+
         public static ProjectionExpression Rewrite(ProjectionExpression pex)
         {
-            Expression projector = pex.Projector;
+            var projector = pex.Projector;
             if (projector is LambdaExpression)
             {
-                projector = CreateProjector((LambdaExpression)projector);
+                projector = CreateProjector((LambdaExpression) projector);
             }
             else
             {
@@ -28,8 +31,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private static Expression CreateProjector(LambdaExpression originalProjector)
         {
-            ParameterExpression parameter = Expression.Parameter(typeof(ISimpleDbItem));
-            ClientProjectionWriter writer = new ClientProjectionWriter(parameter);
+            var parameter = Expression.Parameter(typeof (ISimpleDbItem));
+            var writer = new ClientProjectionWriter(parameter);
             var projector = writer.Visit(originalProjector.Body);
             projector = Expression.Lambda(projector, originalProjector.Parameters);
             return projector;
@@ -37,30 +40,26 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private static Expression CreateDefaultProjector()
         {
-            var param = Expression.Parameter(typeof(ISimpleDbItem));
+            var param = Expression.Parameter(typeof (ISimpleDbItem));
             var projector = Expression.Lambda(param, param);
             return projector;
         }
 
-        private readonly ParameterExpression _parameter;
-        
-        private ClientProjectionWriter(ParameterExpression parameter)
-        {
-            _parameter = parameter;
-        }
-        
         protected override Expression VisitSimpleDbAttribute(AttributeExpression aex)
         {
             return CreateItemAccessor(aex);
         }
-        
+
         private Expression CreateItemAccessor(AttributeExpression aex)
         {
             return Expression.MakeIndex(
                 _parameter,
-                typeof(ISimpleDbItem).GetProperty("Item"),
-                new[] { Expression.Constant(aex.Name) }
-            );
+                typeof (ISimpleDbItem).GetProperty("Item"),
+                new[]
+                {
+                    Expression.Constant(aex.Name)
+                }
+                );
         }
     }
 }

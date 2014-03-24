@@ -1,19 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Cucumber.SimpleDb.Linq.Structure
 {
     internal abstract class ScalarExpression : SelectExpression
     {
-        public ScalarExpression()
+        protected ScalarExpression()
             : base(Enumerable.Empty<AttributeExpression>())
         {
         }
 
-        public abstract string ScalarAttributeName
-        {
-            get;
-        }
+        public abstract string ScalarAttributeName { get; }
     }
 }
-

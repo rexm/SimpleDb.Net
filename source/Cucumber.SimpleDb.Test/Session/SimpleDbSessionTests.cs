@@ -1,15 +1,13 @@
 ﻿using NUnit.Framework;
-using System;
 
 namespace Cucumber.SimpleDb.Test
 {
-    [TestFixture ()]
+    [TestFixture]
     public class SimpleDbSessionTests
     {
-        [Test ()]
-        public void TestCase ()
+        [Test]
+        public void TestCase()
         {
         }
     }
 }
-

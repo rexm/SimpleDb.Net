@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Cucumber.SimpleDb.Linq.Structure;
 using System.Linq.Expressions;
-using System.Reflection;
+using Cucumber.SimpleDb.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
@@ -17,12 +15,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
         {
-            return this.AggregateAndReduce(pex);
+            return AggregateAndReduce(pex);
         }
 
         protected override Expression VisitSimpleDbQuery(QueryExpression qex)
         {
-            return this.AggregateAndReduce(qex);
+            return AggregateAndReduce(qex);
         }
 
         private Expression AggregateAndReduce(Expression expr)
@@ -33,18 +31,18 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return ProjectionFromAggregation(aggregator);
             }
-            else
-            {
-                var source = Visit(aggregator.Source);
-                var projector = aggregator.Projector;
-                return Expression.Call(
-                    typeof(Enumerable).GetMethod("Select", new []{typeof(IEnumerable<>), typeof(Func<,>)}).MakeGenericMethod(source.Type, projector.Type),
-                    source,
-                    aggregator.Projector);
-            }
+            var source = Visit(aggregator.Source);
+            var projector = aggregator.Projector;
+            return Expression.Call(
+                typeof (Enumerable).GetMethod("Select", new[]
+                {
+                    typeof (IEnumerable<>), typeof (Func<,>)
+                }).MakeGenericMethod(source.Type, projector.Type),
+                source,
+                aggregator.Projector);
         }
 
-        private Expression ProjectionFromAggregation(Aggregator aggregator)
+        private static Expression ProjectionFromAggregation(Aggregator aggregator)
         {
             var domain = aggregator.Source;
             var where = aggregator.AggregatedWhere;
@@ -66,18 +64,20 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private class Aggregator : SimpleDbExpressionVisitor
         {
+            private readonly HashSet<AttributeExpression> _aggregatedAttributes = new HashSet<AttributeExpression>();
+            private readonly List<OrderExpression> _aggregatedOrderBy = new List<OrderExpression>();
+            private Expression _aggregatedWhere;
+            private Expression _limit;
+            private Expression _projector;
+            private ScalarExpression _scalarExpression;
+            private Expression _source;
+            private bool _useConsistency;
+
             public SelectExpression AggregatedSelect
             {
                 get
                 {
-                    if (_scalarExpression != null)
-                    {
-                        return _scalarExpression;
-                    }
-                    else
-                    {
-                        return new SelectExpression (_aggregatedAttributes);
-                    }
+                    return _scalarExpression ?? new SelectExpression(_aggregatedAttributes);
                 }
             }
 
@@ -111,15 +111,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 get { return _useConsistency; }
             }
 
-            private HashSet<AttributeExpression> _aggregatedAttributes = new HashSet<AttributeExpression>();
-            private ScalarExpression _scalarExpression = null;
-            private Expression _aggregatedWhere;
-            private List<OrderExpression> _aggregatedOrderBy = new List<OrderExpression>();
-            private Expression _projector;
-            private Expression _source;
-            private Expression _limit;
-            private bool _useConsistency;
-
             protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
             {
                 _projector = pex.Projector;
@@ -131,20 +122,15 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 if (ssex.Where != null)
                 {
-                    if (_aggregatedWhere == null)
-                    {
-                        _aggregatedWhere = ssex.Where;
-                    }
-                    else
-                    {
-                        _aggregatedWhere = Expression.AndAlso(_aggregatedWhere, ssex.Where);
-                    }
+                    _aggregatedWhere = _aggregatedWhere == null 
+                        ? ssex.Where 
+                        : Expression.AndAlso(_aggregatedWhere, ssex.Where);
                 }
                 if (ssex.OrderBy != null)
                 {
                     _aggregatedOrderBy.InsertRange(0, ssex.OrderBy);
                 }
-                if(ssex.Limit != null)
+                if (ssex.Limit != null)
                 {
                     _limit = ssex.Limit;
                 }
@@ -154,7 +140,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 {
                     Visit(ssex.Source);
                 }
-                if (ssex.UseConsistency == true)
+                if (ssex.UseConsistency)
                 {
                     _useConsistency = true;
                 }
@@ -167,21 +153,20 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 return dex;
             }
 
-            protected override Expression VisitSimpleDbCount (CountExpression cex)
+            protected override Expression VisitSimpleDbCount(CountExpression cex)
             {
                 _scalarExpression = cex;
                 return cex;
             }
 
-            protected override Expression VisitSimpleDbSelect (SelectExpression sex)
+            protected override Expression VisitSimpleDbSelect(SelectExpression sex)
             {
                 foreach (var att in sex.Attributes)
                 {
-                    _aggregatedAttributes.Add (att);
+                    _aggregatedAttributes.Add(att);
                 }
                 return sex;
             }
         }
     }
 }
-

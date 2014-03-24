@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 using Cucumber.SimpleDb.Linq.Structure;
-using Cucumber.SimpleDb.Session;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
@@ -18,29 +14,28 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitSimpleDbQuery(QueryExpression qex)
         {
-            if (qex.Source is ConstantExpression)
+            var constantExpression = qex.Source as ConstantExpression;
+            if (constantExpression != null)
             {
-                var source = (ConstantExpression)qex.Source;
-                if (source.Value is ISimpleDbItemCollection)
+                var source = constantExpression;
+                var simpleDbItemCollection = source.Value as ISimpleDbItemCollection;
+                if (simpleDbItemCollection != null)
                 {
                     return SimpleDbExpression.Query(
                         qex.Select,
-                        SimpleDbExpression.Domain(((ISimpleDbItemCollection)source.Value).Domain),
+                        SimpleDbExpression.Domain(simpleDbItemCollection.Domain),
                         qex.Where,
                         qex.OrderBy,
                         qex.Limit,
                         qex.UseConsistency);
                 }
-                else
-                {
-                    throw new NotSupportedException(
-                        string.Format("Cannot determine data source from '{0}'", source.Value.GetType())
-                        );
-                }
+                throw new NotSupportedException(
+                    string.Format("Cannot determine data source from '{0}'", source.Value.GetType())
+                    );
             }
             else
             {
-                Expression source = base.Visit(qex.Source);
+                var source = base.Visit(qex.Source);
                 return SimpleDbExpression.Query(
                     qex.Select,
                     source,
@@ -53,9 +48,9 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
         {
-            Expression qex = VisitSimpleDbQuery(pex.Source);
+            var qex = VisitSimpleDbQuery(pex.Source);
             return SimpleDbExpression.Project(
-                (QueryExpression)qex,
+                (QueryExpression) qex,
                 pex.Projector);
         }
     }

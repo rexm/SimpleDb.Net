@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using System.Net;
-using System.Web;
 using System.Collections.Specialized;
-using System.Security.Cryptography;
-using System.Xml;
-using System.Collections;
+using System.Xml.Linq;
 using Cucumber.SimpleDb.Utilities;
 
 namespace Cucumber.SimpleDb.Transport
@@ -22,22 +14,22 @@ namespace Cucumber.SimpleDb.Transport
             _restService = restService;
         }
 
-        private XElement InternalExecute(NameValueCollection arguments)
-        {
-            return _restService.ExecuteRequest (arguments);
-        }
-
         public XElement BatchPutAttributes(string domain, params object[] items)
         {
-            if (items.Length < 1) {
-                throw new ArgumentOutOfRangeException ("Must put at least 1 item");
+            if (items.Length < 1)
+            {
+                throw new ArgumentOutOfRangeException("items", "Must put at least 1 item");
             }
             var values = new NameValueCollection
             {
-                { "Action", "BatchPutAttributes" },
-                { "DomainName", domain }
+                {
+                    "Action", "BatchPutAttributes"
+                },
+                {
+                    "DomainName", domain
+                }
             };
-            int itemCount = 0;
+            var itemCount = 0;
             try
             {
                 foreach (dynamic item in items)
@@ -51,8 +43,8 @@ namespace Cucumber.SimpleDb.Transport
                         item.Name);
                     if (ObjectExtensions.HasMember(item, "Attributes"))
                     {
-                        int attributeCount = 0;
-                        foreach (dynamic attribute in item.Attributes)
+                        var attributeCount = 0;
+                        foreach (var attribute in item.Attributes)
                         {
                             values.Add(
                                 string.Format("Item.{0}.Attribute.{1}.Name", itemCount, attributeCount),
@@ -62,7 +54,7 @@ namespace Cucumber.SimpleDb.Transport
                                 attribute.Value.ToString());
                             if (ObjectExtensions.HasMember(attribute, "Replace"))
                             {
-                                if(attribute.Replace == true)
+                                if (attribute.Replace == true)
                                 {
                                     values.Add(
                                         string.Format("Item.{0}.Attribute.{1}.Replace", itemCount, attributeCount),
@@ -86,8 +78,12 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action", "CreateDomain"},
-                {"DomainName", domain}
+                {
+                    "Action", "CreateDomain"
+                },
+                {
+                    "DomainName", domain
+                }
             };
             return InternalExecute(values);
         }
@@ -96,8 +92,12 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action", "DeleteDomain"},
-                {"DomainName", domain}
+                {
+                    "Action", "DeleteDomain"
+                },
+                {
+                    "DomainName", domain
+                }
             };
             return InternalExecute(values);
         }
@@ -106,8 +106,12 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action", "DomainMetadata"},
-                {"DomainName", domain}
+                {
+                    "Action", "DomainMetadata"
+                },
+                {
+                    "DomainName", domain
+                }
             };
             return InternalExecute(values);
         }
@@ -121,7 +125,9 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action", "ListDomains"}
+                {
+                    "Action", "ListDomains"
+                }
             };
             if (!string.IsNullOrEmpty(nextPageToken))
             {
@@ -134,11 +140,17 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action", "PutAttributes"},
-                {"DomainName", domain},
-                {"ItemName", itemName}
+                {
+                    "Action", "PutAttributes"
+                },
+                {
+                    "DomainName", domain
+                },
+                {
+                    "ItemName", itemName
+                }
             };
-            int attributeCount = 0;
+            var attributeCount = 0;
             try
             {
                 foreach (dynamic attribute in attributes)
@@ -157,7 +169,7 @@ namespace Cucumber.SimpleDb.Transport
                     }
                     if (ObjectExtensions.HasMember(attribute, "When"))
                     {
-                        dynamic when = attribute.When;
+                        var when = attribute.When;
                         values.Add(
                             string.Format("Expected.{0}.Name", attributeCount),
                             attribute.Name);
@@ -188,15 +200,21 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action", "GetAttributes"},
-                {"DomainName", domain},
-                {"ItemName", itemName}
+                {
+                    "Action", "GetAttributes"
+                },
+                {
+                    "DomainName", domain
+                },
+                {
+                    "ItemName", itemName
+                }
             };
             if (useConsistency)
             {
                 values.Add("ConsistentRead", useConsistency.ToString());
             }
-            int attributeCount = 0;
+            var attributeCount = 0;
             foreach (var attributeName in attributeNames)
             {
                 values.Add(
@@ -211,11 +229,17 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action","DeleteAttributes"},
-                {"DomainName", domain},
-                {"ItemName", itemName}
+                {
+                    "Action", "DeleteAttributes"
+                },
+                {
+                    "DomainName", domain
+                },
+                {
+                    "ItemName", itemName
+                }
             };
-            int attributeCount = 0;
+            var attributeCount = 0;
             try
             {
                 foreach (dynamic attribute in attributes)
@@ -228,7 +252,7 @@ namespace Cucumber.SimpleDb.Transport
                         attribute.Value);
                     if (ObjectExtensions.HasMember(attribute, "When"))
                     {
-                        dynamic when = attribute.When;
+                        var when = attribute.When;
                         values.Add(
                             string.Format("Expected.{0}.Name", attributeCount),
                             attribute.Name);
@@ -257,15 +281,20 @@ namespace Cucumber.SimpleDb.Transport
 
         public XElement BatchDeleteAttributes(string domain, params object[] items)
         {
-            if (items.Length < 1) {
-                throw new ArgumentOutOfRangeException ("Must delete at least 1 item");
+            if (items.Length < 1)
+            {
+                throw new ArgumentOutOfRangeException("items", "Must delete at least 1 item");
             }
             var values = new NameValueCollection
             {
-                {"Action","BatchDeleteAttributes"},
-                {"DomainName", domain},
+                {
+                    "Action", "BatchDeleteAttributes"
+                },
+                {
+                    "DomainName", domain
+                },
             };
-            int itemCount = 0;
+            var itemCount = 0;
             try
             {
                 foreach (dynamic item in items)
@@ -279,8 +308,8 @@ namespace Cucumber.SimpleDb.Transport
                         item.Name);
                     if (ObjectExtensions.HasMember(item, "Attributes"))
                     {
-                        int attributeCount = 0;
-                        foreach (dynamic attribute in item.Attributes)
+                        var attributeCount = 0;
+                        foreach (var attribute in item.Attributes)
                         {
                             values.Add(
                                 string.Format("Item.{0}.Attribute.{1}.Name", itemCount, attributeCount),
@@ -310,8 +339,12 @@ namespace Cucumber.SimpleDb.Transport
         {
             var values = new NameValueCollection
             {
-                {"Action", "Select"},
-                {"SelectExpression", query},
+                {
+                    "Action", "Select"
+                },
+                {
+                    "SelectExpression", query
+                },
             };
             if (useConsistency)
             {
@@ -322,6 +355,11 @@ namespace Cucumber.SimpleDb.Transport
                 values.Add("NextToken", nextPageToken);
             }
             return InternalExecute(values);
+        }
+
+        private XElement InternalExecute(NameValueCollection arguments)
+        {
+            return _restService.ExecuteRequest(arguments);
         }
     }
 }

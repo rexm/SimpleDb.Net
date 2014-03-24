@@ -1,39 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
-using Cucumber.SimpleDb.Transport;
 using Cucumber.SimpleDb.Linq;
 
 namespace Cucumber.SimpleDb.Session
 {
     internal class SessionSimpleDbDomain : ISimpleDbDomain
     {
-        private readonly IInternalContext _context;
-        private readonly XElement _data;
-        private readonly string _name;
+        private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
         private readonly long _attributeNameCount;
         private readonly long _attributeValueCount;
-        private readonly long _totalItemNameSize;
-        private readonly long _totalAttributeValueSize;
+        private readonly IInternalContext _context;
+        private readonly string _name;
         private readonly long _totalAttributeNameSize;
-        private readonly long _itemCount;
-        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
+        private readonly long _totalAttributeValueSize;
+        private readonly long _totalItemNameSize;
 
-        internal SessionSimpleDbDomain(IInternalContext context, string name, XElement data)
+        internal SessionSimpleDbDomain(IInternalContext context, string name, XContainer data)
         {
             _name = name;
-            _data = data;
             _context = context;
             try
             {
-                _attributeNameCount = long.Parse(_data.Element(sdbNs + "AttributeNameCount").Value);
-                _attributeValueCount = long.Parse(_data.Element(sdbNs + "AttributeValueCount").Value);
-                _totalItemNameSize = long.Parse(_data.Element(sdbNs + "TotalItemNameSize").Value);
-                _totalAttributeValueSize = long.Parse(_data.Element(sdbNs + "TotalAttributeValueSize").Value);
-                _totalAttributeNameSize = long.Parse(_data.Element(sdbNs + "TotalAttributeNameSize").Value);
-                _itemCount = long.Parse(_data.Element(sdbNs + "ItemCount").Value);
+                _attributeNameCount = long.Parse(data.Element(SdbNs + "AttributeNameCount").Value);
+                _attributeValueCount = long.Parse(data.Element(SdbNs + "AttributeValueCount").Value);
+                _totalItemNameSize = long.Parse(data.Element(SdbNs + "TotalItemNameSize").Value);
+                _totalAttributeValueSize = long.Parse(data.Element(SdbNs + "TotalAttributeValueSize").Value);
+                _totalAttributeNameSize = long.Parse(data.Element(SdbNs + "TotalAttributeNameSize").Value);
             }
             catch (Exception ex)
             {
@@ -43,10 +35,7 @@ namespace Cucumber.SimpleDb.Session
 
         public ISimpleDbItemCollection Items
         {
-            get
-            {
-                return new SessionSimpleDbItemCollection(_context, this, new SimpleDbQueryProvider(_context));
-            }
+            get { return new SessionSimpleDbItemCollection(_context, this, new SimpleDbQueryProvider(_context)); }
         }
 
         public string Name
@@ -81,7 +70,7 @@ namespace Cucumber.SimpleDb.Session
 
         public void Delete()
         {
-            _context.Service.DeleteDomain(this._name); //TODO: switch to deferred/command pattern
+            _context.Service.DeleteDomain(_name); //TODO: switch to deferred/command pattern
         }
     }
 }

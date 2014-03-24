@@ -1,39 +1,33 @@
-﻿using System;
+﻿using System.Linq;
 using System.Linq.Expressions;
-using Cucumber.SimpleDb.Utilities;
-using System.Linq;
 using Cucumber.SimpleDb.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
     internal class ImplicitSelect : SimpleDbExpressionVisitor
     {
-        public static Expression EnsureQuery(Expression exp)
+        private ImplicitSelect()
         {
-            return new ImplicitSelect ().Visit (exp);
         }
 
-        private ImplicitSelect ()
+        public static Expression EnsureQuery(Expression exp)
         {
+            return new ImplicitSelect().Visit(exp);
         }
-            
-        protected override Expression VisitConstant (ConstantExpression node)
+
+        protected override Expression VisitConstant(ConstantExpression node)
         {
             if (node.Value is ISimpleDbItemCollection)
             {
-                return SimpleDbExpression.Query (
-                    SimpleDbExpression.Select (Enumerable.Empty<AttributeExpression> ()),
+                return SimpleDbExpression.Query(
+                    SimpleDbExpression.Select(Enumerable.Empty<AttributeExpression>()),
                     node,
                     null,
                     null,
                     null,
                     false);
             }
-            else
-            {
-                return base.VisitConstant (node);
-            }
+            return base.VisitConstant(node);
         }
     }
 }
-

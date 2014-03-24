@@ -2,18 +2,17 @@
 // http://iqtoolkit.codeplex.com
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using System.Collections;
 
 namespace Cucumber.SimpleDb.Linq
 {
     internal class Query<T> : IOrderedQueryable<T>
     {
-        private IQueryProvider _provider;
-        private Expression _expression;
+        private readonly Expression _expression;
+        private readonly IQueryProvider _provider;
 
         public Query(IQueryProvider provider)
         {
@@ -21,8 +20,8 @@ namespace Cucumber.SimpleDb.Linq
             {
                 throw new ArgumentNullException("provider");
             }
-            this._provider = provider;
-            this._expression = Expression.Constant(this);
+            _provider = provider;
+            _expression = Expression.Constant(this);
         }
 
         public Query(IQueryProvider provider, Expression expression)
@@ -35,50 +34,47 @@ namespace Cucumber.SimpleDb.Linq
             {
                 throw new ArgumentNullException("expression");
             }
-            if (!typeof(IQueryable<T>).IsAssignableFrom(expression.Type))
+            if (!typeof (IQueryable<T>).IsAssignableFrom(expression.Type))
             {
                 throw new ArgumentOutOfRangeException("expression");
             }
-            this._provider = provider;
-            this._expression = expression;
+            _provider = provider;
+            _expression = expression;
         }
 
         Expression IQueryable.Expression
         {
-            get { return this._expression; }
+            get { return _expression; }
         }
 
         Type IQueryable.ElementType
         {
-            get { return typeof(T); }
+            get { return typeof (T); }
         }
 
         IQueryProvider IQueryable.Provider
         {
-            get { return this._provider; }
+            get { return _provider; }
         }
 
         public virtual IEnumerator<T> GetEnumerator()
         {
-            return ((IEnumerable<T>)this._provider.Execute(this._expression)).GetEnumerator();
+            return ((IEnumerable<T>) _provider.Execute(_expression)).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)this._provider.Execute(this._expression)).GetEnumerator();
+            return ((IEnumerable) _provider.Execute(_expression)).GetEnumerator();
         }
 
         public override string ToString()
         {
-            if (this._expression.NodeType == ExpressionType.Constant &&
-                ((ConstantExpression)this._expression).Value == this)
+            if (_expression.NodeType == ExpressionType.Constant &&
+                ((ConstantExpression) _expression).Value == this)
             {
-                return "Query(" + typeof(T) + ")";
+                return "Query(" + typeof (T) + ")";
             }
-            else
-            {
-                return this._expression.ToString();
-            }
+            return _expression.ToString();
         }
     }
 }

@@ -1,29 +1,27 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb.Session
 {
     internal sealed class SessionSimpleDbAttributeCollection : ISimpleDbAttributeCollection
     {
+        private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
+        private readonly Dictionary<string, SessionSimpleDbAttribute> _attributes = new Dictionary<string, SessionSimpleDbAttribute>();
+        private readonly bool _complete;
         private readonly SessionSimpleDbItem _item;
-        private Dictionary<string, SessionSimpleDbAttribute> _attributes = new Dictionary<string, SessionSimpleDbAttribute>();
-        private bool _complete;
-        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
-        internal SessionSimpleDbAttributeCollection(IInternalContext context, SessionSimpleDbItem item, XElement data, bool complete)
+        internal SessionSimpleDbAttributeCollection(SessionSimpleDbItem item, XContainer data, bool complete)
         {
             _item = item;
             _complete = complete;
             try
             {
-                _attributes = data.Descendants(sdbNs + "Attribute").Select(
-                        x => new SessionSimpleDbAttribute(
-                            _item,
-                            x.Element(sdbNs + "Name").Value,
-                            x.Elements(sdbNs + "Value").Select(val => val.Value).ToArray()
+                _attributes = data.Descendants(SdbNs + "Attribute").Select(
+                    x => new SessionSimpleDbAttribute(x.Element(SdbNs + "Name").Value,
+                        x.Elements(SdbNs + "Value").Select(val => val.Value).ToArray()
                         )
                     ).ToDictionary(
                         att => att.Name,
@@ -44,7 +42,7 @@ namespace Cucumber.SimpleDb.Session
                 {
                     throw new ArgumentNullException("attributeName");
                 }
-                if (this.HasAttribute(attributeName) == false)
+                if (HasAttribute(attributeName) == false)
                 {
                     throw new KeyNotFoundException(
                         string.Format("The attribute '{0}' is not present on the item '{1}'",
@@ -61,7 +59,7 @@ namespace Cucumber.SimpleDb.Session
             {
                 throw new ArgumentNullException("attributeName");
             }
-            if (_attributes.ContainsKey (attributeName) == false)
+            if (_attributes.ContainsKey(attributeName) == false)
             {
                 if (_complete == false)
                 {
@@ -83,8 +81,10 @@ namespace Cucumber.SimpleDb.Session
             {
                 throw new ArgumentNullException("value");
             }
-            var attribute = new SessionSimpleDbAttribute(_item, attributeName);
-            attribute.Value = value;
+            var attribute = new SessionSimpleDbAttribute(attributeName)
+            {
+                Value = value
+            };
             if (_attributes.ContainsKey(attributeName))
             {
                 _attributes.Remove(attributeName);
@@ -92,19 +92,19 @@ namespace Cucumber.SimpleDb.Session
             _attributes.Add(attributeName, attribute);
         }
 
-        public bool Remove(string attributeName)
-        {
-            return _attributes.Remove(attributeName);
-        }
-
         public IEnumerator<ISimpleDbAttribute> GetEnumerator()
         {
             return _attributes.Select(kvp => kvp.Value).GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
+        }
+
+        public bool Remove(string attributeName)
+        {
+            return _attributes.Remove(attributeName);
         }
     }
 }

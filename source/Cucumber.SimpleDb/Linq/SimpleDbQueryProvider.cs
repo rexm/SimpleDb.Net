@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Xml.Linq;
-using Cucumber.SimpleDb.Linq.Structure;
 using Cucumber.SimpleDb.Linq.Translation;
-using Cucumber.SimpleDb.Transport;
 using Cucumber.SimpleDb.Utilities;
-using Cucumber.SimpleDb.Session;
 
 namespace Cucumber.SimpleDb.Linq
 {
     internal class SimpleDbQueryProvider : IQueryProvider
     {
-        private IInternalContext _context;
+        private readonly IInternalContext _context;
 
         internal SimpleDbQueryProvider(IInternalContext context)
         {
@@ -25,9 +18,35 @@ namespace Cucumber.SimpleDb.Linq
 
         public virtual object Execute(Expression expression)
         {
-            Expression plan = CreateExecutionPlan(expression);
-            plan = Expression.Convert(plan, typeof(object));
+            var plan = CreateExecutionPlan(expression);
+            plan = Expression.Convert(plan, typeof (object));
             return Expression.Lambda<Func<object>>(plan, null).Compile()();
+        }
+
+        IQueryable<TElement> IQueryProvider.CreateQuery<TElement>(Expression expression)
+        {
+            return new Query<TElement>(this, expression);
+        }
+
+        IQueryable IQueryProvider.CreateQuery(Expression expression)
+        {
+            var elementType = TypeUtilities.GetElementType(expression.Type);
+            try
+            {
+                return (IQueryable) Activator.CreateInstance(typeof (Query<>).MakeGenericType(elementType), new object[]
+                {
+                    this, expression
+                });
+            }
+            catch (TargetInvocationException tie)
+            {
+                throw tie.InnerException;
+            }
+        }
+
+        TResult IQueryProvider.Execute<TResult>(Expression expression)
+        {
+            return (TResult) Execute(expression);
         }
 
         protected virtual Expression CreateExecutionPlan(Expression expression)
@@ -51,49 +70,26 @@ namespace Cucumber.SimpleDb.Linq
             }
         }
 
-        IQueryable<TElement> IQueryProvider.CreateQuery<TElement>(Expression expression)
-        {
-            return new Query<TElement>(this, expression);
-        }
-
-        IQueryable IQueryProvider.CreateQuery(Expression expression)
-        {
-            Type elementType = TypeUtilities.GetElementType(expression.Type);
-            try
-            {
-                return (IQueryable)Activator.CreateInstance(typeof(Query<>).MakeGenericType(elementType), new object[] { this, expression });
-            }
-            catch (TargetInvocationException tie)
-            {
-                throw tie.InnerException;
-            }
-        }
-
-        TResult IQueryProvider.Execute<TResult>(Expression expression)
-        {
-            return (TResult)this.Execute(expression);
-        }
-
         private bool CanBeEvaluatedLocally(Expression expression)
         {
-            ConstantExpression cex = expression as ConstantExpression;
+            var cex = expression as ConstantExpression;
             if (cex != null)
             {
-                IQueryable query = cex.Value as IQueryable;
+                var query = cex.Value as IQueryable;
                 if (query != null && query.Provider == this)
                 {
                     return false;
                 }
             }
-            MethodCallExpression mc = expression as MethodCallExpression;
+            var mc = expression as MethodCallExpression;
             if (mc != null &&
-                (mc.Method.DeclaringType == typeof(Enumerable) ||
-                 mc.Method.DeclaringType == typeof(Queryable)))
+                (mc.Method.DeclaringType == typeof (Enumerable) ||
+                 mc.Method.DeclaringType == typeof (Queryable)))
             {
                 return false;
             }
             if (expression.NodeType == ExpressionType.Convert &&
-                expression.Type == typeof(object))
+                expression.Type == typeof (object))
             {
                 return true;
             }

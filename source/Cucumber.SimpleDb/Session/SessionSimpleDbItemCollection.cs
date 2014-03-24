@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Cucumber.SimpleDb.Linq;
-using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb.Session
 {
     internal class SessionSimpleDbItemCollection : Query<ISimpleDbItem>, ISimpleDbItemCollection
     {
-        private readonly ISimpleDbDomain _domain;
         private readonly IInternalContext _context;
+        private readonly ISimpleDbDomain _domain;
         private readonly Dictionary<string, ISimpleDbItem> _fetchedItems;
 
         internal SessionSimpleDbItemCollection(IInternalContext context, ISimpleDbDomain domain, IQueryProvider queryProvider)
@@ -28,7 +26,7 @@ namespace Cucumber.SimpleDb.Session
 
         public int Count
         {
-            get { return this.Count (); }
+            get { return this.Count(); }
         }
 
         public ISimpleDbItem this[string name]
@@ -38,10 +36,10 @@ namespace Cucumber.SimpleDb.Session
                 if (_fetchedItems.ContainsKey(name) == false)
                 {
                     var element = _context.Service.GetAttributes(_domain.Name, name, false);
-                    if (element.Descendants ("GetAttributesResult").First ().HasElements)
+                    if (element.Descendants("GetAttributesResult").First().HasElements)
                     {
-                        _fetchedItems.Add (name,
-                            new SessionSimpleDbItem (
+                        _fetchedItems.Add(name,
+                            new SessionSimpleDbItem(
                                 _context,
                                 _domain,
                                 name,
@@ -71,7 +69,7 @@ namespace Cucumber.SimpleDb.Session
 
         public ISimpleDbItem AddWhen(string name, string conditionAttribute, SimpleDbAttributeValue conditionValue)
         {
-            throw new NotImplementedException(); 
+            throw new NotImplementedException();
         }
 
         public ISimpleDbItem AddWhen(string name, Dictionary<string, SimpleDbAttributeValue> values, string conditionAttribute, SimpleDbAttributeValue conditionValue)

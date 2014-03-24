@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Cucumber.SimpleDb.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Linq.Translation
@@ -15,22 +11,22 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return null;
             }
-            switch ((SimpleDbExpressionType)exp.NodeType)
+            switch ((SimpleDbExpressionType) exp.NodeType)
             {
                 case SimpleDbExpressionType.Attribute:
-                    return VisitSimpleDbAttribute((AttributeExpression)exp);
+                    return VisitSimpleDbAttribute((AttributeExpression) exp);
                 case SimpleDbExpressionType.Query:
-                    return VisitSimpleDbQuery((QueryExpression)exp);
+                    return VisitSimpleDbQuery((QueryExpression) exp);
                 case SimpleDbExpressionType.Projection:
-                    return VisitSimpleDbProjection((ProjectionExpression)exp);
+                    return VisitSimpleDbProjection((ProjectionExpression) exp);
                 case SimpleDbExpressionType.Count:
-                    return VisitSimpleDbCount ((CountExpression)exp);
+                    return VisitSimpleDbCount((CountExpression) exp);
                 case SimpleDbExpressionType.Select:
-                    return VisitSimpleDbSelect((SelectExpression)exp);
+                    return VisitSimpleDbSelect((SelectExpression) exp);
                 case SimpleDbExpressionType.Order:
-                    return VisitSimpleDbOrder((OrderExpression)exp);
+                    return VisitSimpleDbOrder((OrderExpression) exp);
                 case SimpleDbExpressionType.Domain:
-                    return VisitSimpleDbDomain((DomainExpression)exp);
+                    return VisitSimpleDbDomain((DomainExpression) exp);
                 default:
                     return base.Visit(exp);
             }

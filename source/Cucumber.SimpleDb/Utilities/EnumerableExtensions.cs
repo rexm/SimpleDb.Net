@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Utilities
 {
@@ -16,7 +14,7 @@ namespace Cucumber.SimpleDb.Utilities
             }
             //this is not efficient. need to refactor to stream elements
             var enumerator = source.GetEnumerator();
-            List<TElement> group = new List<TElement>();
+            var group = new List<TElement>();
             while (enumerator.MoveNext())
             {
                 if (group.Count == groupSize)
@@ -67,30 +65,9 @@ namespace Cucumber.SimpleDb.Utilities
             return source.Intersect(second, new GenericEqualityComparer<T>(comparer));
         }
 
-        private class KeyEqualityComparer<TElement, TKey> : IEqualityComparer<TElement>
-        {
-            private Func<TElement, TKey> _keySelector;
-
-            public KeyEqualityComparer(Func<TElement, TKey> keySelector)
-            {
-                _keySelector = keySelector;
-            }
-
-            public bool Equals(TElement x, TElement y)
-            {
-                return _keySelector(x).Equals(_keySelector(y));
-            }
-
-            public int GetHashCode(TElement obj)
-            {
-                return _keySelector(obj).GetHashCode();
-            }
-        }
-
-
         private class GenericEqualityComparer<T> : IEqualityComparer<T>
         {
-            private Func<T, T, bool> _comparer;
+            private readonly Func<T, T, bool> _comparer;
 
             public GenericEqualityComparer(Func<T, T, bool> comparer)
             {
@@ -105,6 +82,26 @@ namespace Cucumber.SimpleDb.Utilities
             public int GetHashCode(T obj)
             {
                 return obj.GetHashCode();
+            }
+        }
+
+        private class KeyEqualityComparer<TElement, TKey> : IEqualityComparer<TElement>
+        {
+            private readonly Func<TElement, TKey> _keySelector;
+
+            public KeyEqualityComparer(Func<TElement, TKey> keySelector)
+            {
+                _keySelector = keySelector;
+            }
+
+            public bool Equals(TElement x, TElement y)
+            {
+                return _keySelector(x).Equals(_keySelector(y));
+            }
+
+            public int GetHashCode(TElement obj)
+            {
+                return _keySelector(obj).GetHashCode();
             }
         }
     }

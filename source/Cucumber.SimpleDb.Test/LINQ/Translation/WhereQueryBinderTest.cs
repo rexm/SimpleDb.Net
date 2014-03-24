@@ -1,12 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using Cucumber.SimpleDb.Utilities;
-using Cucumber.SimpleDb.Linq.Translation;
 using System.Linq.Expressions;
 using Cucumber.SimpleDb.Linq.Structure;
 using Moq;
-using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace Cucumber.SimpleDb.Test
 {
@@ -14,11 +12,11 @@ namespace Cucumber.SimpleDb.Test
     public class WhereQueryBinderTest : QueryBinderTest
     {
         [Test]
-        public void WhereMethodIsTranslatable ()
+        public void WhereMethodIsTranslatable()
         {
             var source = new Mock<IQueryable<ISimpleDbItem>>().Object;
             var binder = new QueryBinderAccessor();
-            var lambdaParameter = Expression.Parameter(typeof(ISimpleDbItem));
+            var lambdaParameter = Expression.Parameter(typeof (ISimpleDbItem));
             var lambda = Expression.Lambda(
                 Expression.Constant(true),
                 lambdaParameter);
@@ -26,16 +24,16 @@ namespace Cucumber.SimpleDb.Test
                 new Func<IQueryable<object>, Expression<Func<object, bool>>, IQueryable<object>>(
                     Queryable.Where).Method
                     .GetGenericMethodDefinition()
-                    .MakeGenericMethod(typeof(ISimpleDbItem)),
+                    .MakeGenericMethod(typeof (ISimpleDbItem)),
                 Expression.Constant(source),
                 Expression.Quote(lambda));
             var resultExpression = binder.AccessVisitMethodCall(whereMethod);
             Assert.IsNotNull(resultExpression);
             Assert.IsInstanceOf<QueryExpression>(resultExpression);
-            Assert.IsNull(((QueryExpression)resultExpression).Select);
-            Assert.IsNull(((QueryExpression)resultExpression).Limit);
-            Assert.IsEmpty(((QueryExpression)resultExpression).OrderBy);
-            Assert.AreSame(lambda.Body, ((QueryExpression)resultExpression).Where);
+            Assert.IsNull(((QueryExpression) resultExpression).Select);
+            Assert.IsNull(((QueryExpression) resultExpression).Limit);
+            Assert.IsEmpty(((QueryExpression) resultExpression).OrderBy);
+            Assert.AreSame(lambda.Body, ((QueryExpression) resultExpression).Where);
         }
 
         [Test]
@@ -45,17 +43,17 @@ namespace Cucumber.SimpleDb.Test
             var binder = new QueryBinderAccessor();
             var lambda = Expression.Lambda(
                 Expression.Constant(true),
-                Expression.Parameter(typeof(string)));
+                Expression.Parameter(typeof (string)));
             var whereMethod = Expression.Call(
                 new Func<IQueryable<object>, Expression<Func<object, bool>>, IQueryable<object>>(
                     Queryable.Where).Method
-                .GetGenericMethodDefinition()
-                .MakeGenericMethod(typeof(string)),
+                    .GetGenericMethodDefinition()
+                    .MakeGenericMethod(typeof (string)),
                 Expression.Constant(source),
                 Expression.Quote(lambda));
             var resultExpression = binder.AccessVisitMethodCall(whereMethod);
             Assert.IsInstanceOf<MethodCallExpression>(resultExpression);
-            Assert.AreEqual(whereMethod.Arguments[1], ((MethodCallExpression)resultExpression).Arguments[1]);
+            Assert.AreEqual(whereMethod.Arguments[1], ((MethodCallExpression) resultExpression).Arguments[1]);
         }
 
         [Test]
@@ -65,12 +63,12 @@ namespace Cucumber.SimpleDb.Test
             var binder = new QueryBinderAccessor();
             var lambda = Expression.Lambda(
                 Expression.Constant(true),
-                Expression.Parameter(typeof(string)));
+                Expression.Parameter(typeof (string)));
             var whereMethod = Expression.Call(
                 new Func<IQueryable<object>, Expression<Func<object, bool>>, IQueryable<object>>(
                     Queryable.Where).Method
-                .GetGenericMethodDefinition()
-                .MakeGenericMethod(typeof(string)),
+                    .GetGenericMethodDefinition()
+                    .MakeGenericMethod(typeof (string)),
                 Expression.Constant(source),
                 Expression.Quote(lambda));
             var resultExpression = binder.AccessVisitMethodCall(whereMethod);
@@ -79,16 +77,15 @@ namespace Cucumber.SimpleDb.Test
             Assert.AreSame(
                 new Func<IEnumerable<object>, IQueryable<object>>(Queryable.AsQueryable)
                     .Method.GetGenericMethodDefinition()
-                    .MakeGenericMethod(typeof(string)),
-                ((MethodCallExpression)resultAsMethodCall.Arguments[0]).Method);
+                    .MakeGenericMethod(typeof (string)),
+                ((MethodCallExpression) resultAsMethodCall.Arguments[0]).Method);
             Assert.IsInstanceOf<MethodCallExpression>(
-                ((MethodCallExpression)resultAsMethodCall.Arguments[0]).Arguments[0]);
+                ((MethodCallExpression) resultAsMethodCall.Arguments[0]).Arguments[0]);
             Assert.AreSame(
                 new Func<IEnumerable<object>, IEnumerable<object>>(Enumerable.AsEnumerable)
                     .Method.GetGenericMethodDefinition()
-                    .MakeGenericMethod(typeof(string)),
-                ((MethodCallExpression)((MethodCallExpression)resultAsMethodCall.Arguments[0]).Arguments[0]).Method);
+                    .MakeGenericMethod(typeof (string)),
+                ((MethodCallExpression) ((MethodCallExpression) resultAsMethodCall.Arguments[0]).Arguments[0]).Method);
         }
     }
 }
-

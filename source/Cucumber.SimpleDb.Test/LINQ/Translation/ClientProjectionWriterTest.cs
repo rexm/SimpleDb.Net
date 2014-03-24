@@ -1,10 +1,8 @@
-using System;
-using System.Reflection;
-using NUnit.Framework;
+using System.Linq.Expressions;
 using Cucumber.SimpleDb.Linq.Structure;
 using Cucumber.SimpleDb.Linq.Translation;
-using System.Linq.Expressions;
 using Moq;
+using NUnit.Framework;
 
 namespace Cucumber.SimpleDb.Test
 {
@@ -22,15 +20,15 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
-        public void CreateDefaultProjector ()
+        public void CreateDefaultProjector()
         {
             var projectionExpression = SimpleDbExpression.Project(null, null);
             var resultExpression = ClientProjectionWriter.Rewrite(projectionExpression);
             Assert.IsNotNull(resultExpression);
             Assert.IsInstanceOf<LambdaExpression>(resultExpression.Projector);
-            Assert.AreEqual(1, ((LambdaExpression)resultExpression.Projector).Parameters.Count);
-            Assert.AreEqual(typeof(ISimpleDbItem), ((LambdaExpression)resultExpression.Projector).Parameters[0].Type);
-            var projectorFunction = ((LambdaExpression)resultExpression.Projector).Compile();
+            Assert.AreEqual(1, ((LambdaExpression) resultExpression.Projector).Parameters.Count);
+            Assert.AreEqual(typeof (ISimpleDbItem), ((LambdaExpression) resultExpression.Projector).Parameters[0].Type);
+            var projectorFunction = ((LambdaExpression) resultExpression.Projector).Compile();
             var inputItem = new Mock<ISimpleDbItem>().Object;
             var projectionResult = projectorFunction.DynamicInvoke(inputItem);
             Assert.AreSame(inputItem, projectionResult);
@@ -47,4 +45,3 @@ namespace Cucumber.SimpleDb.Test
         }
     }
 }
-

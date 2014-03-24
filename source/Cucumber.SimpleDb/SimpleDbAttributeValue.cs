@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Collections.ObjectModel;
-using Cucumber.SimpleDb.Utilities;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Linq.Expressions;
+using Cucumber.SimpleDb.Utilities;
 
 namespace Cucumber.SimpleDb
 {
@@ -18,24 +16,15 @@ namespace Cucumber.SimpleDb
     /// </summary>
     public class SimpleDbAttributeValue
     {
-        private delegate bool ValueComparer(SimpleDbAttributeValue left, SimpleDbAttributeValue right, ExpressionType operatorType);
-        private readonly string[] _values;
+        private readonly ValueComparer _comparer;
         private readonly Type _originalType;
-        private ValueComparer _comparer;
-
-        /// <summary>
-        /// Gets the underlying literal values.
-        /// </summary>
-        public ReadOnlyCollection<string> Values
-        {
-            get { return new ReadOnlyCollection<string>(_values); }
-        }
+        private readonly string[] _values;
 
         internal SimpleDbAttributeValue(params string[] values)
         {
             _values = values;
         }
-        
+
         private SimpleDbAttributeValue(ValueComparer comparer, params string[] values)
             : this(values)
         {
@@ -46,6 +35,14 @@ namespace Cucumber.SimpleDb
             : this(value)
         {
             _originalType = originalType;
+        }
+
+        /// <summary>
+        /// Gets the underlying literal values.
+        /// </summary>
+        public ReadOnlyCollection<string> Values
+        {
+            get { return new ReadOnlyCollection<string>(_values); }
         }
 
         /// <summary>
@@ -64,17 +61,7 @@ namespace Cucumber.SimpleDb
         /// <returns>True if the value occurs within the set; otherwise false.</returns>
         public bool In(params object[] values)
         {
-            foreach(var setValue in values)
-            {
-                foreach(var attValue in LiftValuesToType(_values, setValue.GetType()))
-                {
-                    if(attValue == setValue)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return values.Any(setValue => LiftValuesToType(_values, setValue.GetType()).Cast<object>().Any(attValue => attValue == setValue));
         }
 
         /// <summary>
@@ -133,49 +120,49 @@ namespace Cucumber.SimpleDb
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(string value)
         {
-            return new SimpleDbAttributeValue(value, typeof(string));
+            return new SimpleDbAttributeValue(value, typeof (string));
         }
 
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(int value)
         {
-            return new SimpleDbAttributeValue(value.ToString(), typeof(int));
+            return new SimpleDbAttributeValue(value.ToString(), typeof (int));
         }
 
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(long value)
         {
-            return new SimpleDbAttributeValue(value.ToString(), typeof(long));
+            return new SimpleDbAttributeValue(value.ToString(), typeof (long));
         }
 
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(float value)
         {
-            return new SimpleDbAttributeValue(value.ToString(), typeof(float));
+            return new SimpleDbAttributeValue(value.ToString(), typeof (float));
         }
 
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(double value)
         {
-            return new SimpleDbAttributeValue(value.ToString(), typeof(double));
+            return new SimpleDbAttributeValue(value.ToString(), typeof (double));
         }
 
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(decimal value)
         {
-            return new SimpleDbAttributeValue(value.ToString(), typeof(decimal));
+            return new SimpleDbAttributeValue(value.ToString(), typeof (decimal));
         }
 
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(DateTime value)
         {
-            return new SimpleDbAttributeValue(value.ToString(), typeof(DateTime));
+            return new SimpleDbAttributeValue(value.ToString(), typeof (DateTime));
         }
 
         /// <param name="value">Value.</param>
         public static implicit operator SimpleDbAttributeValue(bool value)
         {
-            return new SimpleDbAttributeValue(value.ToString(), typeof(bool));
+            return new SimpleDbAttributeValue(value.ToString(), typeof (bool));
         }
 
         /// <summary>
@@ -186,7 +173,10 @@ namespace Cucumber.SimpleDb
         /// <returns>A <see cref="System.String"/> that represents the current <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.</returns>
         public override string ToString()
         {
-            return _values.Concat(new[] { "" }).First();
+            return _values.Concat(new[]
+            {
+                ""
+            }).First();
         }
 
         /// <summary>
@@ -196,7 +186,7 @@ namespace Cucumber.SimpleDb
         /// hash table.</returns>
         public override int GetHashCode()
         {
-            return string.Join ("", this._values).GetHashCode ();
+            return string.Join("", _values).GetHashCode();
         }
 
         /// <summary>
@@ -209,13 +199,9 @@ namespace Cucumber.SimpleDb
         /// <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            SimpleDbAttributeValue left = this;
-            SimpleDbAttributeValue right = obj as SimpleDbAttributeValue;
-            if ((object)right != null)
-            {
-                return GetValueComparer(left, right)(left, right, ExpressionType.Equal);
-            }
-            return false;
+            var left = this;
+            var right = obj as SimpleDbAttributeValue;
+            return (object) right != null && GetValueComparer(left, right)(left, right, ExpressionType.Equal);
         }
 
         /// <summary>
@@ -227,7 +213,7 @@ namespace Cucumber.SimpleDb
         /// <param name="right">Right.</param>
         public static bool operator >(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
-            if ((object)left != null && (object)right != null)
+            if ((object) left != null && (object) right != null)
             {
                 return GetValueComparer(left, right)(left, right, ExpressionType.GreaterThan);
             }
@@ -243,7 +229,7 @@ namespace Cucumber.SimpleDb
         /// <param name="right">Right.</param>
         public static bool operator <(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
-            if ((object)left != null && (object)right != null)
+            if ((object) left != null && (object) right != null)
             {
                 return GetValueComparer(left, right)(left, right, ExpressionType.LessThan);
             }
@@ -259,7 +245,7 @@ namespace Cucumber.SimpleDb
         /// <param name="right">Right.</param>
         public static bool operator >=(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
-            if ((object)left != null && (object)right != null)
+            if ((object) left != null && (object) right != null)
             {
                 return GetValueComparer(left, right)(left, right, ExpressionType.GreaterThanOrEqual);
             }
@@ -275,7 +261,7 @@ namespace Cucumber.SimpleDb
         /// <param name="right">Right.</param>
         public static bool operator <=(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
-            if ((object)left != null && (object)right != null)
+            if ((object) left != null && (object) right != null)
             {
                 return GetValueComparer(left, right)(left, right, ExpressionType.LessThanOrEqual);
             }
@@ -291,15 +277,9 @@ namespace Cucumber.SimpleDb
         /// <param name="right">Right.</param>
         public static bool operator ==(SimpleDbAttributeValue left, SimpleDbAttributeValue right)
         {
-            if ((object)left != null)
-            {
-                return left.Equals(right);
-            }
-            if ((object)right != null)
-            {
-                return right.Equals(left);
-            }
-            return true;
+            return (object) left != null 
+                ? left.Equals(right) 
+                : (object) right == null || right.Equals(left);
         }
 
         /// <summary>
@@ -321,12 +301,12 @@ namespace Cucumber.SimpleDb
 
         private static bool AnyValueComparer(SimpleDbAttributeValue left, SimpleDbAttributeValue right, ExpressionType operatorType)
         {
-            Type type = left._originalType ?? right._originalType;
-            foreach (object leftValue in LiftValuesToType(left._values, type))
+            var type = left._originalType ?? right._originalType;
+            foreach (var leftValue in LiftValuesToType(left._values, type))
             {
-                foreach (object rightValue in LiftValuesToType(right._values, type))
+                foreach (var rightValue in LiftValuesToType(right._values, type))
                 {
-                    bool match = Expression.Lambda<Func<bool>>(
+                    var match = Expression.Lambda<Func<bool>>(
                         Expression.MakeBinary(operatorType,
                             Expression.Constant(leftValue),
                             Expression.Constant(rightValue))).Compile()();
@@ -341,12 +321,12 @@ namespace Cucumber.SimpleDb
 
         private static bool EveryValueComparer(SimpleDbAttributeValue left, SimpleDbAttributeValue right, ExpressionType operatorType)
         {
-            Type type = left._originalType ?? right._originalType;
-            foreach (object leftValue in LiftValuesToType(left._values, type))
+            var type = left._originalType ?? right._originalType;
+            foreach (var leftValue in LiftValuesToType(left._values, type))
             {
-                foreach (object rightValue in LiftValuesToType(right._values, type))
+                foreach (var rightValue in LiftValuesToType(right._values, type))
                 {
-                    bool match = Expression.Lambda<Func<bool>>(
+                    var match = Expression.Lambda<Func<bool>>(
                         Expression.MakeBinary(operatorType,
                             Expression.Constant(leftValue),
                             Expression.Constant(rightValue))).Compile()();
@@ -359,16 +339,16 @@ namespace Cucumber.SimpleDb
             return true;
         }
 
-        private static IEnumerable<T> LiftValuesToType<T>(string[] values)
+        private static IEnumerable<T> LiftValuesToType<T>(IEnumerable<string> values)
         {
-            return LiftValuesToType(values, typeof(T)).OfType<T>();
+            return LiftValuesToType(values, typeof (T)).OfType<T>();
         }
 
-        private static IEnumerable LiftValuesToType(string[] values, Type type)
+        private static IEnumerable LiftValuesToType(IEnumerable<string> values, Type type)
         {
             foreach (var value in values)
             {
-                object typedValue = null;
+                object typedValue;
                 if (TryParse(type, value, out typedValue))
                 {
                     yield return typedValue;
@@ -379,12 +359,18 @@ namespace Cucumber.SimpleDb
         private static bool TryParse(Type type, string value, out object parsedValue)
         {
             parsedValue = null;
-            MethodInfo method = type.GetMethod("TryParse", new [] { typeof(string), Type.GetType(type.ToString() + "&") });
-            bool success = false;
+            var method = type.GetMethod("TryParse", new[]
+            {
+                typeof (string), Type.GetType(type + "&")
+            });
+            var success = false;
             if (method != null)
             {
-                object[] args = new[] { value, parsedValue };
-                success = (bool)method.Invoke(null, args);
+                object[] args =
+                {
+                    value, null
+                };
+                success = (bool) method.Invoke(null, args);
                 if (success)
                 {
                     parsedValue = args[1];
@@ -403,5 +389,7 @@ namespace Cucumber.SimpleDb
             }
             return success;
         }
+
+        private delegate bool ValueComparer(SimpleDbAttributeValue left, SimpleDbAttributeValue right, ExpressionType operatorType);
     }
 }

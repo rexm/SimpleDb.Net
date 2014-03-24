@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Linq.Structure
@@ -22,18 +19,12 @@ namespace Cucumber.SimpleDb.Linq.Structure
 
         public override Type Type
         {
-            get
-            {
-                return typeof(Query<ISimpleDbItem>);
-            }
+            get { return typeof (Query<ISimpleDbItem>); }
         }
 
         public override ExpressionType NodeType
         {
-            get
-            {
-                return (ExpressionType)SimpleDbExpressionType.Domain;
-            }
+            get { return (ExpressionType) SimpleDbExpressionType.Domain; }
         }
     }
 }
