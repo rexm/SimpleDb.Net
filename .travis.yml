@@ -3,8 +3,9 @@ language: c
 before_script:
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && bash build/SetupSSH.sh'
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && bash build/GitSetup.sh'
-  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && source build/SetBuildNumber.sh'
-  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && bash build/SetAssemblyVersion.sh'
+  - 'source build/SetBuildNumber.sh'
+  - '[ "${TRAVIS_BRANCH}" = "master" ] && source build/PushBuildNumber.sh'
+  - 'bash build/SetAssemblyVersion.sh'
 
 install:
   - sudo add-apt-repository ppa:directhex/monoxide -y && sudo apt-get update
@@ -22,11 +23,6 @@ after_success:
 notifications:
   email:
     - rex@rexmorgan.net
-    
-branches:
-  only:
-    - master
-    - /^rc-.*$/
 
 env:
   global:
