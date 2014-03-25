@@ -4,17 +4,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Async.Linq
 {
-    internal class Query<T> : IOrderedQueryable<T>
+    internal class SimpleDbQuery<T> : IOrderedQueryable<T>, IDbAsyncEnumerable<T>
     {
         private readonly Expression _expression;
-        private readonly IQueryProvider _provider;
+        private readonly IDbAsyncQueryProvider _provider;
 
-        public Query(IQueryProvider provider)
+        public SimpleDbQuery(IDbAsyncQueryProvider provider)
         {
             if (provider == null)
             {
@@ -24,7 +25,7 @@ namespace Cucumber.SimpleDb.Async.Linq
             _expression = Expression.Constant(this);
         }
 
-        public Query(IQueryProvider provider, Expression expression)
+        public SimpleDbQuery(IDbAsyncQueryProvider provider, Expression expression)
         {
             if (provider == null)
             {
@@ -67,6 +68,11 @@ namespace Cucumber.SimpleDb.Async.Linq
             return ((IEnumerable) _provider.Execute(_expression)).GetEnumerator();
         }
 
+        public IDbAsyncEnumerator<T> GetAsyncEnumerator()
+        {
+            return new DbAsyncEnumerator<T>(token => _provider.ExecuteAsync<IEnumerable<T>>(_expression, token));
+        }
+
         public override string ToString()
         {
             if (_expression.NodeType == ExpressionType.Constant &&
@@ -75,6 +81,11 @@ namespace Cucumber.SimpleDb.Async.Linq
                 return "Query(" + typeof (T) + ")";
             }
             return _expression.ToString();
+        }
+
+        IDbAsyncEnumerator IDbAsyncEnumerable.GetAsyncEnumerator()
+        {
+            return GetAsyncEnumerator();
         }
     }
 }

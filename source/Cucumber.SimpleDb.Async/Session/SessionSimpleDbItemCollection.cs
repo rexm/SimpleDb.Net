@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Threading.Tasks;
 using Cucumber.SimpleDb.Async.Linq;
 
 namespace Cucumber.SimpleDb.Async.Session
 {
-    internal class SessionSimpleDbItemCollection : Query<ISimpleDbItem>, ISimpleDbItemCollection
+    internal class SessionSimpleDbItemCollection : SimpleDbQuery<ISimpleDbItem>, ISimpleDbItemCollection
     {
         private readonly IInternalContext _context;
         private readonly ISimpleDbDomain _domain;
         private readonly Dictionary<string, ISimpleDbItem> _fetchedItems;
 
-        internal SessionSimpleDbItemCollection(IInternalContext context, ISimpleDbDomain domain, IQueryProvider queryProvider)
+        internal SessionSimpleDbItemCollection(IInternalContext context, ISimpleDbDomain domain, IDbAsyncQueryProvider queryProvider)
             : base(queryProvider)
         {
             _context = context;
@@ -29,30 +31,21 @@ namespace Cucumber.SimpleDb.Async.Session
             get { return this.Count(); }
         }
 
-        public ISimpleDbItem this[string name]
+        public async Task<ISimpleDbItem> GetItemAsync(string name)
         {
-            get
+            if (_fetchedItems.ContainsKey(name) == false)
             {
-                if (_fetchedItems.ContainsKey(name) == false)
+                var element = await _context.Service.GetAttributesAsync(_domain.Name, name, false).ConfigureAwait(false);
+                if (element.Descendants("GetAttributesResult").First().HasElements)
                 {
-                    var element = _context.Service.GetAttributes(_domain.Name, name, false);
-                    if (element.Descendants("GetAttributesResult").First().HasElements)
-                    {
-                        _fetchedItems.Add(name,
-                            new SessionSimpleDbItem(
-                                _context,
-                                _domain,
-                                name,
-                                element,
-                                true));
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    _fetchedItems.Add(name, new SessionSimpleDbItem(_context, _domain, name, element, true));
                 }
-                return _fetchedItems[name];
+                else
+                {
+                    return null;
+                }
             }
+            return _fetchedItems[name];
         }
 
         public ISimpleDbItem Add(string name)

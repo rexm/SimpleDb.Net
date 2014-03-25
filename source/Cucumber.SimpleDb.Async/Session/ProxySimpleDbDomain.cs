@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Cucumber.SimpleDb.Async.Linq;
 
 namespace Cucumber.SimpleDb.Async.Session
@@ -17,16 +18,13 @@ namespace Cucumber.SimpleDb.Async.Session
             _context = context;
         }
 
-        private ISimpleDbDomain RealDomain
+        private async Task<ISimpleDbDomain> GetRealDomainAsync()
         {
-            get
+            if (_realDomain == null)
             {
-                if (_realDomain == null)
-                {
-                    LoadRealDomain();
-                }
-                return _realDomain;
+                await LoadRealDomainAsync().ConfigureAwait(false);
             }
+            return _realDomain;
         }
 
         public string Name
@@ -42,34 +40,34 @@ namespace Cucumber.SimpleDb.Async.Session
             }
         }
 
-        public long AttributeNameCount
+        public async Task<long> GetAttributeNameCountAsync()
         {
-            get { return RealDomain.AttributeNameCount; }
+            return await (await GetRealDomainAsync().ConfigureAwait(false)).GetAttributeNameCountAsync().ConfigureAwait(false);
         }
 
-        public long AttributeValueCount
+        public async Task<long> GetAttributeValueCountAsync()
         {
-            get { return RealDomain.AttributeValueCount; }
+            return await (await GetRealDomainAsync().ConfigureAwait(false)).GetAttributeValueCountAsync().ConfigureAwait(false);
         }
 
-        public long TotalItemNameSize
+        public async Task<long> GetTotalItemNameSizeAsync()
         {
-            get { return RealDomain.TotalItemNameSize; }
+            return await (await GetRealDomainAsync().ConfigureAwait(false)).GetTotalItemNameSizeAsync().ConfigureAwait(false);
         }
 
-        public long TotalAttributeValueSize
+        public async Task<long> GetTotalAttributeValueSizeAsync()
         {
-            get { return RealDomain.TotalAttributeValueSize; }
+            return await (await GetRealDomainAsync().ConfigureAwait(false)).GetTotalAttributeValueSizeAsync().ConfigureAwait(false);
         }
 
-        public long TotalAttributeNameSize
+        public async Task<long> GetTotalAttributeNameSizeAsync()
         {
-            get { return RealDomain.TotalAttributeNameSize; }
+            return await (await GetRealDomainAsync().ConfigureAwait(false)).GetTotalAttributeNameSizeAsync().ConfigureAwait(false);
         }
 
-        public void Delete()
+        public async Task DeleteAsync()
         {
-            _context.Service.DeleteDomain(_name); //TODO: switch to deferred/command pattern
+            await _context.Service.DeleteDomainAsync(_name).ConfigureAwait(false); //TODO: switch to deferred/command pattern
             if (_loadedDomains != null)
             {
                 _loadedDomains.Remove(_name);
@@ -77,9 +75,10 @@ namespace Cucumber.SimpleDb.Async.Session
             _realDomain = null;
         }
 
-        private void LoadRealDomain()
+        private async Task LoadRealDomainAsync()
         {
-            var data = _context.Service.GetDomainMeta(_name);
+            var data = await _context.Service.GetDomainMetaAsync(_name).ConfigureAwait(false);
+
             _realDomain = new SessionSimpleDbDomain(_context, _name, data);
         }
     }

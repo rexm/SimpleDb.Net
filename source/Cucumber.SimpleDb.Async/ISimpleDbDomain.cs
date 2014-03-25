@@ -1,4 +1,6 @@
-﻿namespace Cucumber.SimpleDb.Async
+﻿using System.Threading.Tasks;
+
+namespace Cucumber.SimpleDb.Async
 {
     /// <summary>
     /// Represents a single domain instance in SimpleDb.
@@ -18,31 +20,31 @@
         /// <summary>
         /// Gets the total number of attribute names present in the current domain.
         /// </summary>
-        long AttributeNameCount { get; }
+        Task<long> GetAttributeNameCountAsync();
 
         /// <summary>
         /// Gets the total number of attribute values present in the current domain.
         /// </summary>
-        long AttributeValueCount { get; }
+        Task<long> GetAttributeValueCountAsync();
 
         /// <summary>
         /// Gets the total size (in bytes) of the item names in the current domain.
         /// </summary>
-        long TotalItemNameSize { get; }
+        Task<long> GetTotalItemNameSizeAsync();
 
         /// <summary>
         /// Gets the total size (in bytes) of the attribute values in the current domain.
         /// </summary>
-        long TotalAttributeValueSize { get; }
+        Task<long> GetTotalAttributeValueSizeAsync();
 
         /// <summary>
         /// Gets the total size (in bytes) of the attribute names in the current domain.
         /// </summary>
-        long TotalAttributeNameSize { get; }
+        Task<long> GetTotalAttributeNameSizeAsync();
 
         /// <summary>
         /// Deletes the current domain and all its data.
         /// </summary>
-        void Delete();
+        Task DeleteAsync();
     }
 }

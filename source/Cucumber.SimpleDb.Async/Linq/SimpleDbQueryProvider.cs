@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Cucumber.SimpleDb.Async.Linq.Translation;
 using Cucumber.SimpleDb.Async.Utilities;
 
 namespace Cucumber.SimpleDb.Async.Linq
 {
-    internal class SimpleDbQueryProvider : IQueryProvider
+    internal class SimpleDbQueryProvider : IDbAsyncQueryProvider
     {
         private readonly IInternalContext _context;
 
@@ -23,9 +26,18 @@ namespace Cucumber.SimpleDb.Async.Linq
             return Expression.Lambda<Func<object>>(plan, null).Compile()();
         }
 
+        Task<object> IDbAsyncQueryProvider.ExecuteAsync(Expression expression, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var plan = CreateExecutionPlan(expression);
+            plan = Expression.Convert(plan, typeof(object));
+            return (Task<object>) Expression.Lambda<Func<object>>(plan, null).Compile()();
+        }
+
         IQueryable<TElement> IQueryProvider.CreateQuery<TElement>(Expression expression)
         {
-            return new Query<TElement>(this, expression);
+            return new SimpleDbQuery<TElement>(this, expression);
         }
 
         IQueryable IQueryProvider.CreateQuery(Expression expression)
@@ -33,7 +45,7 @@ namespace Cucumber.SimpleDb.Async.Linq
             var elementType = TypeUtilities.GetElementType(expression.Type);
             try
             {
-                return (IQueryable) Activator.CreateInstance(typeof (Query<>).MakeGenericType(elementType), new object[]
+                return (IQueryable) Activator.CreateInstance(typeof (SimpleDbQuery<>).MakeGenericType(elementType), new object[]
                 {
                     this, expression
                 });
@@ -47,6 +59,17 @@ namespace Cucumber.SimpleDb.Async.Linq
         TResult IQueryProvider.Execute<TResult>(Expression expression)
         {
             return (TResult) Execute(expression);
+        }
+
+        Task<TResult> IDbAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var plan = CreateExecutionPlan(expression);
+
+            plan = Expression.Convert(plan, typeof(object));
+
+            return (Task<TResult>)Expression.Lambda<Func<object>>(plan, null).Compile()();
         }
 
         protected virtual Expression CreateExecutionPlan(Expression expression)

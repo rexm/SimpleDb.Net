@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Async
 {
@@ -28,7 +29,7 @@ namespace Cucumber.SimpleDb.Async
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="name"/> is null or empty</exception>
         /// <param name="name">The name of the domain to create</param>
         /// <returns>The new domain if no matching domain existed, otherwise the existing domain</returns>
-        ISimpleDbDomain Add(string name);
+        Task<ISimpleDbDomain> AddAsync(string name);
 
         /// <summary>
         /// Gets whether a domain with the speified name exists

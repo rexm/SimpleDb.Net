@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Cucumber.SimpleDb.Async")]
+[assembly: AssemblyTitle("Cucumber.SimpleDb.Test.Async")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Cucumber LLC")]
@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: Guid("d219a6e2-4c55-4f1f-804a-b72edec7fba1")]
+[assembly: Guid("94872b6a-d5e7-465f-9129-1fb879346089")]
 
 // Versioning follows SemVer 2.0.0-rc1
 //     Major: breaking API changes
@@ -24,4 +24,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: InternalsVisibleTo("Cucumber.SimpleDb.Test.Async")]
+[assembly: InternalsVisibleTo("Cucumber.SimpleDb.Async")]

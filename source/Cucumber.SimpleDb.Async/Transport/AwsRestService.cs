@@ -4,8 +4,10 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Async.Utilities;
@@ -17,52 +19,46 @@ namespace Cucumber.SimpleDb.Async.Transport
         private const string SimpleDbUrl = "sdb.amazonaws.com";
         private const string SimpleDbProtocol = "https";
         private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
+        private readonly HttpClient _httpClient;
         private readonly string _privateKey;
         private readonly string _publicKey;
-        private readonly IWebRequestProvider _webRequest;
 
-        public AwsRestService(string publicKey, string privateKey, IWebRequestProvider webRequest)
+        public AwsRestService(string publicKey, string privateKey, HttpClient httpClient)
         {
             _publicKey = publicKey;
             _privateKey = privateKey;
-            _webRequest = webRequest;
+            _httpClient = httpClient;
         }
 
-        public XElement ExecuteRequest(NameValueCollection arguments)
+        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             arguments = AddStandardArguments(arguments);
             var argumentString = WriteQueryString(arguments);
-            var request = _webRequest.Create(string.Format(
-                "{0}://{1}/?{2}",
-                SimpleDbProtocol,
-                SimpleDbUrl,
-                argumentString));
-            try
+            var requestUri = string.Format("{0}://{1}/?{2}", SimpleDbProtocol, SimpleDbUrl, argumentString);
+
+            XElement xmlContent;
+            bool isSuccessStatusCode;
+            HttpStatusCode statusCode;
+
+            using (var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false))
             {
-                using (var response = request.GetResponse())
-                {
-                    return ProcessAwsResponse(response);
-                }
+                isSuccessStatusCode = response.IsSuccessStatusCode;
+                statusCode = response.StatusCode;
+                xmlContent = await ProcessAwsResponseAsync(response).ConfigureAwait(false);
             }
-            catch (WebException ex)
+
+            if (isSuccessStatusCode)
             {
-                var response = ex.Response as HttpWebResponse;
-                var errors = ProcessAwsResponse(response);
-                throw new SimpleDbException(string.Format(
-                    "Error {0} {1}: AWS returned the following:\n{2}",
-                    (int) response.StatusCode,
-                    response.StatusCode,
-                    string.Join("\n", errors.Descendants(SdbNs + "Error")
-                        .Select(error => string.Format("{0}: {1}",
-                            error.Element(SdbNs + "Code").Value,
-                            error.Element(SdbNs + "Message").Value)))),
-                    ex);
+                return xmlContent;
             }
+            throw new SimpleDbException(string.Format("Error {0} {1}: AWS returned the following:\n{2}",
+                                                         (int)statusCode, statusCode,
+                                                         string.Join("\n", xmlContent.Descendants(SdbNs + "Error").Select(error => string.Format("{0}: {1}", error.Element(SdbNs + "Code").Value, error.Element(SdbNs + "Message").Value)))));
         }
 
-        private static XElement ProcessAwsResponse(WebResponse response)
+        private static async Task<XElement> ProcessAwsResponseAsync(HttpResponseMessage response)
         {
-            using (var stream = response.GetResponseStream())
+            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
                 try
                 {
@@ -73,9 +69,7 @@ namespace Cucumber.SimpleDb.Async.Transport
                     using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
                         var content = reader.ReadToEnd();
-                        throw new SimpleDbException(string.Format(
-                            "AWS returned invalid XML:\n{0}", content)
-                            , xmlex);
+                        throw new SimpleDbException(string.Format("AWS returned invalid XML:\n{0}", content), xmlex);
                     }
                 }
                 catch (InvalidOperationException invalidex)
@@ -83,9 +77,7 @@ namespace Cucumber.SimpleDb.Async.Transport
                     using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
                         var content = reader.ReadToEnd();
-                        throw new SimpleDbException(string.Format(
-                            "AWS returned invalid XML:\n{0}", content)
-                            , invalidex);
+                        throw new SimpleDbException(string.Format("AWS returned invalid XML:\n{0}", content), invalidex);
                     }
                 }
             }
@@ -116,8 +108,7 @@ namespace Cucumber.SimpleDb.Async.Transport
 
         private string WriteQueryString(NameValueCollection arguments)
         {
-            var argumentString = string.Join("&", arguments.AllKeys
-                .Select(k => k + "=" + arguments[k].ToRfc3986()));
+            var argumentString = string.Join("&", arguments.AllKeys.Select(k => k + "=" + arguments[k].ToRfc3986()));
             argumentString += GetRequestSignature(arguments);
             return argumentString;
         }
@@ -131,14 +122,7 @@ namespace Cucumber.SimpleDb.Async.Transport
 
         private static string GetRequestDescription(NameValueCollection arguments)
         {
-            return string.Format("{0}\n{1}\n/\n{2}",
-                "GET",
-                SimpleDbUrl,
-                string.Join("&",
-                    arguments.AllKeys.OrderBy(k => k, new NaturalByteComparer())
-                        .Select(k => string.Format("{0}={1}",
-                            k.ToRfc3986(),
-                            arguments[k].ToRfc3986()))));
+            return string.Format("{0}\n{1}\n/\n{2}", "GET", SimpleDbUrl, string.Join("&", arguments.AllKeys.OrderBy(k => k, new NaturalByteComparer()).Select(k => string.Format("{0}={1}", k.ToRfc3986(), arguments[k].ToRfc3986()))));
         }
 
         private string HashString(string requestDescription)
@@ -158,4 +142,20 @@ namespace Cucumber.SimpleDb.Async.Transport
             }
         }
     }
+
+    ///// <summary>
+    ///// Defines contract for sending HTTP requests and receiving HTTP responses from a resource identified by a URI.
+    ///// </summary>
+    //internal interface IHttpClient
+    //{
+    //    /// <summary>
+    //    /// Send a GET request to the specified Uri as an asynchronous operation.
+    //    /// </summary>
+    //    /// 
+    //    /// <returns>
+    //    /// Returns <see cref="T:System.Threading.Tasks.Task`1"/>.The task object representing the asynchronous operation.
+    //    /// </returns>
+    //    /// <param name="requestUri">The Uri the request is sent to.</param><exception cref="T:System.ArgumentNullException">The <paramref name="requestUri"/> was null.</exception>
+    //    Task<HttpResponseMessage> GetAsync(string requestUri);
+    //}
 }

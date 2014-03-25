@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using Cucumber.SimpleDb.Async.Session;
 using Cucumber.SimpleDb.Async.Transport;
 
@@ -28,7 +29,7 @@ namespace Cucumber.SimpleDb.Async
             {
                 throw new ArgumentNullException("privateKey");
             }
-            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey, new WebRequestProvider())));
+            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey, new HttpClient())));
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Cucumber.SimpleDb.Async
             {
                 throw new ArgumentNullException("service");
             }
-            return new SessionSimpleDbContext(service);
+            return new SessionSimpleDbContext(service, new SimpleDbSession(service));
         }
     }
 }

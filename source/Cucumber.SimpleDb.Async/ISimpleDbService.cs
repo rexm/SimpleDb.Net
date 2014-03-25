@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb.Async
 {
@@ -15,7 +16,7 @@ namespace Cucumber.SimpleDb.Async
         /// <returns>Operation metadata.</returns>
         /// <param name="domain">Domain.</param>
         /// <param name="items">Items.</param>
-        XElement BatchDeleteAttributes(string domain, params object[] items);
+        Task<XElement> BatchDeleteAttributesAsync(string domain, params object[] items);
 
         /// <summary>
         /// Puts the specified attributes in batches.
@@ -24,7 +25,7 @@ namespace Cucumber.SimpleDb.Async
         /// <returns>Operation metadata.</returns>
         /// <param name="domain">Domain.</param>
         /// <param name="items">Items.</param>
-        XElement BatchPutAttributes(string domain, params object[] items);
+        Task<XElement> BatchPutAttributesAsync(string domain, params object[] items);
 
         /// <summary>
         /// Creates the domain.
@@ -32,7 +33,7 @@ namespace Cucumber.SimpleDb.Async
         /// </summary>
         /// <returns>Operation metadata.</returns>
         /// <param name="domain">The unique domain name.</param>
-        XElement CreateDomain(string domain);
+        Task<XElement> CreateDomainAsync(string domain);
 
         /// <summary>
         /// Deletes the domain.
@@ -40,7 +41,7 @@ namespace Cucumber.SimpleDb.Async
         /// </summary>
         /// <returns>Operation metadata.</returns>
         /// <param name="domain">The unique domain name.</param>
-        XElement DeleteDomain(string domain);
+        Task<XElement> DeleteDomainAsync(string domain);
 
         /// <summary>
         /// Deletes the specified attributes for the specified item.
@@ -50,7 +51,7 @@ namespace Cucumber.SimpleDb.Async
         /// <param name="domain">Domain.</param>
         /// <param name="itemName">Item name.</param>
         /// <param name="attributes">Attributes to delete.</param>
-        XElement DeleteAttributes(string domain, string itemName, params object[] attributes);
+        Task<XElement> DeleteAttributesAsync(string domain, string itemName, params object[] attributes);
 
         /// <summary>
         /// Gets the domain meta.
@@ -58,14 +59,14 @@ namespace Cucumber.SimpleDb.Async
         /// </summary>
         /// <returns>The domain meta.</returns>
         /// <param name="domain">The unique domain name.</param>
-        XElement GetDomainMeta(string domain);
+        Task<XElement> GetDomainMetaAsync(string domain);
 
         /// <summary>
         /// Lists the domains.
         /// See: http://docs.aws.amazon.com/AmazonSimpleDB/latest/DeveloperGuide/SDB_API_ListDomains.html
         /// </summary>
         /// <returns>The domains.</returns>
-        XElement ListDomains();
+        Task<XElement> ListDomainsAsync();
 
         /// <summary>
         /// Lists the domains.
@@ -73,7 +74,7 @@ namespace Cucumber.SimpleDb.Async
         /// </summary>
         /// <returns>The domains.</returns>
         /// <param name="nextPageToken">Next page token.</param>
-        XElement ListDomains(string nextPageToken);
+        Task<XElement> ListDomainsAsync(string nextPageToken);
 
         /// <summary>
         /// Puts the specified attributes to the specified item.
@@ -83,7 +84,7 @@ namespace Cucumber.SimpleDb.Async
         /// <param name="domain">The unique domain name.</param>
         /// <param name="name">The unique item name.</param>
         /// <param name="attributes">The attributes to put.</param>
-        XElement PutAttributes(string domain, string name, params object[] attributes);
+        Task<XElement> PutAttributesAsync(string domain, string name, params object[] attributes);
 
         /// <summary>
         /// Gets the specified attributes for the specified item.
@@ -94,7 +95,7 @@ namespace Cucumber.SimpleDb.Async
         /// <param name="name">The unique item name.</param>
         /// <param name="useConsistency">If set to <c>true</c> use consistency.</param>
         /// <param name="attributeNames">The attribute names.</param>
-        XElement GetAttributes(string domain, string name, bool useConsistency, params string[] attributeNames);
+        Task<XElement> GetAttributesAsync(string domain, string name, bool useConsistency, params string[] attributeNames);
 
         /// <summary>
         /// Gets results for the specified query.
@@ -103,7 +104,7 @@ namespace Cucumber.SimpleDb.Async
         /// <returns>The resulting attribute set.</returns>
         /// <param name="query">The query.</param>
         /// <param name="useConsistency">If set to <c>true</c> use consistency.</param>
-        XElement Select(string query, bool useConsistency);
+        Task<XElement> SelectAsync(string query, bool useConsistency);
 
         /// <summary>
         /// Gets results for the specified query.
@@ -113,6 +114,6 @@ namespace Cucumber.SimpleDb.Async
         /// <param name="query">The query.</param>
         /// <param name="useConsistency">If set to <c>true</c> use consistency.</param>
         /// <param name="nextPageToken">Next page token.</param>
-        XElement Select(string query, bool useConsistency, string nextPageToken);
+        Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken);
     }
 }

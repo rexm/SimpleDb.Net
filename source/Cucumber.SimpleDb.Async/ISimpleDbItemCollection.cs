@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Async
 {
@@ -14,7 +15,7 @@ namespace Cucumber.SimpleDb.Async
         /// </summary>
         /// <param name="itemName">The name of the item to return.</param>
         /// <returns>The <c>Cucumber.SimpleDb.ISimpleDbItem</c> instance if exists; otherwise null.</returns>
-        ISimpleDbItem this[string itemName] { get; }
+        Task<ISimpleDbItem> GetItemAsync(string itemName);
 
         /// <summary>
         /// Gets the total number of items in the collection.

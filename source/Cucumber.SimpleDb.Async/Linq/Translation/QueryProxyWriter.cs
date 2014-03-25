@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Async.Linq.Structure;
 using Cucumber.SimpleDb.Async.Session;
@@ -26,10 +27,7 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            return Expression.Call(
-                m.Object,
-                m.Method,
-                m.Arguments.Select(Visit).ToArray());
+            return Expression.Call(m.Object, m.Method, m.Arguments.Select(Visit).ToArray());
         }
 
         protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
@@ -38,50 +36,42 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
             var projector = pex.Projector as LambdaExpression;
             if (pex.Source.Select is ScalarExpression)
             {
-                return Expression.Call(
-                    Expression.Constant(this),
-                    GetType().GetMethod("ExecuteScalar", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .MakeGenericMethod(pex.Source.Select.Type),
-                    Expression.Constant(new QueryCommand(pex.Source)));
+                return Expression.Call(Expression.Constant(this), GetType().GetMethod("ExecuteScalarAsync", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(pex.Source.Select.Type), Expression.Constant(new QueryCommand(pex.Source)));
             }
-            return Expression.Call(
-                Expression.Constant(this),
-                GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .MakeGenericMethod(projector.Body.Type),
-                Expression.Constant(new QueryCommand(pex.Source)),
-                projector);
+            return Expression.Call(Expression.Constant(this), GetType().GetMethod("ExecuteDeferredAsync", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(projector.Body.Type), Expression.Constant(new QueryCommand(pex.Source)), projector);
         }
 
-        protected virtual T ExecuteScalar<T>(QueryCommand query)
+        protected virtual async Task<T> ExecuteScalarAsync<T>(QueryCommand query)
         {
-            var result = ExecuteQuery(query).FirstOrDefault();
+            var result = (await ExecuteQueryAsync(query).ConfigureAwait(false)).FirstOrDefault();
             if (result == null)
             {
                 throw new InvalidOperationException("Query did not return a scalar value in the result");
             }
-            return (T) Convert.ChangeType(result
-                .Element(SdbNs + "Attribute")
-                .Element(SdbNs + "Value").Value, typeof (T));
+            return (T) Convert.ChangeType(result.Element(SdbNs + "Attribute").Element(SdbNs + "Value").Value, typeof (T));
         }
 
-        protected virtual IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
+        protected virtual async Task<IEnumerable<T>> ExecuteDeferredAsync<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
         {
-            return ExecuteQuery(query).Select(itemData => projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect)));
+            return (await ExecuteQueryAsync(query).ConfigureAwait(false)).Select(itemData => projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect)));
         }
 
-        protected virtual IEnumerable<XElement> ExecuteQuery(QueryCommand query)
+        protected virtual async Task<IEnumerable<XElement>> ExecuteQueryAsync(QueryCommand query)
         {
+            var itemNodes = new List<XElement>();
             string nextPageToken = null;
+
             do
             {
-                var result = _context.Service.Select(query.QueryText, query.UseConsistency, nextPageToken)
-                    .Element(SdbNs + "SelectResult");
-                foreach (var itemNode in result.Elements(SdbNs + "Item"))
-                {
-                    yield return itemNode;
-                }
+                var result = (await _context.Service.SelectAsync(query.QueryText, query.UseConsistency, nextPageToken).ConfigureAwait(false)).Element(SdbNs + "SelectResult");
+
+                itemNodes.AddRange(result.Elements(SdbNs + "Item"));
+
                 nextPageToken = result.Elements(SdbNs + "NextToken").Select(x => x.Value).FirstOrDefault();
+
             } while (!string.IsNullOrEmpty(nextPageToken));
+
+            return itemNodes;
         }
     }
 }

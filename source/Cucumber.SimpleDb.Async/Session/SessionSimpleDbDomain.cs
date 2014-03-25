@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Async.Linq;
 
@@ -43,34 +44,34 @@ namespace Cucumber.SimpleDb.Async.Session
             get { return _name; }
         }
 
-        public long AttributeNameCount
+        public Task<long> GetAttributeNameCountAsync()
         {
-            get { return _attributeNameCount; }
+            return Task.FromResult(_attributeNameCount);
         }
 
-        public long AttributeValueCount
+        public Task<long> GetAttributeValueCountAsync()
         {
-            get { return _attributeValueCount; }
+            return Task.FromResult(_attributeValueCount);
         }
 
-        public long TotalItemNameSize
+        public Task<long> GetTotalItemNameSizeAsync()
         {
-            get { return _totalItemNameSize; }
+            return Task.FromResult(_totalItemNameSize);
         }
 
-        public long TotalAttributeValueSize
+        public Task<long> GetTotalAttributeValueSizeAsync()
         {
-            get { return _totalAttributeValueSize; }
+            return Task.FromResult(_totalAttributeValueSize);
         }
 
-        public long TotalAttributeNameSize
+        public Task<long> GetTotalAttributeNameSizeAsync()
         {
-            get { return _totalAttributeNameSize; }
+            return Task.FromResult(_totalAttributeNameSize);
         }
 
-        public void Delete()
+        public async Task DeleteAsync()
         {
-            _context.Service.DeleteDomain(_name); //TODO: switch to deferred/command pattern
+            await _context.Service.DeleteDomainAsync(_name).ConfigureAwait(false); //TODO: switch to deferred/command pattern
         }
     }
 }
