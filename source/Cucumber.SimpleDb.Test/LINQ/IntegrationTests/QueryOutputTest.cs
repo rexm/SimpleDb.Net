@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Cucumber.SimpleDb.Test.Transport;
 
 namespace Cucumber.SimpleDb.Test
 {

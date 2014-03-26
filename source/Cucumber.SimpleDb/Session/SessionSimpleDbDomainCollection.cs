@@ -102,13 +102,15 @@ namespace Cucumber.SimpleDb.Session
             string nextPageToken = null;
             do
             {
-                result = _session.Service.ListDomains(nextPageToken);
-                foreach (var domainNode in result.Elements("DomainName"))
+                result = _session.Service.ListDomains(nextPageToken).Element(SdbNs + "ListDomainsResult");
+                foreach (var domainNode in result.Elements(SdbNs + "DomainName"))
                 {
                     _domains.Add(domainNode.Value, new ProxySimpleDbDomain(domainNode.Value, _domains, _session));
                 }
-                nextPageToken = result.Elements("NextPageToken").Select(x => x.Value).FirstOrDefault();
+                nextPageToken = result.Elements(SdbNs + "NextToken").Select(x => x.Value).FirstOrDefault();
             } while (!string.IsNullOrEmpty(nextPageToken));
         }
+
+        private readonly static XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
     }
 }
