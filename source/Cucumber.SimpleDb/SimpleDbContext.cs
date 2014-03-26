@@ -31,7 +31,7 @@ namespace Cucumber.SimpleDb
             {
                 throw new ArgumentNullException("privateKey");
             }
-            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey, new WebRequestProvider())));
+            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey)));
         }
 
         /// <summary>
