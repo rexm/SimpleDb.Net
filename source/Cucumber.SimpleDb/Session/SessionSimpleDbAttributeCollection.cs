@@ -17,18 +17,30 @@ namespace Cucumber.SimpleDb.Session
         {
             _item = item;
             _complete = complete;
+
+			var result = new Dictionary<string, SessionSimpleDbAttribute>();
+
             try
             {
-                _attributes = data.Descendants(sdbNs + "Attribute").Select(
-                        x => new SessionSimpleDbAttribute(
-                            _item,
-                            x.Element(sdbNs + "Name").Value,
-                            x.Elements(sdbNs + "Value").Select(val => val.Value).ToArray()
-                        )
-                    ).ToDictionary(
-                        att => att.Name,
-                        att => att
-                    );
+				var subResult = data.Descendants(sdbNs + "Attribute").Select(
+						x => new SessionSimpleDbAttribute(
+							_item,
+							x.Element(sdbNs + "Name").Value,
+							x.Elements(sdbNs + "Value").
+							Select(val => val.Value).ToArray()
+						)
+					);
+				foreach (var resItem in subResult) {
+					if (!result.Keys.Contains(resItem.Name)) {
+						result.Add(resItem.Name, resItem);
+					}
+					else {
+						result[resItem.Name].Value = new SimpleDbAttributeValue(
+							result[resItem.Name].Value.Values.Concat(resItem.Value.Values).ToArray());
+					}
+				}
+
+				_attributes = result;
             }
             catch (Exception ex)
             {

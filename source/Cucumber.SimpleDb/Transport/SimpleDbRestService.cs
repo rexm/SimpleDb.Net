@@ -54,22 +54,22 @@ namespace Cucumber.SimpleDb.Transport
                         int attributeCount = 0;
                         foreach (dynamic attribute in item.Attributes)
                         {
-                            values.Add(
-                                string.Format("Item.{0}.Attribute.{1}.Name", itemCount, attributeCount),
-                                attribute.Name);
-                            values.Add(
-                                string.Format("Item.{0}.Attribute.{1}.Value", itemCount, attributeCount),
-                                attribute.Value.ToString());
-                            if (ObjectExtensions.HasMember(attribute, "Replace"))
-                            {
-                                if(attribute.Replace == true)
-                                {
-                                    values.Add(
-                                        string.Format("Item.{0}.Attribute.{1}.Replace", itemCount, attributeCount),
-                                        "true");
-                                }
-                            }
-                            attributeCount++;
+							for (int i = 0; i < attribute.Value.Values.Count; ++i) {
+								values.Add(
+									string.Format("Item.{0}.Attribute.{1}.Name", itemCount, attributeCount),
+									attribute.Name);
+								values.Add(
+									string.Format("Item.{0}.Attribute.{1}.Value", itemCount, attributeCount),
+									attribute.Value.Values[i].ToString());
+								if (ObjectExtensions.HasMember(attribute, "Replace")) {
+									if (attribute.Replace == true) {
+										values.Add(
+											string.Format("Item.{0}.Attribute.{1}.Replace", itemCount, attributeCount),
+											"true");
+									}
+								}
+								attributeCount++;
+							}
                         }
                     }
                     itemCount++;
