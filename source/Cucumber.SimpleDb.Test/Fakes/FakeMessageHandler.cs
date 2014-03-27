@@ -10,7 +10,6 @@ namespace Cucumber.SimpleDb.Test.Fakes
 	{
 		private readonly HttpResponseMessage _responseMessage;
 		private readonly Action<HttpRequestMessage> _requestFilter;
-		
 
 		public FakeHttpMessageHandler(HttpResponseMessage responseMessage, Action<HttpRequestMessage> requestFilter)
 		{
