@@ -4,7 +4,7 @@ before_script:
   - 'if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then bash build/SetupSSH.sh; fi'
   - 'if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then bash build/GitSetup.sh; fi'
   - 'source build/SetBuildNumber.sh'
-  - 'if [[ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "master" ]]; then source build/PushBuildNumber.sh; fi'
+  - 'if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" ]]; then source build/PushBuildNumber.sh; fi'
   - 'bash build/SetAssemblyVersion.sh'
 
 install:
