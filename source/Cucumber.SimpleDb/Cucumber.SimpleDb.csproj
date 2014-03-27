@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\HttpMethodExtensions.cs" />
+    <Compile Include="Extensions\QueryStringRelatedExtensions.cs" />
     <Compile Include="Session\ISessionAttribute.cs" />
     <Compile Include="Session\ISessionItem.cs" />
     <Compile Include="Session\ISession.cs" />

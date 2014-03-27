@@ -42,7 +42,7 @@ namespace Cucumber.SimpleDb.Transport
         public Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             arguments = AddStandardArguments(arguments);
-            string argumentString = WriteQueryString(arguments);
+            var argumentString = WriteQueryString(arguments);
 						var requestUrl = string.Format(
 								"{0}://{1}/?{2}",
 								simpleDbProtocol,
@@ -59,6 +59,7 @@ namespace Cucumber.SimpleDb.Transport
 							}
 
 							var errors = ProcessAwsResponse(responseMessage);
+							//TODO: (CV) Should not be throwing from the async handler. Maybe change the method signature to return a result wrapper which indicates the Status of result???.
 							throw new SimpleDbException(string.Format(
 									"Error {0} {1}: AWS returned the following:\n{2}",
 									(int)responseMessage.StatusCode,
@@ -144,7 +145,7 @@ namespace Cucumber.SimpleDb.Transport
                         arguments[k].ToRfc3986()))));
         }
 
-        private string HashString(string requestDescription)
+        internal string HashString(string requestDescription)
         {
             using (HMACSHA256 hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_privateKey)))
             {
