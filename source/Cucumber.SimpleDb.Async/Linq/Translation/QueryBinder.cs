@@ -31,6 +31,7 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
                         return BindTake(m);
                     case "OrderBy":
                     case "OrderByDescending":
+                    case "ThenByDescending":
                         return BindOrderBy(m);
                     default:
                         return BindDefaultEnumerable(m);
@@ -258,7 +259,7 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
         {
             private static readonly string[] SupportedLinqMethodNames =
             {
-                "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count"
+                "Select", "Where", "Take", "OrderBy", "OrderByDescending", "ThenByDescending", "Count"
             };
 
             private bool _isCandidate = true;

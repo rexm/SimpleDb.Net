@@ -11,13 +11,7 @@ namespace Cucumber.SimpleDb.Async
         /// <summary>
         /// Gets the collection of domains residing in this SimpleDb instance.
         /// </summary>
-        Task<ISimpleDbDomainCollection> GetDomainsAsync();
-
-        /// <summary>
-        /// Gets the domain residing in this SimpleDb instance with the given name.
-        /// </summary>
-        /// <param name="name"></param>
-        Task<ISimpleDbDomain> GetDomainAsync(string name);
+        ISimpleDbDomainCollection Domains { get; }
 
         /// <summary>
         /// Computes the set of modified objects to be inserted, updated, or deleted, and executes the appropriate commands to implement the changes to SimpleDb.

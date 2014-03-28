@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Async
@@ -8,11 +9,6 @@ namespace Cucumber.SimpleDb.Async
     /// </summary>
     public interface ISimpleDbDomainCollection : IEnumerable<ISimpleDbDomain>
     {
-        /// <summary>
-        /// Gets the total number of domains in the collection.
-        /// </summary>
-        int Count { get; }
-
         /// <summary>
         /// Gets the domain of the specified name.
         /// </summary>
@@ -37,6 +33,6 @@ namespace Cucumber.SimpleDb.Async
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="name"/> is null or empty</exception>
         /// <param name="name">The name of the domain to search for</param>
         /// <returns>True if a domain with the specified name exists; otherwise false</returns>
-        bool HasDomain(string name);
+        Task<bool> HasDomainAsync(string name);
     }
 }

@@ -9,7 +9,7 @@ namespace Cucumber.SimpleDb.Async.Session
         private readonly IInternalContext _context;
         private readonly Dictionary<string, ISimpleDbDomain> _loadedDomains;
         private readonly string _name;
-        private SessionSimpleDbDomain _realDomain;
+        private RealSimpleDbDomain _realDomain;
 
         internal ProxySimpleDbDomain(string name, Dictionary<string, ISimpleDbDomain> loadedDomains, IInternalContext context)
         {
@@ -79,7 +79,7 @@ namespace Cucumber.SimpleDb.Async.Session
         {
             var data = await _context.Service.GetDomainMetaAsync(_name).ConfigureAwait(false);
 
-            _realDomain = new SessionSimpleDbDomain(_context, _name, data);
+            _realDomain = new RealSimpleDbDomain(_context, _name, data);
         }
     }
 }

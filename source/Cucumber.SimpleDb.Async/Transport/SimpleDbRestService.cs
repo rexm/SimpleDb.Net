@@ -15,7 +15,7 @@ namespace Cucumber.SimpleDb.Async.Transport
             _restService = restService;
         }
 
-        public async Task<XElement> BatchPutAttributesAsync(string domain, params object[] items)
+        public Task<XElement> BatchPutAttributesAsync(string domain, params object[] items)
         {
             if (items.Length < 1)
             {
@@ -72,10 +72,10 @@ namespace Cucumber.SimpleDb.Async.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> CreateDomainAsync(string domain)
+        public Task<XElement> CreateDomainAsync(string domain)
         {
             var values = new NameValueCollection
             {
@@ -86,10 +86,10 @@ namespace Cucumber.SimpleDb.Async.Transport
                     "DomainName", domain
                 }
             };
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> DeleteDomainAsync(string domain)
+        public Task<XElement> DeleteDomainAsync(string domain)
         {
             var values = new NameValueCollection
             {
@@ -100,10 +100,10 @@ namespace Cucumber.SimpleDb.Async.Transport
                     "DomainName", domain
                 }
             };
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> GetDomainMetaAsync(string domain)
+        public Task<XElement> GetDomainMetaAsync(string domain)
         {
             var values = new NameValueCollection
             {
@@ -114,15 +114,15 @@ namespace Cucumber.SimpleDb.Async.Transport
                     "DomainName", domain
                 }
             };
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> ListDomainsAsync()
+        public Task<XElement> ListDomainsAsync()
         {
-            return await ListDomainsAsync(null).ConfigureAwait(false);
+            return ListDomainsAsync(null);
         }
 
-        public async Task<XElement> ListDomainsAsync(string nextPageToken)
+        public Task<XElement> ListDomainsAsync(string nextPageToken)
         {
             var values = new NameValueCollection
             {
@@ -134,10 +134,10 @@ namespace Cucumber.SimpleDb.Async.Transport
             {
                 values.Add("NextToken", nextPageToken);
             }
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> PutAttributesAsync(string domain, string itemName, params object[] attributes)
+        public Task<XElement> PutAttributesAsync(string domain, string itemName, params object[] attributes)
         {
             var values = new NameValueCollection
             {
@@ -194,10 +194,10 @@ namespace Cucumber.SimpleDb.Async.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> GetAttributesAsync(string domain, string itemName, bool useConsistency, params string[] attributeNames)
+        public Task<XElement> GetAttributesAsync(string domain, string itemName, bool useConsistency, params string[] attributeNames)
         {
             var values = new NameValueCollection
             {
@@ -223,10 +223,10 @@ namespace Cucumber.SimpleDb.Async.Transport
                     attributeName);
                 attributeCount++;
             }
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> DeleteAttributesAsync(string domain, string itemName, params object[] attributes)
+        public Task<XElement> DeleteAttributesAsync(string domain, string itemName, params object[] attributes)
         {
             var values = new NameValueCollection
             {
@@ -277,10 +277,10 @@ namespace Cucumber.SimpleDb.Async.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> BatchDeleteAttributesAsync(string domain, params object[] items)
+        public Task<XElement> BatchDeleteAttributesAsync(string domain, params object[] items)
         {
             if (items.Length < 1)
             {
@@ -328,15 +328,15 @@ namespace Cucumber.SimpleDb.Async.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        public async Task<XElement> SelectAsync(string query, bool useConsistency)
+        public Task<XElement> SelectAsync(string query, bool useConsistency)
         {
-            return await SelectAsync(query, useConsistency, null).ConfigureAwait(false);
+            return SelectAsync(query, useConsistency, null);
         }
 
-        public async Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
+        public Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
             var values = new NameValueCollection
             {
@@ -355,12 +355,12 @@ namespace Cucumber.SimpleDb.Async.Transport
             {
                 values.Add("NextToken", nextPageToken);
             }
-            return await InternalExecuteAsync(values).ConfigureAwait(false);
+            return InternalExecuteAsync(values);
         }
 
-        private async Task<XElement> InternalExecuteAsync(NameValueCollection arguments)
+        private Task<XElement> InternalExecuteAsync(NameValueCollection arguments)
         {
-            return await _restService.ExecuteRequestAsync(arguments).ConfigureAwait(false);
+            return _restService.ExecuteRequestAsync(arguments);
         }
     }
 }

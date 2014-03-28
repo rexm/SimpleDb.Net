@@ -99,7 +99,7 @@
     <Compile Include="Session\SessionSimpleDbAttribute.cs" />
     <Compile Include="Session\SessionSimpleDbAttributeCollection.cs" />
     <Compile Include="SimpleDbAttributeValue.cs" />
-    <Compile Include="Session\SessionSimpleDbDomain.cs" />
+    <Compile Include="Session\RealSimpleDbDomain.cs" />
     <Compile Include="SimpleDbException.cs" />
     <Compile Include="Session\SessionSimpleDbItem.cs" />
     <Compile Include="SimpleDbContext.cs" />

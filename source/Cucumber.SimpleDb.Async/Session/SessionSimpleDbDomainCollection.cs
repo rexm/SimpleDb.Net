@@ -9,20 +9,11 @@ namespace Cucumber.SimpleDb.Async.Session
     internal sealed class SessionSimpleDbDomainCollection : ISimpleDbDomainCollection
     {
         private readonly IInternalContext _session;
-        private readonly Dictionary<string, ISimpleDbDomain> _domains;
+        private Dictionary<string, ISimpleDbDomain> _domains;
 
-        internal SessionSimpleDbDomainCollection(IInternalContext session, Dictionary<string, ISimpleDbDomain> domains)
+        internal SessionSimpleDbDomainCollection(IInternalContext session)
         {
             _session = session;
-            _domains = domains;
-        }
-
-        public int Count
-        {
-            get
-            {
-                return _domains.Count;
-            }
         }
 
         public ISimpleDbDomain this[string name]
@@ -44,9 +35,7 @@ namespace Cucumber.SimpleDb.Async.Session
                 {
                     return new ProxySimpleDbDomain(name, _domains, _session);
                 }
-                throw new KeyNotFoundException(
-                    string.Format("A domain named '{0}' does not exist",
-                        name));
+                throw new KeyNotFoundException(string.Format("A domain named '{0}' does not exist", name));
             }
         }
 
@@ -64,18 +53,40 @@ namespace Cucumber.SimpleDb.Async.Session
             return this[name];
         }
 
-        public bool HasDomain(string name)
+        public async Task<bool> HasDomainAsync(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
+            }
+            if (_domains == null)
+            {
+                _domains = await GetDomainDictionaryAsync();
             }
             return _domains.ContainsKey(name);
         }
 
         public IEnumerator<ISimpleDbDomain> GetEnumerator()
         {
-            return _domains.Select(kvp => kvp.Value).GetEnumerator();
+            return _domains != null 
+                ? _domains.Select(kvp => kvp.Value).GetEnumerator() 
+                : Enumerable.Empty<ISimpleDbDomain>().GetEnumerator();
+        }
+
+        private async Task<Dictionary<string, ISimpleDbDomain>> GetDomainDictionaryAsync()
+        {
+            var domains = new Dictionary<string, ISimpleDbDomain>(StringComparer.OrdinalIgnoreCase);
+            string nextPageToken = null;
+            do
+            {
+                var result = await _session.Service.ListDomainsAsync(nextPageToken).ConfigureAwait(false);
+                foreach (var domainNode in result.Elements("DomainName"))
+                {
+                    domains.Add(domainNode.Value, new ProxySimpleDbDomain(domainNode.Value, domains, _session));
+                }
+                nextPageToken = result.Elements("NextPageToken").Select(x => x.Value).FirstOrDefault();
+            } while (!string.IsNullOrEmpty(nextPageToken));
+            return domains;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
