@@ -4,6 +4,8 @@ using System.Linq;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Transport;
 
+using System.Collections.Generic;
+
 namespace Cucumber.SimpleDb.Test
 {
     [TestFixture ()]
