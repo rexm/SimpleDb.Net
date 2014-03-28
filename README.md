@@ -58,9 +58,11 @@ simpleDb.SubmitChanges();
     
 Creating and deleting Domains are executed immediately.
 
+You can find more details on the [wiki](https://github.com/rexm/SimpleDb.Net/wiki).
+
 ## Contributing
 
-Use GitHub pull requests to point to code changes. For very large changes, open an issue first to explain the shortcomings you intend to address.
+Check out the [contribution guidelines on the wiki](https://github.com/rexm/SimpleDb.Net/wiki/About-the-Project#how-to-contribute).
 
 ## Acknowledgements
 
