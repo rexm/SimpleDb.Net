@@ -54,20 +54,19 @@ namespace Cucumber.SimpleDb.Transport
                         int attributeCount = 0;
                         foreach (dynamic attribute in item.Attributes)
                         {
-                            for (int i = 0; i < attribute.Value.Values.Count; ++i) {
-                                values.Add(
-                                    string.Format("Item.{0}.Attribute.{1}.Name", itemCount, attributeCount),
-                                    attribute.Name);
-                                values.Add(
-                                    string.Format("Item.{0}.Attribute.{1}.Value", itemCount, attributeCount),
-                                    attribute.Value.Values[i].ToString());
-                                if (ObjectExtensions.HasMember(attribute, "Replace")) {
-                                    if (attribute.Replace == true) {
-                                        values.Add(
-                                            string.Format("Item.{0}.Attribute.{1}.Replace", itemCount, attributeCount),
-                                            "true");
-                                    }
+                            if (ObjectExtensions.HasMember(attribute.Value, "Values"))
+                            {
+                                for (int i = 0; i < attribute.Value.Values.Count; ++i)
+                                {
+                                    attributeCount = ParseAttribute(values, itemCount, attributeCount, attribute,
+                                        attribute.Value.Values[i].ToString());
+                                    attributeCount++;
                                 }
+                            }
+                            else
+                            {
+                                attributeCount = ParseAttribute(values, itemCount, attributeCount, attribute,
+                                    attribute.Value.ToString());
                                 attributeCount++;
                             }
                         }
@@ -80,6 +79,27 @@ namespace Cucumber.SimpleDb.Transport
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
             return InternalExecute(values);
+        }
+
+        private static int ParseAttribute(NameValueCollection values, int itemCount, int attributeCount, dynamic attribute, string attributeValue)
+        {
+            values.Add(
+                string.Format("Item.{0}.Attribute.{1}.Name", itemCount, attributeCount),
+                attribute.Name);
+            values.Add(
+                string.Format("Item.{0}.Attribute.{1}.Value", itemCount, attributeCount),
+                attributeValue);
+            if (ObjectExtensions.HasMember(attribute, "Replace"))
+            {
+                if (attribute.Replace == true)
+                {
+                    values.Add(
+                        string.Format("Item.{0}.Attribute.{1}.Replace", itemCount, attributeCount),
+                        "true");
+                }
+            }
+            attributeCount++;
+            return attributeCount;
         }
 
         public XElement CreateDomain(string domain)
