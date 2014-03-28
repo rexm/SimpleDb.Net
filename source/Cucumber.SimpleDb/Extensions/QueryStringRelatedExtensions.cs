@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 
 namespace Cucumber.SimpleDb
 {
-	public static class QueryStringRelatedExtensions
+	internal static class QueryStringRelatedExtensions
 	{
 		//http://stackoverflow.com/questions/68624/how-to-parse-a-query-string-into-a-namevaluecollection-in-net
 		static NameValueCollection ToNameValueCollection(this string source)
