@@ -16,7 +16,7 @@ namespace Cucumber.SimpleDb.Test
             var result = service.BatchPutAttributes ("TestDomain1",
                 new { Name = "TestItem1", Attributes = new object[] {
                         new { Name = "TestAtt1", Value = "Hello" },
-                        new { Name = "TestAtt2", Value = "World" }
+                        new { Name = "TestAtt2", Value = "World" },
                         new { Name = "TestAtt3", Value = new { Value="abc,123", Values = new List<object> {"abc", 123}} }
                     }
                     },
