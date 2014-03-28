@@ -3,8 +3,8 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Transport;
-
 using System.Collections.Generic;
+using Cucumber.SimpleDb.Test.Transport;
 
 namespace Cucumber.SimpleDb.Test
 {
@@ -30,6 +30,54 @@ namespace Cucumber.SimpleDb.Test
                 });
             Assert.AreEqual (result.Elements ().Count (), 20);
             //TODO: more comprehensive check
+        }
+
+        [Test ()]
+        public void TestCreateValidDomainName()
+        {
+            var domainName = "A_Domain_With_Valid_Chars-1.0";
+            var service = new SimpleDbRestService(new PassThroughAwsRestService ());
+            var result = service.CreateDomain(domainName);
+            Assert.IsTrue (result.Elements ("Argument")
+                .FirstOrDefault (x =>
+                    x.Element ("Key").Value == "DomainName" &&
+                    x.Element ("Value").Value == domainName) != null);
+        }
+
+        [Test ()]
+        public void TestCreateInvalidDomainNameTooShort()
+        {
+            var domainName = "ab";
+            var service = new SimpleDbRestService(new PassThroughAwsRestService ());
+            var exception = Assert.Catch(() =>
+            {
+                service.CreateDomain(domainName);
+            });
+            Assert.IsInstanceOf<FormatException>(exception);
+        }
+
+        [Test ()]
+        public void TestCreateInvalidDomainNameTooLong()
+        {
+            var domainName = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+            var service = new SimpleDbRestService(new PassThroughAwsRestService ());
+            var exception = Assert.Catch(() =>
+                {
+                    service.CreateDomain(domainName);
+                });
+            Assert.IsInstanceOf<FormatException>(exception);
+        }
+
+        [Test ()]
+        public void TestCreateInvalidDomainNameBadChars()
+        {
+            var domainName = "Domain_$_Name";
+            var service = new SimpleDbRestService(new PassThroughAwsRestService ());
+            var exception = Assert.Catch(() =>
+                {
+                    service.CreateDomain(domainName);
+                });
+            Assert.IsInstanceOf<FormatException>(exception);
         }
     }
 }

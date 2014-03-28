@@ -16,6 +16,7 @@ namespace Cucumber.SimpleDb.Transport
     internal class SimpleDbRestService : ISimpleDbService
     {
         private readonly IAwsRestService _restService;
+        private const string validDomainChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.";
 
         public SimpleDbRestService(IAwsRestService restService)
         {
@@ -29,7 +30,8 @@ namespace Cucumber.SimpleDb.Transport
 
         public XElement BatchPutAttributes(string domain, params object[] items)
         {
-            if (items.Length < 1) {
+            if (items.Length < 1)
+            {
                 throw new ArgumentOutOfRangeException ("Must put at least 1 item");
             }
             var values = new NameValueCollection
@@ -104,6 +106,12 @@ namespace Cucumber.SimpleDb.Transport
 
         public XElement CreateDomain(string domain)
         {
+            if(IsValidDomainName(domain) == false)
+            {
+                throw new FormatException(
+                    string.Format("'{0}' is not a valid domain name\n\nDomain names must be between 3 and 255 characters, and contain only a-z, A-Z, 0-9, and _, - and .",
+                        domain));
+            }
             var values = new NameValueCollection
             {
                 {"Action", "CreateDomain"},
@@ -277,7 +285,8 @@ namespace Cucumber.SimpleDb.Transport
 
         public XElement BatchDeleteAttributes(string domain, params object[] items)
         {
-            if (items.Length < 1) {
+            if (items.Length < 1)
+            {
                 throw new ArgumentOutOfRangeException ("Must delete at least 1 item");
             }
             var values = new NameValueCollection
@@ -342,6 +351,19 @@ namespace Cucumber.SimpleDb.Transport
                 values.Add("NextToken", nextPageToken);
             }
             return InternalExecute(values);
+        }
+
+        private bool IsValidDomainName(string domain)
+        {
+            if (domain.Length < 3 || domain.Length > 255)
+            {
+                return false;
+            }
+            if(domain.Except(validDomainChars).Count() > 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
