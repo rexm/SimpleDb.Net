@@ -1,4 +1,4 @@
-# SimpleDb.NET [![Build Status](https://travis-ci.org/rexm/SimpleDb.Net.png?branch=master)](https://travis-ci.org/rexm/SimpleDb.Net)
+# SimpleDb.NET [![Build Status](https://travis-ci.org/rexm/SimpleDb.Net.svg?branch=master)](https://travis-ci.org/rexm/SimpleDb.Net)
 
 A .NET library that lets you work with [AWS SimpleDB][1] using a familiar entity-like model and LINQ queries.
 
