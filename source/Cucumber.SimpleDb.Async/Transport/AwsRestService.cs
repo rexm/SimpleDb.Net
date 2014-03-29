@@ -14,7 +14,7 @@ using Cucumber.SimpleDb.Async.Utilities;
 
 namespace Cucumber.SimpleDb.Async.Transport
 {
-    internal class AwsRestService : IAwsRestService
+    internal sealed class AwsRestService : IAwsRestService
     {
         private const string SimpleDbUrl = "sdb.amazonaws.com";
         private const string SimpleDbProtocol = "https";

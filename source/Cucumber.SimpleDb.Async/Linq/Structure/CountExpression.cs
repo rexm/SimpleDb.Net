@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Async.Linq.Structure
 {
-    internal class CountExpression : ScalarExpression
+    internal sealed class CountExpression : ScalarExpression
     {
         public override Type Type
         {

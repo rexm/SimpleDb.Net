@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Async.Linq.Structure
 {
-    internal class ProjectionExpression : SimpleDbExpression
+    internal sealed class ProjectionExpression : SimpleDbExpression
     {
         private readonly Expression _originalExpression;
         private readonly Expression _projector;

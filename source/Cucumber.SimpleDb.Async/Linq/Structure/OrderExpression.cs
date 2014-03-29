@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Async.Linq.Structure
 {
-    internal class OrderExpression : SimpleDbExpression, IEqualityComparer<OrderExpression>
+    internal sealed class OrderExpression : SimpleDbExpression, IEqualityComparer<OrderExpression>
     {
         private readonly AttributeExpression _attribute;
         private readonly SortDirection _direction;

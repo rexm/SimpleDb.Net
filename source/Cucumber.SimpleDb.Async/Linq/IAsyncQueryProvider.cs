@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Cucumber.SimpleDb.Async.Infrastructure
+namespace Cucumber.SimpleDb.Async.Linq
 {
     /// <summary>
     /// Defines methods to create and asynchronously execute queries that are described by an

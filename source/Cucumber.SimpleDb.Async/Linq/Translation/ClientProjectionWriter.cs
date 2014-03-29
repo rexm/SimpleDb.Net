@@ -3,7 +3,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class ClientProjectionWriter : SimpleDbExpressionVisitor
+    internal sealed class ClientProjectionWriter : SimpleDbExpressionVisitor
     {
         private readonly ParameterExpression _parameter;
 

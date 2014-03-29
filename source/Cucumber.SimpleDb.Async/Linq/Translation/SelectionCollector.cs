@@ -4,7 +4,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class SelectionCollector : SimpleDbExpressionVisitor
+    internal sealed class SelectionCollector : SimpleDbExpressionVisitor
     {
         private readonly List<AttributeExpression> _attributes = new List<AttributeExpression>();
 

@@ -6,7 +6,7 @@ namespace Cucumber.SimpleDb.Async
     /// Wrapper for exceptions that occur in the SimpleDb layer
     /// For explicit catch blocks when needed
     /// </summary>
-    public class SimpleDbException : Exception
+    public sealed class SimpleDbException : Exception
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleDbException"/> class.

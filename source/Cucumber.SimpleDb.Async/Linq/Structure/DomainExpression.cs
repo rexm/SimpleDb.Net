@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Cucumber.SimpleDb.Async.Linq.Structure
 {
-    internal class DomainExpression : SimpleDbExpression
+    internal sealed class DomainExpression : SimpleDbExpression
     {
         private readonly ISimpleDbDomain _domain;
 

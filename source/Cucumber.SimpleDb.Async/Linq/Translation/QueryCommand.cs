@@ -3,7 +3,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class QueryCommand
+    internal sealed class QueryCommand
     {
         private readonly QueryExpression _query;
         private readonly string _queryText;

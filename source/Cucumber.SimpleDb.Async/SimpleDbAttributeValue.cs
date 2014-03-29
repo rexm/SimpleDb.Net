@@ -14,7 +14,7 @@ namespace Cucumber.SimpleDb.Async
     /// By default, a comparison expression evaluates true if any of the values on an attribute compare true to the test value.
     /// If <c>Every()</c> is used, comparison expressions will require true for all values to evaluate true.</para>
     /// </summary>
-    public class SimpleDbAttributeValue
+    public sealed class SimpleDbAttributeValue
     {
         private readonly ValueComparer _comparer;
         private readonly Type _originalType;

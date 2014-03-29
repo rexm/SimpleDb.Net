@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Cucumber.SimpleDb.Async.Infrastructure
+namespace Cucumber.SimpleDb.Async
 {
     /// <summary>
-    /// Allows the enumerable sequence to be retrieved asynchronously.
+    /// Allows an enumerable sequence to be retrieved asynchronously.
     /// </summary>
     /// <typeparam name="T">The type of objects in the sequence.</typeparam>
     internal interface IEnumerableAsync<T>

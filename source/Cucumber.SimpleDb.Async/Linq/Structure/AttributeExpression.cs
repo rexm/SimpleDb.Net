@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 namespace Cucumber.SimpleDb.Async.Linq.Structure
 {
     [DebuggerDisplay("`{Name}`")]
-    internal class AttributeExpression : SimpleDbExpression, IEqualityComparer<AttributeExpression>
+    internal sealed class AttributeExpression : SimpleDbExpression, IEqualityComparer<AttributeExpression>
     {
         private readonly string _name;
         private readonly Type _type;

@@ -46,9 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Infrastructure\IAsyncQueryProvider.cs" />
-    <Compile Include="Infrastructure\IEnumerableAsync.cs" />
-    <Compile Include="Infrastructure\IEnumerableAsync`.cs" />
+    <Compile Include="Linq\IAsyncQueryProvider.cs" />
+    <Compile Include="IEnumerableAsync`.cs" />
     <Compile Include="Session\ISessionAttribute.cs" />
     <Compile Include="Session\ISessionItem.cs" />
     <Compile Include="Session\ISession.cs" />
@@ -57,7 +56,7 @@
     <Compile Include="Session\SessionSimpleDbContext.cs" />
     <Compile Include="Session\SessionSimpleDbItemCollection.cs" />
     <Compile Include="Session\SimpleDbSession.cs" />
-    <Compile Include="Utilities\SimpleDbQueryableExtensions.cs" />
+    <Compile Include="SimpleDbQueryableExtensions.cs" />
     <Compile Include="Utilities\Check.cs" />
     <Compile Include="Utilities\ObjectExtensions.cs" />
     <Compile Include="Utilities\ExpressionExtensions.cs" />

@@ -4,7 +4,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class SelectEnsurer : SimpleDbExpressionVisitor
+    internal sealed class SelectEnsurer : SimpleDbExpressionVisitor
     {
         public static Expression Ensure(Expression expr)
         {

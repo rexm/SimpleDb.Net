@@ -2,7 +2,7 @@
 
 namespace Cucumber.SimpleDb.Async.Session
 {
-    internal class SessionSimpleDbContext : ISimpleDbContext, IInternalContext
+    internal sealed class SessionSimpleDbContext : ISimpleDbContext, IInternalContext
     {
         private readonly ISimpleDbService _service;
         private readonly ISession _session;

@@ -4,7 +4,7 @@ using Cucumber.SimpleDb.Async.Linq;
 
 namespace Cucumber.SimpleDb.Async.Session
 {
-    internal class ProxySimpleDbDomain : ISimpleDbDomain
+    internal sealed class ProxySimpleDbDomain : ISimpleDbDomain
     {
         private readonly IInternalContext _context;
         private readonly Dictionary<string, ISimpleDbDomain> _loadedDomains;

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cucumber.SimpleDb.Async.Infrastructure;
 using Cucumber.SimpleDb.Async.Linq;
 
 namespace Cucumber.SimpleDb.Async.Session
 {
-    internal class SessionSimpleDbItemCollection : SimpleDbQuery<ISimpleDbItem>, ISimpleDbItemCollection
+    internal sealed class SessionSimpleDbItemCollection : SimpleDbQuery<ISimpleDbItem>, ISimpleDbItemCollection
     {
         private readonly IInternalContext _context;
         private readonly ISimpleDbDomain _domain;

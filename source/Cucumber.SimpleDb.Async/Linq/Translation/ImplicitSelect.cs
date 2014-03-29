@@ -4,7 +4,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class ImplicitSelect : SimpleDbExpressionVisitor
+    internal sealed class ImplicitSelect : SimpleDbExpressionVisitor
     {
         private ImplicitSelect()
         {

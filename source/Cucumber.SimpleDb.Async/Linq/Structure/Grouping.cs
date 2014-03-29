@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Cucumber.SimpleDb.Async.Linq.Structure
 {
-    internal class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+    internal sealed class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
     {
         private readonly IEnumerable<TElement> _group;
         private readonly TKey _key;

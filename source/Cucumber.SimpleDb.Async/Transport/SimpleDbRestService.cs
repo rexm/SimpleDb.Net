@@ -6,7 +6,7 @@ using Cucumber.SimpleDb.Async.Utilities;
 
 namespace Cucumber.SimpleDb.Async.Transport
 {
-    internal class SimpleDbRestService : ISimpleDbService
+    internal sealed class SimpleDbRestService : ISimpleDbService
     {
         private readonly IAwsRestService _restService;
 

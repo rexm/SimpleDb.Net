@@ -4,7 +4,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class DomainResolver : SimpleDbExpressionVisitor
+    internal sealed class DomainResolver : SimpleDbExpressionVisitor
     {
         public static Expression Resolve(Expression expr)
         {
@@ -35,7 +35,7 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
             }
             else
             {
-                var source = base.Visit(qex.Source);
+                var source = Visit(qex.Source);
                 return SimpleDbExpression.Query(
                     qex.Select,
                     source,

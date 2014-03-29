@@ -10,7 +10,7 @@ using Cucumber.SimpleDb.Async.Session;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class QueryProxyWriter : SimpleDbExpressionVisitor
+    internal sealed class QueryProxyWriter : SimpleDbExpressionVisitor
     {
         private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
         private readonly IInternalContext _context;
@@ -41,7 +41,7 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
             return Expression.Call(Expression.Constant(this), GetType().GetMethod("ExecuteDeferredAsync", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(projector.Body.Type), Expression.Constant(new QueryCommand(pex.Source)), projector);
         }
 
-        protected virtual async Task<T> ExecuteScalarAsync<T>(QueryCommand query)
+        internal async Task<T> ExecuteScalarAsync<T>(QueryCommand query)
         {
             var result = (await ExecuteQueryAsync(query).ConfigureAwait(false)).FirstOrDefault();
             if (result == null)
@@ -51,12 +51,12 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
             return (T) Convert.ChangeType(result.Element(SdbNs + "Attribute").Element(SdbNs + "Value").Value, typeof (T));
         }
 
-        protected virtual async Task<IEnumerable<T>> ExecuteDeferredAsync<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
+        internal async Task<IEnumerable<T>> ExecuteDeferredAsync<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
         {
             return (await ExecuteQueryAsync(query).ConfigureAwait(false)).Select(itemData => projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect)));
         }
 
-        protected virtual async Task<IEnumerable<XElement>> ExecuteQueryAsync(QueryCommand query)
+        private async Task<IEnumerable<XElement>> ExecuteQueryAsync(QueryCommand query)
         {
             var itemNodes = new List<XElement>();
             string nextPageToken = null;

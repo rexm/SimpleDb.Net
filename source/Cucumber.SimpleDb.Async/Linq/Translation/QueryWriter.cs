@@ -8,7 +8,7 @@ using Cucumber.SimpleDb.Async.Utilities;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class QueryWriter : SimpleDbExpressionVisitor
+    internal sealed class QueryWriter : SimpleDbExpressionVisitor
     {
         private const string NameFormat = "`{0}`";
         private const string ValueFormat = "\"{0}\"";

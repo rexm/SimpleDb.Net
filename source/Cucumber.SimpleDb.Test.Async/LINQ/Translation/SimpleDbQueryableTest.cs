@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Cucumber.SimpleDb.Async;
 using Cucumber.SimpleDb.Async.Session;
 using Cucumber.SimpleDb.Async.Transport;
 using Cucumber.SimpleDb.Async.Utilities;

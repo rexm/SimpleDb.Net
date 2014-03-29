@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb.Async.Session
 {
-    internal class SessionNewSimpleDbItem : SessionSimpleDbItem, ISessionItem
+    internal sealed class SessionNewSimpleDbItem : SessionSimpleDbItem, ISessionItem
     {
         internal SessionNewSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, string name, Dictionary<string, SimpleDbAttributeValue> values)
             : base(context, domain, name, ToXElement(values), true)

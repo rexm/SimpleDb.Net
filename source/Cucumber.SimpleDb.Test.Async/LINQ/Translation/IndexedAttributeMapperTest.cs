@@ -65,7 +65,7 @@ namespace Cucumber.SimpleDb.Test.Async.Linq.Translation
             Assert.AreEqual("TestAttribute", ((AttributeExpression) ((NewExpression) returnExpression).Arguments[0]).Name);
         }
 
-        private class IndexedAttributeMapperAccessor : IndexedAttributeMapper
+        private sealed class IndexedAttributeMapperAccessor : IndexedAttributeMapper
         {
             public Expression AccessVisitMethodCall(MethodCallExpression m)
             {

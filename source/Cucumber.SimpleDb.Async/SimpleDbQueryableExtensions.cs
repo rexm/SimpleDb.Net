@@ -7,19 +7,28 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using Cucumber.SimpleDb.Async.Infrastructure;
+using Cucumber.SimpleDb.Async.Linq;
+using Cucumber.SimpleDb.Async.Utilities;
 
-namespace Cucumber.SimpleDb.Async.Utilities
+namespace Cucumber.SimpleDb.Async
 {
     /// <summary>
     /// Provides SimpleDb-specific IQueryable extensions
     /// </summary>
     public static class SimpleDbQueryableExtensions
     {
-        private static readonly MethodInfo CountMethod = GetMethod("Count", T => new[]
-        {
-            typeof (IQueryable<>).MakeGenericType(T)
-        });
+        private static readonly MethodInfo CountMethod = GetMethod(
+            "Count", T => new[]
+                {
+                    typeof (IQueryable<>).MakeGenericType(T)
+                });
+
+        private static readonly MethodInfo CountWithPredicate = GetMethod(
+            "Count", T => new[]
+                {
+                    typeof(IQueryable<>).MakeGenericType(T),
+                    typeof(Expression<>).MakeGenericType(typeof(Func<,>).MakeGenericType(T, typeof(bool)))
+                });
 
         /// <summary>
         /// Enumerates the asynchronous query results and performs the specified action on each element.
@@ -43,13 +52,13 @@ namespace Cucumber.SimpleDb.Async.Utilities
         }
 
         /// <summary>
-        /// Asynchronously creates a <see cref="List{T}" /> from an <see cref="IQueryable{T}" />
+        /// Asynchronously creates a <see cref="List{Object}" /> from an <see cref="IQueryable" />.
         /// </summary>
-        /// <typeparam name="TSource">The type of the data in the data source.</typeparam>
-        /// <param name="source">The data source.</param>
+        /// <typeparam name="TSource">The type of the source.</typeparam>
+        /// <param name="source">An <see cref="IQueryable" /> to create a <see cref="List{Object}" /> from.</param>
         /// <returns>
         /// A task that represents the asynchronous operation.
-        /// The task result contains a <see cref="List{T}" /> that contains elements from the data source.
+        /// The task result contains a <see cref="List{Object}" /> that contains elements from the input sequence.
         /// </returns>
         public static async Task<List<TSource>> ToListAsync<TSource>(this IQueryable<TSource> source)
         {
@@ -86,14 +95,47 @@ namespace Cucumber.SimpleDb.Async.Utilities
         /// </returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source" /> is null.</exception>
         /// <exception cref="T:System.OverflowException">The number of elements in <paramref name="source" /> is larger than <see cref="F:System.Int32.MaxValue" />.</exception>
-        public static async Task<int> CountAsync<TSource>(this IQueryable<TSource> source)
+        public static Task<int> CountAsync<TSource>(this IQueryable<TSource> source)
         {
             Check.NotNull(source, "source");
 
-            return await source
-                .GetAsyncQueryProvider()
-                .ExecuteScalarAsync<int>(StaticCall(CountMethod, source))
-                .ConfigureAwait(false);
+            return source.GetAsyncQueryProvider().ExecuteScalarAsync<int>(
+                    CountMethod.MakeGeneric<TSource>().StaticCall(source.Expression));
+        }
+
+        /// <summary>
+        /// Asynchronously returns the number of elements in a sequence that satisfy a condition.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+        /// <param name="source">An <see cref="IQueryable{T}" /> that contains the elements to be counted.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// The task result contains the number of elements in the sequence that satisfy the condition in the predicate function.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source" />
+        /// or
+        /// <paramref name="predicate" />
+        /// is
+        /// <c>null</c>
+        /// .</exception>
+        /// <exception cref="InvalidOperationException"><paramref name="source" />
+        /// doesn't implement
+        /// <see cref="IAsyncQueryProvider" />
+        /// .</exception>
+        /// <exception cref="OverflowException">The number of elements in
+        /// <paramref name="source" />
+        /// that satisfy the condition in the predicate function
+        /// is larger than
+        /// <see cref="Int32.MaxValue" />
+        /// .</exception>
+        public static Task<int> CountAsync<TSource>(this IQueryable<TSource> source, Expression<Func<TSource, bool>> predicate)
+        {
+            Check.NotNull(source, "source");
+            Check.NotNull(predicate, "predicate");
+
+            return source.GetAsyncQueryProvider().ExecuteScalarAsync<int>(
+                CountWithPredicate.MakeGeneric<TSource>().StaticCall(source.Expression, Expression.Quote(predicate)));
         }
 
         /// <summary>
@@ -107,20 +149,13 @@ namespace Cucumber.SimpleDb.Async.Utilities
         {
             Check.NotNull(source, "source");
 
-            return source
-                .Provider
-                .CreateQuery<TSource>(StaticCall(MethodBase.GetCurrentMethod(), source));
+            return source.Provider.CreateQuery<TSource>(
+                MethodBase.GetCurrentMethod().MakeGeneric<TSource>().StaticCall(source.Expression));
         }
 
-        // ReSharper disable once SuggestBaseTypeForParameter
-        private static Expression StaticCall<TSource>(MethodBase method, IQueryable<TSource> source)
+        private static MethodInfo MakeGeneric<T>(this MethodBase method)
         {
-            return method.MakeGeneric(typeof(TSource)).StaticCall(source.Expression);
-        }
-
-        private static MethodInfo MakeGeneric(this MethodBase method, params Type[] parameters)
-        {
-            return ((MethodInfo) method).MakeGenericMethod(parameters);
+            return ((MethodInfo) method).MakeGenericMethod(typeof(T));
         }
 
         private static Expression StaticCall(this MethodInfo method, params Expression[] expressions)

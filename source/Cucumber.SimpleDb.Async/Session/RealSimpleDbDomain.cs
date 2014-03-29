@@ -5,7 +5,7 @@ using Cucumber.SimpleDb.Async.Linq;
 
 namespace Cucumber.SimpleDb.Async.Session
 {
-    internal class RealSimpleDbDomain : ISimpleDbDomain
+    internal sealed class RealSimpleDbDomain : ISimpleDbDomain
     {
         private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
         private readonly long _attributeNameCount;

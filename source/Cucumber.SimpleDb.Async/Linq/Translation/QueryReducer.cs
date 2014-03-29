@@ -6,7 +6,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 
 namespace Cucumber.SimpleDb.Async.Linq.Translation
 {
-    internal class QueryReducer : SimpleDbExpressionVisitor
+    internal sealed class QueryReducer : SimpleDbExpressionVisitor
     {
         public static Expression Reduce(Expression expr)
         {

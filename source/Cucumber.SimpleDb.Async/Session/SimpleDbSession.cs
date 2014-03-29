@@ -6,7 +6,7 @@ using Cucumber.SimpleDb.Async.Utilities;
 
 namespace Cucumber.SimpleDb.Async.Session
 {
-    internal class SimpleDbSession : ISession
+    internal sealed class SimpleDbSession : ISession
     {
         private readonly ISimpleDbService _service;
         private readonly HashSet<ISessionItem> _trackedItems;
