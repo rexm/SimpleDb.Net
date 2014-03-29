@@ -35,13 +35,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="Moq, Version=4.2.1402.2112, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
@@ -61,13 +54,13 @@
     <Compile Include="SimpleDbAttributeValueConversionTest.cs" />
     <Compile Include="SimpleDbAttributeValueAnyTest.cs" />
     <Compile Include="SimpleDbAttributeValueEveryTest.cs" />
-    <Compile Include="LINQ\Translation\IndexedAttributeMapperTest.cs" />
-    <Compile Include="LINQ\Translation\ClientProjectionWriterTest.cs" />
-    <Compile Include="LINQ\IntegrationTests\QueryOutputTest.cs" />
-    <Compile Include="LINQ\IntegrationTests\QueryOutputCaptureService.cs" />
-    <Compile Include="LINQ\Translation\WhereQueryBinderTest.cs" />
-    <Compile Include="LINQ\Translation\QueryBinderTest.cs" />
-    <Compile Include="LINQ\Translation\SelectQueryBinderTest.cs" />
+    <Compile Include="Linq\Translation\IndexedAttributeMapperTest.cs" />
+    <Compile Include="Linq\Translation\ClientProjectionWriterTest.cs" />
+    <Compile Include="Linq\IntegrationTests\QueryOutputTest.cs" />
+    <Compile Include="Linq\IntegrationTests\QueryOutputCaptureService.cs" />
+    <Compile Include="Linq\Translation\WhereQueryBinderTest.cs" />
+    <Compile Include="Linq\Translation\QueryBinderTest.cs" />
+    <Compile Include="Linq\Translation\SelectQueryBinderTest.cs" />
     <Compile Include="SimpleDbContextWithTestDomain.cs" />
     <Compile Include="Utilities\EnumerableExtensionsTests.cs" />
     <Compile Include="Session\SimpleDbSessionTests.cs" />
@@ -75,7 +68,7 @@
     <Compile Include="Transport\AwsRestServiceTest.cs" />
     <Compile Include="Transport\CaptureUriRequestProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LINQ\Translation\SimpleDbQueryableTest.cs" />
+    <Compile Include="Linq\Translation\SimpleDbQueryableTest.cs" />
     <Compile Include="Transport\PassThroughAwsRestService.cs" />
     <Compile Include="Transport\CaptureArgumentsRestService.cs" />
   </ItemGroup>
@@ -87,7 +80,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

@@ -7,7 +7,7 @@ using Cucumber.SimpleDb.Async.Linq.Structure;
 using Moq;
 using NUnit.Framework;
 
-namespace Cucumber.SimpleDb.Test.Async.LINQ.Translation
+namespace Cucumber.SimpleDb.Test.Async.Linq.Translation
 {
     [TestFixture]
     public class WhereQueryBinderTest : QueryBinderTest

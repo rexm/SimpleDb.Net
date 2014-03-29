@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Data.Entity.Infrastructure;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
+using Cucumber.SimpleDb.Async.Infrastructure;
 using Cucumber.SimpleDb.Async.Linq.Translation;
 using Cucumber.SimpleDb.Async.Utilities;
 
 namespace Cucumber.SimpleDb.Async.Linq
 {
-    internal class SimpleDbQueryProvider : IDbAsyncQueryProvider
+    internal sealed class SimpleDbQueryProvider : IAsyncQueryProvider
     {
         private readonly IInternalContext _context;
 
@@ -19,20 +20,11 @@ namespace Cucumber.SimpleDb.Async.Linq
             _context = context;
         }
 
-        public virtual object Execute(Expression expression)
+        public object Execute(Expression expression)
         {
             var plan = CreateExecutionPlan(expression);
             plan = Expression.Convert(plan, typeof (object));
             return Expression.Lambda<Func<object>>(plan, null).Compile()();
-        }
-
-        Task<object> IDbAsyncQueryProvider.ExecuteAsync(Expression expression, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var plan = CreateExecutionPlan(expression);
-            plan = Expression.Convert(plan, typeof(object));
-            return (Task<object>) Expression.Lambda<Func<object>>(plan, null).Compile()();
         }
 
         IQueryable<TElement> IQueryProvider.CreateQuery<TElement>(Expression expression)
@@ -61,10 +53,8 @@ namespace Cucumber.SimpleDb.Async.Linq
             return (TResult) Execute(expression);
         }
 
-        Task<TResult> IDbAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        Task<TResult> IAsyncQueryProvider.ExecuteScalarAsync<TResult>(Expression expression)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
             var plan = CreateExecutionPlan(expression);
 
             plan = Expression.Convert(plan, typeof(object));
@@ -72,7 +62,16 @@ namespace Cucumber.SimpleDb.Async.Linq
             return (Task<TResult>)Expression.Lambda<Func<object>>(plan, null).Compile()();
         }
 
-        protected virtual Expression CreateExecutionPlan(Expression expression)
+        Task<IEnumerable<TResult>> IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression)
+        {
+            var plan = CreateExecutionPlan(expression);
+
+            plan = Expression.Convert(plan, typeof(object));
+
+            return (Task<IEnumerable<TResult>>)Expression.Lambda<Func<object>>(plan, null).Compile()();
+        }
+
+        internal Expression CreateExecutionPlan(Expression expression)
         {
             try
             {

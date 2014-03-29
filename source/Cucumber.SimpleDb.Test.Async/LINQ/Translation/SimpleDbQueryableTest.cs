@@ -1,14 +1,13 @@
-﻿using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Cucumber.SimpleDb.Async;
 using Cucumber.SimpleDb.Async.Session;
 using Cucumber.SimpleDb.Async.Transport;
+using Cucumber.SimpleDb.Async.Utilities;
 using Cucumber.SimpleDb.Test.Async.Transport;
 using NUnit.Framework;
 
-namespace Cucumber.SimpleDb.Test.Async.LINQ.Translation
+namespace Cucumber.SimpleDb.Test.Async.Linq.Translation
 {
     [TestFixture]
     public class SimpleDbQueryableTest

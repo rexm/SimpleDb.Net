@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Cucumber.SimpleDb.Async.Linq.Translation;
 
-namespace Cucumber.SimpleDb.Test.Async.LINQ.Translation
+namespace Cucumber.SimpleDb.Test.Async.Linq.Translation
 {
     public abstract class QueryBinderTest
     {

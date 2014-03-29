@@ -6,7 +6,7 @@ using Cucumber.SimpleDb.Async.Linq.Translation;
 using Moq;
 using NUnit.Framework;
 
-namespace Cucumber.SimpleDb.Test.Async.LINQ.Translation
+namespace Cucumber.SimpleDb.Test.Async.Linq.Translation
 {
     [TestFixture]
     public class IndexedAttributeMapperTest

@@ -4,18 +4,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Cucumber.SimpleDb.Async.Infrastructure;
 
 namespace Cucumber.SimpleDb.Async.Linq
 {
-    internal class SimpleDbQuery<T> : IOrderedQueryable<T>, IDbAsyncEnumerable<T>
+    internal class SimpleDbQuery<T> : IOrderedQueryable<T>, IEnumerableAsync<T>
     {
         private readonly Expression _expression;
-        private readonly IDbAsyncQueryProvider _provider;
+        private readonly IAsyncQueryProvider _provider;
 
-        public SimpleDbQuery(IDbAsyncQueryProvider provider)
+        public SimpleDbQuery(IAsyncQueryProvider provider)
         {
             if (provider == null)
             {
@@ -25,7 +26,7 @@ namespace Cucumber.SimpleDb.Async.Linq
             _expression = Expression.Constant(this);
         }
 
-        public SimpleDbQuery(IDbAsyncQueryProvider provider, Expression expression)
+        public SimpleDbQuery(IAsyncQueryProvider provider, Expression expression)
         {
             if (provider == null)
             {
@@ -68,9 +69,9 @@ namespace Cucumber.SimpleDb.Async.Linq
             return ((IEnumerable) _provider.Execute(_expression)).GetEnumerator();
         }
 
-        public IDbAsyncEnumerator<T> GetAsyncEnumerator()
+        async Task<IEnumerable<T>> IEnumerableAsync<T>.GetEnumerableAsync()
         {
-            return new DbAsyncEnumerator<T>(token => _provider.ExecuteAsync<IEnumerable<T>>(_expression, token));
+            return await _provider.ExecuteAsync<T>(_expression).ConfigureAwait(false);
         }
 
         public override string ToString()
@@ -81,11 +82,6 @@ namespace Cucumber.SimpleDb.Async.Linq
                 return "Query(" + typeof (T) + ")";
             }
             return _expression.ToString();
-        }
-
-        IDbAsyncEnumerator IDbAsyncEnumerable.GetAsyncEnumerator()
-        {
-            return GetAsyncEnumerator();
         }
     }
 }

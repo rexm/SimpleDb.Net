@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using Cucumber.SimpleDb.Async.Infrastructure;
 using Cucumber.SimpleDb.Async.Linq;
 
 namespace Cucumber.SimpleDb.Async.Session
@@ -13,7 +13,7 @@ namespace Cucumber.SimpleDb.Async.Session
         private readonly ISimpleDbDomain _domain;
         private readonly Dictionary<string, ISimpleDbItem> _fetchedItems;
 
-        internal SessionSimpleDbItemCollection(IInternalContext context, ISimpleDbDomain domain, IDbAsyncQueryProvider queryProvider)
+        internal SessionSimpleDbItemCollection(IInternalContext context, ISimpleDbDomain domain, IAsyncQueryProvider queryProvider)
             : base(queryProvider)
         {
             _context = context;

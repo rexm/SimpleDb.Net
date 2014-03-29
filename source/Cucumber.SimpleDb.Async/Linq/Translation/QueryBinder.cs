@@ -37,7 +37,7 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
                         return BindDefaultEnumerable(m);
                 }
             }
-            if (m.Method.DeclaringType == typeof (SimpleDbQueryable))
+            if (m.Method.DeclaringType == typeof (SimpleDbQueryableExtensions))
             {
                 switch (m.Method.Name)
                 {
@@ -308,7 +308,7 @@ namespace Cucumber.SimpleDb.Async.Linq.Translation
 
             private static bool IsSupportedSimpleDbExtension(MethodInfo m)
             {
-                return m.DeclaringType == typeof (SimpleDbQueryable);
+                return m.DeclaringType == typeof (SimpleDbQueryableExtensions);
             }
         }
     }

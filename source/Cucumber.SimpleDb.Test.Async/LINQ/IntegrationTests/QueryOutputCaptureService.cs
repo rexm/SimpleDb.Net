@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Async;
 
-namespace Cucumber.SimpleDb.Test.Async.LINQ.IntegrationTests
+namespace Cucumber.SimpleDb.Test.Async.Linq.IntegrationTests
 {
     internal class QueryOutputCaptureService : ISimpleDbService
     {
