@@ -30,11 +30,14 @@ namespace Cucumber.SimpleDb.Session
                             Select(val => val.Value).ToArray()
                         )
                     );
-                foreach (var resItem in subResult) {
-                    if (!result.Keys.Contains(resItem.Name)) {
+                foreach (var resItem in subResult)
+                {
+                    if (!result.Keys.Contains(resItem.Name))
+                    {
                         result.Add(resItem.Name, resItem);
                     }
-                    else {
+                    else
+                    {
                         result[resItem.Name].Value = new SimpleDbAttributeValue(
                             result[resItem.Name].Value.Values.Concat(resItem.Value.Values).ToArray());
                     }
@@ -73,7 +76,7 @@ namespace Cucumber.SimpleDb.Session
             {
                 throw new ArgumentNullException("attributeName");
             }
-            if (_attributes.ContainsKey (attributeName) == false)
+            if (_attributes.ContainsKey(attributeName) == false)
             {
                 if (_complete == false)
                 {
