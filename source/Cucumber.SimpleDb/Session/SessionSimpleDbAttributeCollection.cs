@@ -1,32 +1,49 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 
 namespace Cucumber.SimpleDb.Session
 {
     internal sealed class SessionSimpleDbAttributeCollection : ISimpleDbAttributeCollection
     {
-        private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
-        private readonly Dictionary<string, SessionSimpleDbAttribute> _attributes = new Dictionary<string, SessionSimpleDbAttribute>();
-        private readonly bool _complete;
         private readonly SessionSimpleDbItem _item;
+        private Dictionary<string, SessionSimpleDbAttribute> _attributes = new Dictionary<string, SessionSimpleDbAttribute>();
+        private bool _complete;
+        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
-        internal SessionSimpleDbAttributeCollection(SessionSimpleDbItem item, XContainer data, bool complete)
+        internal SessionSimpleDbAttributeCollection(IInternalContext context, SessionSimpleDbItem item, XElement data, bool complete)
         {
             _item = item;
             _complete = complete;
+
+            var result = new Dictionary<string, SessionSimpleDbAttribute>();
+
             try
             {
-                _attributes = data.Descendants(SdbNs + "Attribute").Select(
-                    x => new SessionSimpleDbAttribute(x.Element(SdbNs + "Name").Value,
-                        x.Elements(SdbNs + "Value").Select(val => val.Value).ToArray()
+                var subResult = data.Descendants(sdbNs + "Attribute").Select(
+                        x => new SessionSimpleDbAttribute(
+                            _item,
+                            x.Element(sdbNs + "Name").Value,
+                            x.Elements(sdbNs + "Value").
+                            Select(val => val.Value).ToArray()
                         )
-                    ).ToDictionary(
-                        att => att.Name,
-                        att => att
                     );
+                foreach (var resItem in subResult)
+                {
+                    if (!result.Keys.Contains(resItem.Name))
+                    {
+                        result.Add(resItem.Name, resItem);
+                    }
+                    else
+                    {
+                        result[resItem.Name].Value = new SimpleDbAttributeValue(
+                            result[resItem.Name].Value.Values.Concat(resItem.Value.Values).ToArray());
+                    }
+                }
+
+                _attributes = result;
             }
             catch (Exception ex)
             {
@@ -42,7 +59,7 @@ namespace Cucumber.SimpleDb.Session
                 {
                     throw new ArgumentNullException("attributeName");
                 }
-                if (HasAttribute(attributeName) == false)
+                if (this.HasAttribute(attributeName) == false)
                 {
                     throw new KeyNotFoundException(
                         string.Format("The attribute '{0}' is not present on the item '{1}'",
@@ -81,10 +98,8 @@ namespace Cucumber.SimpleDb.Session
             {
                 throw new ArgumentNullException("value");
             }
-            var attribute = new SessionSimpleDbAttribute(attributeName)
-            {
-                Value = value
-            };
+            var attribute = new SessionSimpleDbAttribute(_item, attributeName);
+            attribute.Value = value;
             if (_attributes.ContainsKey(attributeName))
             {
                 _attributes.Remove(attributeName);
@@ -92,19 +107,19 @@ namespace Cucumber.SimpleDb.Session
             _attributes.Add(attributeName, attribute);
         }
 
+        public bool Remove(string attributeName)
+        {
+            return _attributes.Remove(attributeName);
+        }
+
         public IEnumerator<ISimpleDbAttribute> GetEnumerator()
         {
             return _attributes.Select(kvp => kvp.Value).GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
-        }
-
-        public bool Remove(string attributeName)
-        {
-            return _attributes.Remove(attributeName);
+            return this.GetEnumerator();
         }
     }
 }

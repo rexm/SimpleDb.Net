@@ -1,4 +1,4 @@
-# SimpleDb.NET [![Build Status](https://travis-ci.org/rexm/SimpleDb.Net.png?branch=master)](https://travis-ci.org/rexm/SimpleDb.Net)
+# SimpleDb.NET [![Build Status](https://travis-ci.org/rexm/SimpleDb.Net.svg?branch=master)](https://travis-ci.org/rexm/SimpleDb.Net)
 
 A .NET library that lets you work with [AWS SimpleDB][1] using a familiar entity-like model and LINQ queries.
 
@@ -58,9 +58,11 @@ simpleDb.SubmitChanges();
     
 Creating and deleting Domains are executed immediately.
 
+You can find more details on the [wiki](https://github.com/rexm/SimpleDb.Net/wiki).
+
 ## Contributing
 
-Use GitHub pull requests to point to code changes. For very large changes, open an issue first to explain the shortcomings you intend to address.
+Check out the [contribution guidelines on the wiki](https://github.com/rexm/SimpleDb.Net/wiki/About-the-Project#how-to-contribute).
 
 ## Acknowledgements
 
