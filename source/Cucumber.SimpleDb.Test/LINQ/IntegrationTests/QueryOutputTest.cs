@@ -12,8 +12,8 @@ namespace Cucumber.SimpleDb.Test
         public void ImplicitSelect()
         {
             var query = GetQueryString (context =>
-                context.Domains ["TestDomain1"].Items);
-            Assert.AreEqual ("SELECT * FROM `TestDomain1`", query);
+                context.Domains["TestDomain1"].Items);
+            Assert.AreEqual("SELECT * FROM `TestDomain1`", query);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Cucumber.SimpleDb.Test
         [Test]
         public void WhereNumberBasic()
         {
-            var query = GetQueryString (context =>
+            var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items.Where(i =>
                                i["TestAtt1"] == 1));
             Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` = \"1\"", query);
@@ -71,7 +71,7 @@ namespace Cucumber.SimpleDb.Test
         [Test]
         public void OrderByComplex()
         {
-            var query = GetQueryString (context => 
+            var query = GetQueryString(context => 
                 context.Domains["TestDomain1"].Items
                    .OrderBy(i => i["TestAtt1"])
                     .OrderByDescending(i => i["TestAtt2"]));
@@ -93,54 +93,90 @@ namespace Cucumber.SimpleDb.Test
         {
             var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items
-                   .Where (i => i["TestAtt1"].In(1,2,3)));
+                   .Where(i => i["TestAtt1"].In(1,2,3)));
             Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` IN( \"1\", \"2\", \"3\" )", query);
         }
 
         [Test]
         public void BetweenBasic()
         {
-            var query = GetQueryString (context =>
-                context.Domains ["TestDomain1"].Items
-                   .Where (i => i ["TestAtt1"].Between (7.5, 50)));
-            Assert.AreEqual ("SELECT * FROM `TestDomain1` WHERE `TestAtt1` BETWEEN \"7.5\" AND \"50\"", query);
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                   .Where(i => i["TestAtt1"].Between (7.5, 50)));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` BETWEEN \"7.5\" AND \"50\"", query);
         }
 
         [Test]
         public void Every()
         {
-            var query = GetQueryString (context =>
-                context.Domains ["TestDomain1"].Items
-                   .Where (i => i ["TestAtt1"].Every () > 1));
-            Assert.AreEqual ("SELECT * FROM `TestDomain1` WHERE every( `TestAtt1` ) > \"1\"", query);
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                   .Where(i => i["TestAtt1"].Every () > 1));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE every( `TestAtt1` ) > \"1\"", query);
         }
 
         [Test]
         public void CountBasic()
         {
             var query = GetQueryString (context =>
-                context.Domains ["TestDomain1"].Items
-                .Count ());
-            Assert.AreEqual ("SELECT COUNT(*) FROM `TestDomain1`", query);
+                context.Domains["TestDomain1"].Items
+                .Count());
+            Assert.AreEqual("SELECT COUNT(*) FROM `TestDomain1`", query);
         }
 
         [Test]
         public void CountWhere()
         {
-            var query = GetQueryString (context =>
-                context.Domains ["TestDomain1"].Items
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
                 .Where(i => i["TestAtt1"] > 1)
-                .Count ());
-            Assert.AreEqual ("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
+                .Count());
+            Assert.AreEqual("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
         }
 
         [Test]
         public void CountWithPredicate()
         {
-            var query = GetQueryString (context =>
-                context.Domains ["TestDomain1"].Items
-                .Count (i => i["TestAtt1"] > 1));
-            Assert.AreEqual ("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .Count(i => i["TestAtt1"] > 1));
+            Assert.AreEqual("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
+        }
+
+        [Test]
+        public void FirstBasic()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .First());
+            Assert.AreEqual("SELECT * FROM `TestDomain1` LIMIT 1", query);
+        }
+
+        [Test]
+        public void FirstOrDefaultBasic()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .FirstOrDefault());
+            Assert.AreEqual("SELECT * FROM `TestDomain1` LIMIT 1", query);
+        }
+
+        [Test]
+        public void FirstWithPredicate()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .First(i => i["TestAtt1"] > 1));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` > \"1\" LIMIT 1", query);
+        }
+
+        [Test]
+        public void FirstOrDefaultWithPredicate()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .FirstOrDefault(i => i["TestAtt1"] > 1));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` > \"1\" LIMIT 1", query);
         }
 
         private string GetQueryString<T>(Func<ISimpleDbContext, T> query)
@@ -158,7 +194,7 @@ namespace Cucumber.SimpleDb.Test
                 }
                 else
                 {
-                    query (context);
+                    query(context);
                 }
             }
             return output;

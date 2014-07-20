@@ -18,23 +18,27 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
+            if (m.Method.DeclaringType == typeof(Queryable))
             {
                 switch (m.Method.Name)
                 {
                     case "Count":
-                        return BindCount (m);
+                        return BindCount(m);
                     case "Where":
                         return BindWhere(m);
                     case "Select":
                         return BindSelect(m);
                     case "Take":
                         return BindTake(m);
+                    case "First":
+                        return BindFirst(m);
+                    case "FirstOrDefault":
+                        return BindFirstOrDefault(m);
                     case "OrderBy":
                     case "OrderByDescending":
                         return BindOrderBy(m);
                     default:
-                        return BindDefaultEnumerable(m);
+                        return BindClientEnumerable(m);
                 }
             }
             if (m.Method.DeclaringType == typeof(SimpleDbQueryable))
@@ -42,13 +46,13 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 switch (m.Method.Name)
                 {
                     case "WithConsistency":
-                        return BindUsingConsistency (m);
+                        return BindUsingConsistency(m);
                 }
             }
             return base.VisitMethodCall(m);
         }
 
-        private Expression BindDefaultEnumerable(MethodCallExpression m)
+        private Expression BindClientEnumerable(MethodCallExpression m)
         {
             var asEnumerableMethod = Expression.Call(
                 typeof(Enumerable).GetMethod("AsEnumerable", BindingFlags.Static | BindingFlags.Public)
@@ -71,33 +75,33 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 ));
         }
 
-        private Expression BindCount (MethodCallExpression m)
+        private Expression BindCount(MethodCallExpression m)
         {
             if (ShouldTransformMethod (m))
             {
-                var source = m.Arguments [0];
-                var elementType = TypeUtilities.GetElementType (m.Arguments [0].Type);
+                var source = m.Arguments[0];
+                var elementType = TypeUtilities.GetElementType(m.Arguments[0].Type);
                 if (m.Arguments.Count > 1)
                 {
-                    var predicate = (LambdaExpression)StripQuotes (m.Arguments [1]);
-                    source = Expression.Call (
+                    var predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                    source = Expression.Call(
                         new Func<IQueryable<object>,
                             Expression<Func<object, bool>>,
                             IQueryable<object>>(Queryable.Where<object>)
-                        .Method.GetGenericMethodDefinition().MakeGenericMethod(elementType),
+                                .Method.GetGenericMethodDefinition().MakeGenericMethod(elementType),
                         source,
                         predicate);
                 }
-                return BindCount (m.Type, source);
+                return BindCount(m.Type, source);
             }
-            return BindDefaultEnumerable (m);
+            return BindClientEnumerable(m);
         }
 
         private Expression BindCount(Type type, Expression source)
         {
-            source = this.Visit (source);
-            return SimpleDbExpression.Query (
-                SimpleDbExpression.Count (),
+            source = this.Visit(source);
+            return SimpleDbExpression.Query(
+                SimpleDbExpression.Count(),
                 source,
                 null,
                 null,
@@ -112,7 +116,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return BindWhere(m.Type, m.Arguments[0], predicate);
             }
-            return BindDefaultEnumerable(m);
+            return BindClientEnumerable(m);
         }
 
         private Expression BindWhere(Type type, Expression source, LambdaExpression predicate)
@@ -130,7 +134,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return BindSelect(m.Type, m.Arguments[0], projector);
             }
-            return BindDefaultEnumerable(m);
+            return BindClientEnumerable(m);
         }
 
         private Expression BindSelect(Type type, Expression source, LambdaExpression projector)
@@ -150,7 +154,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 projector);
         }
 
-        private Expression BindTake (MethodCallExpression m)
+        private Expression BindTake(MethodCallExpression m)
         {
             var source = this.Visit(m.Arguments[0]);
             var limitExpression = this.Visit(m.Arguments[1]) as ConstantExpression;
@@ -162,9 +166,59 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 null, source, null, null, limitExpression, false);
         }
 
-        private Expression BindJoin (MethodCallExpression m)
+        private Expression BindFirst(MethodCallExpression m)
         {
-            throw new NotImplementedException ();
+            return BindFirst(m, Enumerable.First<object>);
+        }
+
+        private Expression BindFirstOrDefault(MethodCallExpression m)
+        {
+            return BindFirst(m, Enumerable.FirstOrDefault<object>);
+        }
+
+        private Expression BindFirst(
+            MethodCallExpression m,
+            Func<IEnumerable<object>, object> firstFunc)
+        {
+            if (ShouldTransformMethod(m))
+            {
+                var source = m.Arguments[0];
+                var elementType = TypeUtilities.GetElementType(m.Arguments[0].Type);
+                if (m.Arguments.Count > 1)
+                {
+                    var predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                    source = Expression.Call(
+                        new Func<IQueryable<object>,
+                            Expression<Func<object, bool>>,
+                            IQueryable<object>>(Queryable.Where<object>)
+                                .Method.GetGenericMethodDefinition().MakeGenericMethod(elementType),
+                        source,
+                        predicate);
+                }
+                source = Expression.Call(
+                    new Func<IQueryable<object>,
+                        int,
+                        IQueryable<object>>(Queryable.Take)
+                            .Method.GetGenericMethodDefinition().MakeGenericMethod(elementType),
+                    source,
+                    Expression.Constant(1));
+                source = Expression.Call(
+                    firstFunc.Method.GetGenericMethodDefinition().MakeGenericMethod(elementType),
+                    source);
+                return BindFirst(m.Type, source);
+            }
+            return BindClientEnumerable(m);
+        }
+
+        private Expression BindFirst(Type type, Expression source)
+        {
+            source = this.Visit(source);
+            return SimpleDbExpression.Query(null, source, null, null, null, false);
+        }
+
+        private Expression BindJoin(MethodCallExpression m)
+        {
+            throw new NotImplementedException();
         }
 
         private Expression BindOrderBy(MethodCallExpression m)
@@ -175,7 +229,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return BindOrderBy(m.Type, m.Arguments[0], selector, sortDirection);
             }
-            return BindDefaultEnumerable(m);
+            return BindClientEnumerable(m);
         }
 
         private Expression BindOrderBy(Type type, Expression source, LambdaExpression selector, SortDirection sortDirection)
@@ -184,11 +238,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
             Expression orderByBody = Visit(selector.Body);
             orderByBody = IndexedAttributeMapper.Eval(orderByBody);
             var attributes = SelectionCollector.Collect(orderByBody);
-            if(attributes.Count () < 1)
+            if(attributes.Count() < 1)
             {
                 throw new InvalidOperationException("No attribute references found in the OrderBy expression");
             }
-            if(attributes.Count () > 1)
+            if(attributes.Count() > 1)
             {
                 throw new NotSupportedException("Currently only ordering by one column per order expression is supported");
             }
@@ -201,10 +255,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 false);
         }
 
-        private Expression BindUsingConsistency (MethodCallExpression m)
+        private Expression BindUsingConsistency(MethodCallExpression m)
         {
-            var source = Visit (m.Arguments [0]);
-            return SimpleDbExpression.Query (
+            var source = Visit(m.Arguments[0]);
+            return SimpleDbExpression.Query(
                 null,
                 source,
                 null,
@@ -276,36 +330,36 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
             private static bool MethodIsSupported(MethodInfo m)
             {
-                return IsSupportedLinqMethod (m) || IsSupportedSimpleDbExtension (m);
+                return IsSupportedLinqMethod(m) || IsSupportedSimpleDbExtension(m);
             }
 
             private static bool AdditionalArgumentsAreSupported(MethodCallExpression mex)
             {
                 if (mex.Arguments.Count > 1)
                 {
-                    return AdditionalArgumentIsLambdaCandidate (mex);
+                    return AdditionalArgumentIsLambdaCandidate(mex);
                 }
                 return true;
             }
 
             private static bool AdditionalArgumentIsLambdaCandidate(MethodCallExpression mex)
             {
-                var lambda = StripQuotes (mex.Arguments [1]) as LambdaExpression;
-                return lambda != null && typeof(ISimpleDbItem).IsAssignableFrom (lambda.Parameters [0].Type);
+                var lambda = StripQuotes (mex.Arguments[1]) as LambdaExpression;
+                return lambda != null && typeof(ISimpleDbItem).IsAssignableFrom(lambda.Parameters[0].Type);
             }
 
-            private static bool IsSupportedLinqMethod (MethodInfo m)
+            private static bool IsSupportedLinqMethod(MethodInfo m)
             {
                 return (m.DeclaringType == typeof(Queryable) || m.DeclaringType == typeof(Enumerable))
-                    && supportedLinqMethodNames.Contains (m.Name);
+                    && supportedLinqMethodNames.Contains(m.Name);
             }
 
-            private static bool IsSupportedSimpleDbExtension (MethodInfo m)
+            private static bool IsSupportedSimpleDbExtension(MethodInfo m)
             {
                 return m.DeclaringType == typeof(SimpleDbQueryable);
             }
 
-            private static readonly string[] supportedLinqMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count" };
+            private static readonly string[] supportedLinqMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count", "First", "FirstOrDefault" };
         }
     }
 }

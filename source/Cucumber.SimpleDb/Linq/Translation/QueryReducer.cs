@@ -37,10 +37,17 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 var source = Visit(aggregator.Source);
                 var projector = aggregator.Projector;
-                return Expression.Call(
-                    typeof(Enumerable).GetMethod("Select", new []{typeof(IEnumerable<>), typeof(Func<,>)}).MakeGenericMethod(source.Type, projector.Type),
-                    source,
-                    aggregator.Projector);
+                if (projector != null)
+                {
+                    return Expression.Call(
+                        typeof(Enumerable).GetMethod("Select", new []{ typeof(IEnumerable<>), typeof(Func<,>) }).MakeGenericMethod(source.Type, projector.Type),
+                        source,
+                        projector);
+                }
+                else
+                {
+                    return source;
+                }
             }
         }
 
