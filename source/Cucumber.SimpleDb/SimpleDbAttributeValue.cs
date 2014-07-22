@@ -92,6 +92,36 @@ namespace Cucumber.SimpleDb
             return _values.Any(val => val.StartsWith(partialValue));
         }
 
+		/// <summary>
+		/// Gets whether the value ends with the specified value.
+		/// </summary>
+		/// <exception cref="System.ArgumentNullException">Thrown when <paramref name="partialValue"/> is null or empty.</exception>
+		/// <param name="partialValue">The partial value to search for.</param>
+		/// <returns>True if the value ends with the specified value; otherwise false.</returns>
+		public bool EndsWith(string partialValue)
+		{
+			if (string.IsNullOrEmpty(partialValue))
+			{
+				throw new ArgumentNullException("partialValue");
+			}
+			return _values.Any(val => val.EndsWith(partialValue));
+		}
+
+		/// <summary>
+		/// Gets whether the value contains the specified value.
+		/// </summary>
+		/// <exception cref="System.ArgumentNullException">Thrown when <paramref name="partialValue"/> is null or empty.</exception>
+		/// <param name="partialValue">The partial value to search for.</param>
+		/// <returns>True if the value contains the specified value; otherwise false.</returns>
+		public bool Contains(string partialValue)
+		{
+			if (string.IsNullOrEmpty(partialValue))
+			{
+				throw new ArgumentNullException("partialValue");
+			}
+			return _values.Any(val => val.Contains(partialValue));
+		}
+
         /// <summary>
         /// Gets whether the value falls between the specified bounds (inclusive).
         /// </summary>

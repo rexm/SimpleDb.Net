@@ -104,6 +104,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         Visit(m.Object);
                         WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "", "%");
                         break;
+					case "EndsWith":
+						Visit(m.Object);
+						WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "");
+						break;
+					case "Contains":
+						Visit(m.Object);
+						WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "%");
+						break;
                     case "Between":
                         Visit(m.Object);
                         WriteBetween(
@@ -399,9 +407,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 stringValue = ((DateTime)value).ToString("o");
             }
-            return stringValue
+			return stringValue
                 .Replace("\\", "\\\\")
-                .Replace("\"", "\\\"");
+                .Replace("\"", "\\\"")
+				.Replace("%", "\\%");
         }
 
         private string CreateSystemNameString(string name)

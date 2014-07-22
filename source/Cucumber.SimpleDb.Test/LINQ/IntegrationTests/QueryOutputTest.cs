@@ -38,9 +38,45 @@ namespace Cucumber.SimpleDb.Test
         {
             var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items.Where(i =>
-                   i["TestAtt1"].StartsWith("searchFor")));
-            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"searchFor%\"", query);
+                   i["TestAtt1"].Contains("searchFor")));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"%searchFor%\"", query);
         }
+
+		[Test]
+		public void WhereNotContainsString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					!i["TestAtt1"].Contains("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` NOT LIKE \"%searchFor%\"", query);
+		}
+
+		[Test]
+		public void WhereEndsWithString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					i["TestAtt1"].EndsWith("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"%searchFor\"", query);
+		}
+
+		[Test]
+		public void WhereNotEndsWithString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					!i["TestAtt1"].EndsWith("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` NOT LIKE \"%searchFor\"", query);
+		}
+
+		[Test]
+		public void WhereStartsWithString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					i["TestAtt1"].StartsWith("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"searchFor%\"", query);
+		}
 
         [Test]
         public void WhereNotStartsWithString()
