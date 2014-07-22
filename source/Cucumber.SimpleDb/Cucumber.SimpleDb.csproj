@@ -77,7 +77,6 @@
     <Compile Include="Linq\Translation\SimpleDbExpressionVisitor.cs" />
     <Compile Include="Linq\SimpleDbQueryProvider.cs" />
     <Compile Include="Linq\Structure\QueryExpression.cs" />
-    <Compile Include="Linq\Translation\IndexedAttributeMapper.cs" />
     <Compile Include="Utilities\TypeUtilities.cs" />
     <Compile Include="Session\ProxySimpleDbDomain.cs" />
     <Compile Include="ISimpleDbService.cs" />
@@ -101,6 +100,8 @@
     <Compile Include="Linq\Structure\ScalarExpression.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="SimpleDbQueryable.cs" />
+    <Compile Include="Linq\Translation\ItemAttributeMapper.cs" />
+    <Compile Include="Linq\Structure\FunctionExpression.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

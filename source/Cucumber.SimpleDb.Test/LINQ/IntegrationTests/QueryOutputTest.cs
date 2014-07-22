@@ -97,6 +97,15 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
+        public void WhereItemNameContains()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items.Where(i =>
+                    i.Name.Contains("searchFor")));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE itemName() LIKE \"%searchFor%\"", query);
+        }
+
+        [Test]
         public void OrderByBasic()
         {
             var query = GetQueryString (context => 
@@ -213,6 +222,48 @@ namespace Cucumber.SimpleDb.Test
                 context.Domains["TestDomain1"].Items
                 .FirstOrDefault(i => i["TestAtt1"] > 1));
             Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` > \"1\" LIMIT 1", query);
+        }
+
+		[Test]
+		public void IsNull()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items
+				.Where(i => i["TestAtt1"] == null));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` IS NULL", query);
+		}
+
+		[Test]
+		public void IsNotNull()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items
+				.Where(i => i["TestAtt1"] != null));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` IS NOT NULL", query);
+		}
+
+		[Test]
+		public void SelectWithItemName()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items
+				.Select(i => new {
+					Name = i.Name,
+					Value = i["Value"]
+				}));
+			Assert.AreEqual("SELECT itemName(), `Value` FROM `TestDomain1`", query);
+		}
+
+        [Test]
+        public void OrderByWithItemNameNotExplicitlyInSelect()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .OrderBy(i => i.Name)
+                .Select(i => new {
+                    Value = i["Value"]
+                }));
+            Assert.AreEqual("SELECT `Value`, itemName() FROM `TestDomain1` ORDERBY itemName() ASC", query);
         }
 
         private string GetQueryString<T>(Func<ISimpleDbContext, T> query)

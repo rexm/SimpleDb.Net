@@ -12,6 +12,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
     {
         private const string nameFormat = "`{0}`";
         private const string valueFormat = "\"{0}\"";
+        private const string functionFormat = "{0}()";
 
         public static string Write(QueryExpression expr)
         {
@@ -54,15 +55,22 @@ namespace Cucumber.SimpleDb.Linq.Translation
         protected override Expression VisitSimpleDbSelect(SelectExpression sex)
         {
             _qsb.Append("SELECT");
-            string select = "*";
-            if(sex.Attributes.Count() > 0)
+            if (sex.Attributes.Any())
             {
-                select = string.Join(",",
-                    sex.Attributes
-                        .DistinctBy(att => att.Name)
-                        .Select(att => string.Format(nameFormat, att.Name)));
+                var position = 0;
+                foreach (var aex in sex.Attributes)
+                {
+                    if (position++ > 0)
+                    {
+                        _qsb.Append(",");
+                    }
+                    VisitSimpleDbAttribute(aex);
+                }
             }
-            _qsb.Append(select);
+            else
+            {
+                _qsb.Append("*");
+            }
             return sex;
         }
 
@@ -73,23 +81,23 @@ namespace Cucumber.SimpleDb.Linq.Translation
             return dex;
         }
 
-        protected override Expression VisitMember(MemberExpression m)
-        {
-            if (m.Member.DeclaringType == typeof(ISimpleDbItem))
-            {
-                switch (m.Member.Name)
-                {
-                    case "Name":
-                        WriteItemName();
-                        return m;
-                    default:
-                        throw new NotSupportedException(
-                            string.Format("Querying on '{0}' is not currently supported",
-                            m.Member.Name));
-                }
-            }
-            return base.VisitMember(m);
-        }
+//        protected override Expression VisitMember(MemberExpression m)
+//        {
+//            if (m.Member.DeclaringType == typeof(ISimpleDbItem))
+//            {
+//                switch (m.Member.Name)
+//                {
+//                    case "Name":
+//                        WriteItemName();
+//                        return m;
+//                    default:
+//                        throw new NotSupportedException(
+//                            string.Format("Querying on '{0}' is not currently supported",
+//                            m.Member.Name));
+//                }
+//            }
+//            return base.VisitMember(m);
+//        }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
@@ -104,14 +112,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         Visit(m.Object);
                         WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "", "%");
                         break;
-					case "EndsWith":
-						Visit(m.Object);
-						WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "");
-						break;
-					case "Contains":
-						Visit(m.Object);
-						WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "%");
-						break;
+                    case "EndsWith":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "");
+                        break;
+                    case "Contains":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "%");
+                        break;
                     case "Between":
                         Visit(m.Object);
                         WriteBetween(
@@ -124,9 +132,38 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     default:
                         throw new NotSupportedException(
                             string.Format("Querying on '{0}' is not currently supported",
-                            m.Method.Name));
+                                m.Method.Name));
                 }
                 return m;
+            }
+            else if (IsQueryFunctionMethod(m))
+            {
+                switch (m.Method.Name)
+                {
+                    case "StartsWith":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "", "%");
+                        break;
+                    case "EndsWith":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "");
+                        break;
+                    case "Contains":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "%");
+                        break;
+                    default:
+                        throw new NotSupportedException(
+                            string.Format("Querying on '{0}' is not currently supported",
+                                m.Method.Name));
+                }
+                return m;
+            }
+            else
+            {
+                throw new NotSupportedException(
+                    string.Format("Querying on '{0}' is not currently supported",
+                        m.Object.Type.FullName));
             }
             return base.VisitMethodCall(m);
         }
@@ -135,6 +172,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             var m = exp as MethodCallExpression;
             return m != null && m.Method.DeclaringType == typeof(SimpleDbAttributeValue);
+        }
+
+        private bool IsQueryFunctionMethod(Expression exp)
+        {
+            var m = exp as MethodCallExpression;
+            return m != null && m.Object.GetType() == typeof(FunctionExpression);
         }
 
         private void WriteBetween(string lower, string upper)
@@ -212,11 +255,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
             }
         }
 
-        private void WriteItemName()
-        {
-            _qsb.Append("itemName()");
-        }
-
         private void WriteEvery(MethodCallExpression m)
         {
             _qsb.Append("every(");
@@ -234,15 +272,27 @@ namespace Cucumber.SimpleDb.Linq.Translation
             Visit(where);
         }
 
-        protected override Expression VisitSimpleDbAttribute(AttributeExpression nex)
+        protected override Expression VisitSimpleDbAttribute(AttributeExpression aex)
         {
-            WriteSimpleDbAttribute(nex);
-            return nex;
+            if (aex is FunctionExpression)
+            {
+                WriteFunctionExpression((FunctionExpression)aex);
+            }
+            else
+            {
+                WriteSimpleDbAttribute(aex);
+            }
+            return aex;
         }
 
-        private void WriteSimpleDbAttribute(AttributeExpression nex)
+        private void WriteFunctionExpression(FunctionExpression fex)
         {
-            _qsb.AppendFormat(nameFormat, CreateSystemNameString(nex.Name));
+            _qsb.AppendFormat(functionFormat, fex.Name);
+        }
+
+        private void WriteSimpleDbAttribute(AttributeExpression aex)
+        {
+            _qsb.AppendFormat(nameFormat, CreateSystemNameString(aex.Name));
         }
 
         private void VisitLimit(Expression expression)
@@ -270,7 +320,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
 			}
 			_qsb.Append("ORDERBY");
 			WriteCommaSeparatedSequence(orderBys, orderBy => {
-				WriteSimpleDbAttribute(orderBy.Attribute);
+                VisitSimpleDbAttribute(orderBy.Attribute);
 				_qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
 			});
         }
@@ -327,7 +377,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         private void HandleNull(BinaryExpression node)
         {
             var attribute = node.Left as AttributeExpression ?? node.Right as AttributeExpression;
-            WriteSimpleDbAttribute(attribute);
+            VisitSimpleDbAttribute(attribute);
             _qsb.Append("IS");
             switch (node.NodeType)
             {
@@ -388,7 +438,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             if (expr is AttributeExpression)
             {
-                WriteSimpleDbAttribute((AttributeExpression)expr);
+                VisitSimpleDbAttribute((AttributeExpression)expr);
             }
             else if (expr is ConstantExpression)
             {

@@ -123,7 +123,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             source = this.Visit(source);
             Expression where = Visit(predicate.Body);
-            where = IndexedAttributeMapper.Eval(where);
+            where = ItemAttributeMapper.Eval(where);
             return SimpleDbExpression.Query(null, source, where, null, null, false);
         }
 
@@ -141,7 +141,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             source = this.Visit(source);
             Expression projectorBody = Visit(projector.Body);
-            projectorBody = IndexedAttributeMapper.Eval(projectorBody);
+            projectorBody = ItemAttributeMapper.Eval(projectorBody);
             var attributes = SelectionCollector.Collect(projectorBody);
             return SimpleDbExpression.Project(
                 SimpleDbExpression.Query(
@@ -236,7 +236,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             source = this.Visit(source);
             Expression orderByBody = Visit(selector.Body);
-            orderByBody = IndexedAttributeMapper.Eval(orderByBody);
+            orderByBody = ItemAttributeMapper.Eval(orderByBody);
             var attributes = SelectionCollector.Collect(orderByBody);
             if(attributes.Count() < 1)
             {

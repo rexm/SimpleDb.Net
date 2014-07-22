@@ -26,6 +26,11 @@ namespace Cucumber.SimpleDb.Linq.Structure
             return new AttributeExpression(name, type);
         }
 
+        public static FunctionExpression Function(string functionName, Type type)
+        {
+            return new FunctionExpression(functionName, type);
+        }
+
         public static DomainExpression Domain(ISimpleDbDomain domain)
         {
             return new DomainExpression(domain);
@@ -54,7 +59,7 @@ namespace Cucumber.SimpleDb.Linq.Structure
 
         public static CountExpression Count()
         {
-            return new CountExpression ();
+            return new CountExpression();
         }
 
         public override string ToString()
