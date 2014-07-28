@@ -81,24 +81,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
             return dex;
         }
 
-//        protected override Expression VisitMember(MemberExpression m)
-//        {
-//            if (m.Member.DeclaringType == typeof(ISimpleDbItem))
-//            {
-//                switch (m.Member.Name)
-//                {
-//                    case "Name":
-//                        WriteItemName();
-//                        return m;
-//                    default:
-//                        throw new NotSupportedException(
-//                            string.Format("Querying on '{0}' is not currently supported",
-//                            m.Member.Name));
-//                }
-//            }
-//            return base.VisitMember(m);
-//        }
-
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
             if (IsAttributeValueMethod(m))
