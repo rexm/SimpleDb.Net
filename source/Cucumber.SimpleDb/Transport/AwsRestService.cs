@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Collections.Specialized;
 using System.Xml;
@@ -16,51 +18,67 @@ namespace Cucumber.SimpleDb.Transport
     {
         private readonly string _publicKey;
         private readonly string _privateKey;
-        private readonly IWebRequestProvider _webRequest;
+				private readonly HttpClient _httpClient;
         private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
-        public AwsRestService(string publicKey, string privateKey, IWebRequestProvider webRequest)
+				public AwsRestService(string publicKey, string privateKey)
+					:this(publicKey, privateKey, new HttpClient())
+				{
+				
+				}
+
+        internal AwsRestService(string publicKey, string privateKey, HttpClient httpClient)
         {
             _publicKey = publicKey;
             _privateKey = privateKey;
-            _webRequest = webRequest;
+            _httpClient = httpClient;
         }
 
-        public XElement ExecuteRequest(NameValueCollection arguments)
+				public XElement ExecuteRequest(NameValueCollection arguments)
+				{
+					return ExecuteRequestAsync(arguments).Result;
+				}
+
+        public Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             arguments = AddStandardArguments(arguments);
-            string argumentString = WriteQueryString(arguments);
-            var request = _webRequest.Create(string.Format(
-                "{0}://{1}/?{2}",
-                simpleDbProtocol,
-                simpleDbUrl,
-                argumentString));
-            try
-            {
-                using (var response = request.GetResponse ())
-                {
-                    return ProcessAwsResponse (response);
-                }
-            }
-            catch (WebException ex)
-            {
-                var response = ex.Response as HttpWebResponse;
-                var errors = ProcessAwsResponse (response);
-                throw new SimpleDbException(string.Format(
-                    "Error {0} {1}: AWS returned the following:\n{2}",
-                    (int)response.StatusCode,
-                    response.StatusCode,
-                    string.Join("\n", errors.Descendants(sdbNs + "Error")
-                        .Select(error => string.Format("{0}: {1}",
-                            error.Element(sdbNs + "Code").Value,
-                            error.Element(sdbNs + "Message").Value)))),
-                    ex);
-            }
+            var argumentString = WriteQueryString(arguments);
+						var requestUrl = string.Format(
+								"{0}://{1}/?{2}",
+								simpleDbProtocol,
+								simpleDbUrl,
+								argumentString);
+						var requestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri(requestUrl));
+						return _httpClient.SendAsync(requestMessage).ContinueWith(task =>
+						{
+							var responseMessage = task.Result;
+
+							if (responseMessage.IsSuccessStatusCode)
+							{
+								return ProcessAwsResponse(responseMessage);
+							}
+
+							var errors = ProcessAwsResponse(responseMessage);
+							//TODO: (CV) Should not be throwing from the async handler. Maybe change the method signature to return a result wrapper which indicates the Status of result???.
+							throw new SimpleDbException(string.Format(
+									"Error {0} {1}: AWS returned the following:\n{2}",
+									(int)responseMessage.StatusCode,
+									responseMessage.StatusCode,
+									string.Join("\n", errors.Descendants(sdbNs + "Error")
+											.Select(error => string.Format("{0}: {1}",
+													error.Element(sdbNs + "Code").Value,
+													error.Element(sdbNs + "Message").Value)))));
+						});
+
         }
 
-        private static XElement ProcessAwsResponse (WebResponse response)
+        private static XElement ProcessAwsResponse (HttpResponseMessage response)
         {
-            using (var stream = response.GetResponseStream ())
+						if (response.Content == null)
+						{
+							return null;
+						}
+            using (var stream = response.Content.ReadAsStreamAsync().Result)
             {
                 try
                 {
@@ -127,7 +145,7 @@ namespace Cucumber.SimpleDb.Transport
                         arguments[k].ToRfc3986()))));
         }
 
-        private string HashString(string requestDescription)
+        internal string HashString(string requestDescription)
         {
             using (HMACSHA256 hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_privateKey)))
             {
