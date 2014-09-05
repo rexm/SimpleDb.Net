@@ -9,6 +9,7 @@ namespace Cucumber.SimpleDb.Session
     {
         private readonly ISimpleDbService _service;
         private readonly ISession _session;
+        private readonly ISimpleDbStatistics _statistics;
 
         ISimpleDbService IInternalContext.Service { get { return _service; } }
 
@@ -16,7 +17,8 @@ namespace Cucumber.SimpleDb.Session
 
         internal SessionSimpleDbContext(ISimpleDbService service)
         {
-            _service = service;
+            _service = new StatisticsCollectorProxy(service);
+            _statistics = (ISimpleDbStatistics)_service; //this feels dirty
             _session = new SimpleDbSession(_service);
         }
 
@@ -28,6 +30,11 @@ namespace Cucumber.SimpleDb.Session
         public void SubmitChanges()
         {
             _session.SubmitChanges();
+        }
+
+        public ISimpleDbStatistics Statistics
+        {
+            get { return _statistics; }
         }
 
         public void Dispose()

@@ -18,8 +18,11 @@ namespace Cucumber.SimpleDb.Test
 
         public XElement ExecuteRequest(NameValueCollection arguments)
         {
-
-            return new XElement(ns + "SelectResponse", new XElement(ns + "SelectResult", Enumerable.Range(1, _items).Select(i => GenerateElement(i))));
+            return new XElement(ns + "SelectResponse",
+                new XElement(ns + "SelectResult", Enumerable.Range(1, _items).Select(i => GenerateElement(i))),
+                new XElement(ns + "ResponseMetadata", 
+                    new XElement(ns + "RequestId", Guid.NewGuid()),
+                    new XElement(ns + "BoxUsage", 0.001m)));
         }
 
         private XElement GenerateElement(int index)

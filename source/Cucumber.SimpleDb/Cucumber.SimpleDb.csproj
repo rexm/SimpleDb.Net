@@ -102,6 +102,8 @@
     <Compile Include="SimpleDbQueryable.cs" />
     <Compile Include="Linq\Translation\ItemAttributeMapper.cs" />
     <Compile Include="Linq\Structure\FunctionExpression.cs" />
+    <Compile Include="ISimpleDbStatistics.cs" />
+    <Compile Include="StatisticsCollectorProxy.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
