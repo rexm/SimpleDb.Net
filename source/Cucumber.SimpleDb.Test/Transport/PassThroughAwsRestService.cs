@@ -8,7 +8,7 @@ namespace Cucumber.SimpleDb.Test
 {
     public class PassThroughAwsRestService : IAwsRestService
     {
-        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
+        public Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             var doc = new XDocument(
                 new XElement("Arguments",
@@ -17,7 +17,7 @@ namespace Cucumber.SimpleDb.Test
                             new XElement("Key", key),
                             new XElement("Value", arguments[key])))
                         .OfType<object>().ToArray()));
-            return doc.Root;
+            return new Task<XElement>(() => doc.Root);
         }
     }
 }

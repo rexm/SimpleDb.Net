@@ -12,7 +12,8 @@ namespace Cucumber.SimpleDb.Session
         private readonly long _totalAttributeNameSize;
         private readonly long _totalAttributeValueSize;
         private readonly long _totalItemNameSize;
-        private readonly long _totalItemCount;
+        private readonly long _itemCount;
+        private readonly DateTime _calculated;
         private readonly ISimpleDbDomain _domain;
 
         internal SimpleDbDomainMetadata(ISimpleDbDomain domain, XContainer data)
@@ -20,12 +21,13 @@ namespace Cucumber.SimpleDb.Session
             _domain = domain;
             try
             {
-                _totalItemCount = long.Parse(data.Element(SdbNs + "TotalItemCount").Value);
+                _itemCount = long.Parse(data.Element(SdbNs + "ItemCount").Value);
                 _attributeNameCount = long.Parse(data.Element(SdbNs + "AttributeNameCount").Value);
                 _attributeValueCount = long.Parse(data.Element(SdbNs + "AttributeValueCount").Value);
-                _totalItemNameSize = long.Parse(data.Element(SdbNs + "TotalItemNameSize").Value);
-                _totalAttributeValueSize = long.Parse(data.Element(SdbNs + "TotalAttributeValueSize").Value);
-                _totalAttributeNameSize = long.Parse(data.Element(SdbNs + "TotalAttributeNameSize").Value);
+                _totalItemNameSize = long.Parse(data.Element(SdbNs + "ItemNamesSizeBytes").Value);
+                _totalAttributeValueSize = long.Parse(data.Element(SdbNs + "AttributeValuesSizeBytes").Value);
+                _totalAttributeNameSize = long.Parse(data.Element(SdbNs + "AttributeNamesSizeBytes").Value);
+                _calculated = GetDateTimeFromEpoch(long.Parse(data.Element(SdbNs + "Timestamp").Value));
             }
             catch (Exception ex)
             {
@@ -33,9 +35,14 @@ namespace Cucumber.SimpleDb.Session
             }
         }
 
-        public long TotalItemCount
+        public DateTime Calculated
         {
-            get { return _totalItemCount; }
+            get { return _calculated; }
+        }
+
+        public long ItemCount
+        {
+            get { return _itemCount; }
         }
 
         public long AttributeNameCount
@@ -61,6 +68,12 @@ namespace Cucumber.SimpleDb.Session
         public long TotalAttributeNameSize
         {
             get { return _totalAttributeNameSize; }
+        }
+
+        private static DateTime GetDateTimeFromEpoch(long seconds)
+        {
+            var dt = new DateTime(1970, 1, 1, 0, 0, 0);
+            return dt.AddSeconds(seconds);
         }
     }
 }

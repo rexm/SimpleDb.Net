@@ -39,8 +39,6 @@ namespace Cucumber.SimpleDb.Transport
                 SimpleDbProtocol,
                 SimpleDbUrl,
                 argumentString);
-            XElement xmlContent;
-            bool isSuccessStatusCode;
             using (var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false))
             {
                 if (response.IsSuccessStatusCode)

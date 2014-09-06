@@ -41,14 +41,15 @@ namespace Cucumber.SimpleDb.Test.Transport
         {
             return ListDomainsAsync(null);
         }
-        public virtual async Task<XElement> ListDomainsAsync(string nextPageToken)
+        public virtual Task<XElement> ListDomainsAsync(string nextPageToken)
         {
-            return new XElement(SdbNs + "ListDomainsResponse", new XElement(SdbNs + "ListDomainsResult", new XElement[]
-            {
-                new XElement(SdbNs + "DomainName", "pictures"),
-                new XElement(SdbNs + "DomainName", "documents"),
-                new XElement(SdbNs + "DomainName", "contacts")
-            }));
+            return new Task<XElement>(() => 
+                new XElement(SdbNs + "ListDomainsResponse", new XElement(SdbNs + "ListDomainsResult", new XElement[]
+                {
+                    new XElement(SdbNs + "DomainName", "pictures"),
+                    new XElement(SdbNs + "DomainName", "documents"),
+                    new XElement(SdbNs + "DomainName", "contacts")
+                    })));
         }
         public virtual Task<XElement> PutAttributesAsync(string domain, string name, params object[] attributes)
         {
@@ -62,18 +63,19 @@ namespace Cucumber.SimpleDb.Test.Transport
         {
             return SelectAsync(query, useConsistency, null);
         }
-        public virtual async Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
+        public virtual Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
-            return new XElement(SdbNs + "SelectResponse", new XElement(SdbNs + "SelectResult", new XElement[]
-            {
-                new XElement(SdbNs + "Item", new XElement[]{
-                    new XElement(SdbNs + "Name", "ItemName1"),
-                    new XElement(SdbNs + "Attribute", new XElement[] {
-                        new XElement(SdbNs + "Name", "Count"),
-                        new XElement(SdbNs + "Value", 1)
+            return new Task<XElement>(() => 
+                new XElement(SdbNs + "SelectResponse", new XElement(SdbNs + "SelectResult", new XElement[]
+                {
+                    new XElement(SdbNs + "Item", new XElement[]{
+                        new XElement(SdbNs + "Name", "ItemName1"),
+                        new XElement(SdbNs + "Attribute", new XElement[] {
+                            new XElement(SdbNs + "Name", "Count"),
+                            new XElement(SdbNs + "Value", 1)
+                        })
                     })
-                })
-            }));
+                })));
         }
 
         #endregion

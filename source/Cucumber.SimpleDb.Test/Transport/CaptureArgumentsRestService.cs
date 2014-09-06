@@ -16,7 +16,7 @@ namespace Cucumber.SimpleDb.Test
             _captureResult = captureResult;
         }
 
-        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
+        public Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             var doc = new XDocument(
                 new XElement("Arguments",
@@ -27,18 +27,19 @@ namespace Cucumber.SimpleDb.Test
                         .OfType<object>().ToArray()));
             _captureResult(doc.Root);
             XNamespace ns = "http://sdb.amazonaws.com/doc/2009-04-15/";
-            return new XElement(ns + "SelectResponse", new XElement(ns + "SelectResult", new[]
-            {
-                new XElement(ns + "Item", new[]
+            return new Task<XElement>(() =>
+                new XElement(ns + "SelectResponse", new XElement(ns + "SelectResult", new[]
                 {
-                    new XElement(ns + "Name", "ItemName1"),
-                    new XElement(ns + "Attribute", new[]
+                    new XElement(ns + "Item", new[]
                     {
-                        new XElement(ns + "Name", "Count"),
-                        new XElement(ns + "Value", 1)
+                        new XElement(ns + "Name", "ItemName1"),
+                        new XElement(ns + "Attribute", new[]
+                        {
+                            new XElement(ns + "Name", "Count"),
+                            new XElement(ns + "Value", 1)
+                        })
                     })
-                })
-            }));
+                })));
         }
     }
 }

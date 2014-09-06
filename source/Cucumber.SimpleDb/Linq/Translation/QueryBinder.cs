@@ -309,11 +309,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private class QueryNominator : SimpleDbExpressionVisitor
         {
-            private static readonly string[] SupportedLinqMethodNames =
-            {
-                "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count"
-            };
-
             private bool _isCandidate = true;
 
             public static bool IsCandidate(Expression source)

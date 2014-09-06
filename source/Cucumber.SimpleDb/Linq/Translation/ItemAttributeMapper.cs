@@ -20,7 +20,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 {
                     case "Name":
                         return SimpleDbExpression.Function("itemName", typeof(string));
-                        break;
                 }
             }
             return base.VisitMember(node);

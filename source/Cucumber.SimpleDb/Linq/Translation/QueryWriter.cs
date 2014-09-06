@@ -147,7 +147,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     string.Format("Querying on '{0}' is not currently supported",
                         m.Object.Type.FullName));
             }
-            return base.VisitMethodCall(m);
         }
 
         private static bool IsAttributeValueMethod(Expression exp)

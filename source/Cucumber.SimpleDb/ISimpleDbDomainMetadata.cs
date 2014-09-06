@@ -2,12 +2,21 @@
 
 namespace Cucumber.SimpleDb
 {
+    /// <summary>
+    /// The detailed metadata for the domain.
+    /// See: http://docs.aws.amazon.com/AmazonSimpleDB/latest/DeveloperGuide/SDB_API_DomainMetadata.html
+    /// </summary>
     public interface ISimpleDbDomainMetadata
     {
         /// <summary>
+        /// Gets UTC date and time the metadata was calculated.
+        /// </summary>
+        DateTime Calculated { get; }
+
+        /// <summary>
         /// Gets the total count the items in the current domain.
         /// </summary>
-        long TotalItemCount { get; }
+        long ItemCount { get; }
 
         /// <summary>
         /// Gets the total number of attribute names present in the current domain.

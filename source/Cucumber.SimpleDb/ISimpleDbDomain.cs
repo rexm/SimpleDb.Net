@@ -29,7 +29,7 @@ namespace Cucumber.SimpleDb
 
         /// <summary>
         /// Gets the detailed info for the domain.
-        /// See: 
+        /// See: http://docs.aws.amazon.com/AmazonSimpleDB/latest/DeveloperGuide/SDB_API_DomainMetadata.html
         /// </summary>
         /// <returns>The detailed info for the domain.</returns>
         Task<ISimpleDbDomainMetadata> GetDomainInfoAsync();
