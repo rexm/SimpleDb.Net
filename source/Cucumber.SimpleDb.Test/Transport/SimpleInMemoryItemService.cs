@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Transport;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Test
 {
@@ -16,7 +17,7 @@ namespace Cucumber.SimpleDb.Test
             _items = items;
         }
 
-        public XElement ExecuteRequest(NameValueCollection arguments)
+        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             return new XElement(ns + "SelectResponse",
                 new XElement(ns + "SelectResult", Enumerable.Range(1, _items).Select(i => GenerateElement(i))),

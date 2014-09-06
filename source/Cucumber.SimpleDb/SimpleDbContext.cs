@@ -1,6 +1,7 @@
 ﻿using System;
 using Cucumber.SimpleDb.Session;
 using Cucumber.SimpleDb.Transport;
+using System.Net.Http;
 
 namespace Cucumber.SimpleDb
 {
@@ -28,7 +29,7 @@ namespace Cucumber.SimpleDb
             {
                 throw new ArgumentNullException("privateKey");
             }
-            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey, new WebRequestProvider())));
+            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey, new HttpClient())));
         }
 
         /// <summary>

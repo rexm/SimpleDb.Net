@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Linq.Structure;
 using Cucumber.SimpleDb.Session;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
@@ -40,7 +41,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return Expression.Call(
                     Expression.Constant(this),
-                    this.GetType().GetMethod("ExecuteScalar", BindingFlags.NonPublic | BindingFlags.Instance)
+                    this.GetType().GetMethod("ExecuteScalarAsync", BindingFlags.NonPublic | BindingFlags.Instance)
                         .MakeGenericMethod(pex.Source.Select.Type),
                     Expression.Constant(new QueryCommand(pex.Source)));
             }
@@ -48,49 +49,42 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return Expression.Call(
                     Expression.Constant(this),
-                    this.GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
+                    this.GetType().GetMethod("ExecuteDeferredAsync", BindingFlags.NonPublic | BindingFlags.Instance)
                     .MakeGenericMethod(projector.Body.Type),
                     Expression.Constant(new QueryCommand(pex.Source)),
                     projector);
             }
-            return Expression.Call(
-                Expression.Constant(this),
-                GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .MakeGenericMethod(projector.Body.Type),
-                Expression.Constant(new QueryCommand(pex.Source)),
-                projector);
         }
 
-        protected virtual T ExecuteScalar<T>(QueryCommand query)
+        protected virtual async Task<T> ExecuteScalarAsync<T>(QueryCommand query)
         {
-            var result = ExecuteQuery(query).FirstOrDefault();
+            var result = (await ExecuteQueryAsync(query).ConfigureAwait(false)).FirstOrDefault();
             if (result == null)
             {
                 throw new InvalidOperationException("Query did not return a scalar value in the result");
             }
             return (T)Convert.ChangeType(result
                 .Element(SdbNs + "Attribute")
-                .Element(SdbNs + "Value").Value, typeof(T));
+                .Element(SdbNs + "Value").Value, typeof (T));
         }
 
-        protected virtual IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
+        private async Task<IEnumerable<T>> ExecuteDeferredAsync<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)
         {
-            return ExecuteQuery(query).Select(itemData => projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect)));
+            return (await ExecuteQueryAsync(query).ConfigureAwait(false)).Select(itemData => projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect)));
         }
 
-        protected virtual IEnumerable<XElement> ExecuteQuery(QueryCommand query)
+        protected virtual async Task<IEnumerable<XElement>> ExecuteQueryAsync(QueryCommand query)
         {
+            var itemNodes = new List<XElement>();
             string nextPageToken = null;
             do
             {
-                var result = _context.Service.Select(query.QueryText, query.UseConsistency, nextPageToken)
-                    .Element(SdbNs + "SelectResult");
-                foreach (var itemNode in result.Elements(SdbNs + "Item"))
-                {
-                    yield return itemNode;
-                }
+                var result = (await _context.Service.SelectAsync(query.QueryText, query.UseConsistency, nextPageToken)
+                    .ConfigureAwait(false)).Element(SdbNs + "SelectResult");
+                itemNodes.AddRange(result.Elements(SdbNs + "Item"));
                 nextPageToken = result.Elements(SdbNs + "NextToken").Select(x => x.Value).FirstOrDefault();
             } while (!string.IsNullOrEmpty(nextPageToken));
+            return itemNodes;
         }
     }
 }

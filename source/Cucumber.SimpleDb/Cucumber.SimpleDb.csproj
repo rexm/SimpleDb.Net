@@ -38,6 +38,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Session\ISessionAttribute.cs" />
@@ -79,12 +80,10 @@
     <Compile Include="Linq\SimpleDbQueryProvider.cs" />
     <Compile Include="Linq\Structure\QueryExpression.cs" />
     <Compile Include="Utilities\TypeUtilities.cs" />
-    <Compile Include="Session\ProxySimpleDbDomain.cs" />
     <Compile Include="ISimpleDbService.cs" />
     <Compile Include="Session\SessionSimpleDbAttribute.cs" />
     <Compile Include="Session\SessionSimpleDbAttributeCollection.cs" />
     <Compile Include="SimpleDbAttributeValue.cs" />
-    <Compile Include="Session\SessionSimpleDbDomain.cs" />
     <Compile Include="SimpleDbException.cs" />
     <Compile Include="Session\SessionSimpleDbItem.cs" />
     <Compile Include="SimpleDbContext.cs" />
@@ -94,17 +93,21 @@
     <Compile Include="Transport\IAwsRestService.cs" />
     <Compile Include="Transport\AwsRestService.cs" />
     <Compile Include="Transport\SimpleDbRestService.cs" />
-    <Compile Include="Transport\WebRequestProvider.cs" />
-    <Compile Include="Transport\IWebRequestProvider.cs" />
     <Compile Include="Linq\Translation\ImplicitSelect.cs" />
     <Compile Include="Linq\Structure\CountExpression.cs" />
     <Compile Include="Linq\Structure\ScalarExpression.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
-    <Compile Include="SimpleDbQueryable.cs" />
     <Compile Include="Linq\Translation\ItemAttributeMapper.cs" />
     <Compile Include="Linq\Structure\FunctionExpression.cs" />
     <Compile Include="ISimpleDbStatistics.cs" />
     <Compile Include="StatisticsCollectorProxy.cs" />
+    <Compile Include="IEnumerableAsync`.cs" />
+    <Compile Include="SimpleDbQueryableExtensions.cs" />
+    <Compile Include="Utilities\Check.cs" />
+    <Compile Include="Linq\IAsyncQueryProvider.cs" />
+    <Compile Include="ISimpleDbDomainMetadata.cs" />
+    <Compile Include="Session\SimpleDbDomainMetadata.cs" />
+    <Compile Include="Session\SessionSimpleDbDomain.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

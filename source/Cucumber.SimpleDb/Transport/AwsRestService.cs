@@ -9,6 +9,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Utilities;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Transport
 {
@@ -19,50 +21,50 @@ namespace Cucumber.SimpleDb.Transport
         private static readonly XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
         private readonly string _privateKey;
         private readonly string _publicKey;
-        private readonly IWebRequestProvider _webRequest;
+        private readonly HttpClient _httpClient;
 
-        public AwsRestService(string publicKey, string privateKey, IWebRequestProvider webRequest)
+        public AwsRestService(string publicKey, string privateKey, HttpClient client)
         {
             _publicKey = publicKey;
             _privateKey = privateKey;
-            _webRequest = webRequest;
+            _httpClient = client;
         }
 
-        public XElement ExecuteRequest(NameValueCollection arguments)
+        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             arguments = AddStandardArguments(arguments);
             var argumentString = WriteQueryString(arguments);
-            var request = _webRequest.Create(string.Format(
+            var requestUri = string.Format(
                 "{0}://{1}/?{2}",
                 SimpleDbProtocol,
                 SimpleDbUrl,
-                argumentString));
-            try
+                argumentString);
+            XElement xmlContent;
+            bool isSuccessStatusCode;
+            using (var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false))
             {
-                using (var response = request.GetResponse())
+                if (response.IsSuccessStatusCode)
                 {
-                    return ProcessAwsResponse(response);
+                    return await ProcessAwsResponseAsync(response).ConfigureAwait(false);
                 }
-            }
-            catch (WebException ex)
-            {
-                var response = ex.Response as HttpWebResponse;
-                var errors = ProcessAwsResponse(response);
-                throw new SimpleDbException(string.Format(
-                    "Error {0} {1}: AWS returned the following:\n{2}",
-                    (int) response.StatusCode,
-                    response.StatusCode,
-                    string.Join("\n", errors.Descendants(SdbNs + "Error")
-                        .Select(error => string.Format("{0}: {1}",
-                            error.Element(SdbNs + "Code").Value,
-                            error.Element(SdbNs + "Message").Value)))),
-                    ex);
+                else
+                {
+                    var errors = await ProcessAwsResponseAsync(response).ConfigureAwait(false);
+                    throw new SimpleDbException(string.Format(
+                        "Error {0} {1}: AWS returned the following:\n{2}",
+                        (int)response.StatusCode,
+                        response.StatusCode,
+                        string.Join("\n", errors.Descendants(SdbNs + "Error")
+                            .Select(error => string.Format("{0}: {1}",
+                                error.Element(SdbNs + "Code").Value,
+                                error.Element(SdbNs + "Message").Value)))));
+                }
             }
         }
 
-        private static XElement ProcessAwsResponse(WebResponse response)
+        private static async Task<XElement> ProcessAwsResponseAsync(HttpResponseMessage response)
         {
-            using (var stream = response.GetResponseStream())
+            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
                 try
                 {
@@ -73,9 +75,7 @@ namespace Cucumber.SimpleDb.Transport
                     using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
                         var content = reader.ReadToEnd();
-                        throw new SimpleDbException(string.Format(
-                            "AWS returned invalid XML:\n{0}", content)
-                            , xmlex);
+                        throw new SimpleDbException(string.Format("AWS returned invalid XML:\n{0}", content), xmlex);
                     }
                 }
                 catch (InvalidOperationException invalidex)
@@ -83,9 +83,7 @@ namespace Cucumber.SimpleDb.Transport
                     using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
                         var content = reader.ReadToEnd();
-                        throw new SimpleDbException(string.Format(
-                            "AWS returned invalid XML:\n{0}", content)
-                            , invalidex);
+                        throw new SimpleDbException(string.Format("AWS returned invalid XML:\n{0}", content), invalidex);
                     }
                 }
             }

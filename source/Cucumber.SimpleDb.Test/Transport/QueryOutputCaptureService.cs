@@ -1,6 +1,7 @@
 using System;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Transport;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Test.Transport
 {
@@ -13,10 +14,10 @@ namespace Cucumber.SimpleDb.Test.Transport
             _output = output;
         }
 
-        public override XElement Select(string query, bool useConsistency, string nextPageToken)
+        public override Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
             _output(query);
-            return base.Select(query, useConsistency, nextPageToken);
+            return base.SelectAsync(query, useConsistency, nextPageToken);
         }
     }
 }

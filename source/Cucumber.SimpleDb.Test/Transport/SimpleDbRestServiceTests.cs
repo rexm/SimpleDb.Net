@@ -15,7 +15,7 @@ namespace Cucumber.SimpleDb.Test
         public void GenerateBatchPutAttributes ()
         {
             var service = new SimpleDbRestService (new PassThroughAwsRestService ());
-            var result = service.BatchPutAttributes ("TestDomain1",
+            var result = service.BatchPutAttributesAsync("TestDomain1",
                 new { Name = "TestItem1", Attributes = new object[] {
                         new { Name = "TestAtt1", Value = "Hello" },
                         new { Name = "TestAtt2", Value = "World" },
@@ -27,7 +27,7 @@ namespace Cucumber.SimpleDb.Test
                         new { Name = "TestAtt5", Value = 1.23 },
                         new { Name = "TestAtt6", Value = new { Value="abc,123", Values = new List<object> {"abc", 123}} }
                     }
-                });
+                }).Result;
             Assert.AreEqual (result.Elements ().Count (), 20);
             //TODO: more comprehensive check
         }
@@ -37,7 +37,7 @@ namespace Cucumber.SimpleDb.Test
         {
             var domainName = "A_Domain_With_Valid_Chars-1.0";
             var service = new SimpleDbRestService(new PassThroughAwsRestService ());
-            var result = service.CreateDomain(domainName);
+            var result = service.CreateDomainAsync(domainName).Result;
             Assert.IsTrue (result.Elements ("Argument")
                 .FirstOrDefault (x =>
                     x.Element ("Key").Value == "DomainName" &&
@@ -51,7 +51,7 @@ namespace Cucumber.SimpleDb.Test
             var service = new SimpleDbRestService(new PassThroughAwsRestService ());
             var exception = Assert.Catch(() =>
             {
-                service.CreateDomain(domainName);
+                service.CreateDomainAsync(domainName).Wait();
             });
             Assert.IsInstanceOf<FormatException>(exception);
         }
@@ -63,7 +63,7 @@ namespace Cucumber.SimpleDb.Test
             var service = new SimpleDbRestService(new PassThroughAwsRestService ());
             var exception = Assert.Catch(() =>
                 {
-                    service.CreateDomain(domainName);
+                    service.CreateDomainAsync(domainName).Wait();
                 });
             Assert.IsInstanceOf<FormatException>(exception);
         }
@@ -75,7 +75,7 @@ namespace Cucumber.SimpleDb.Test
             var service = new SimpleDbRestService(new PassThroughAwsRestService ());
             var exception = Assert.Catch(() =>
                 {
-                    service.CreateDomain(domainName);
+                    service.CreateDomainAsync(domainName).Wait();
                 });
             Assert.IsInstanceOf<FormatException>(exception);
         }

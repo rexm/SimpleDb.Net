@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb
 {
@@ -24,5 +25,10 @@ namespace Cucumber.SimpleDb
         /// Computes the set of modified objects to be inserted, updated, or deleted, and executes the appropriate commands to implement the changes to SimpleDb.
         /// </summary>
         void SubmitChanges();
+
+        /// <summary>
+        /// Computes the set of modified objects to be inserted, updated, or deleted, and executes the appropriate commands to implement the changes to SimpleDb.
+        /// </summary>
+        Task SubmitChangesAsync();
     }
 }

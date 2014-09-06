@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb
 {
@@ -37,5 +38,22 @@ namespace Cucumber.SimpleDb
         /// <param name="name">The name of the domain to search for</param>
         /// <returns>True if a domain with the specified name exists; otherwise false</returns>
         bool HasDomain(string name);
+
+        /// <summary>
+        /// Creates a domain with the specified name.
+        /// <para>If a domain with the same name already exists, no domain is created and the existing domain is returned.</para>
+        /// </summary>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="name"/> is null or empty</exception>
+        /// <param name="name">The name of the domain to create</param>
+        /// <returns>The new domain if no matching domain existed, otherwise the existing domain</returns>
+        Task<ISimpleDbDomain> AddAsync(string name);
+
+        /// <summary>
+        /// Gets whether a domain with the speified name exists
+        /// </summary>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="name"/> is null or empty</exception>
+        /// <param name="name">The name of the domain to search for</param>
+        /// <returns>True if a domain with the specified name exists; otherwise false</returns>
+        Task<bool> HasDomainAsync(string name);
     }
 }

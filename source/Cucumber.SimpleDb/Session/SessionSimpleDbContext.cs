@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Session
 {
@@ -29,7 +30,12 @@ namespace Cucumber.SimpleDb.Session
 
         public void SubmitChanges()
         {
-            _session.SubmitChanges();
+            SubmitChangesAsync().Wait();
+        }
+
+        public async Task SubmitChangesAsync()
+        {
+            await _session.SubmitChangesAsync().ConfigureAwait(false);
         }
 
         public ISimpleDbStatistics Statistics

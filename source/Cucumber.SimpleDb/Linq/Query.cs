@@ -6,15 +6,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Linq
 {
-    internal class Query<T> : IOrderedQueryable<T>
+    internal class SimpleDbQuery<T> : IOrderedQueryable<T>, IEnumerableAsync<T>
     {
         private readonly Expression _expression;
-        private readonly IQueryProvider _provider;
+        private readonly IAsyncQueryProvider _provider;
 
-        public Query(IQueryProvider provider)
+        public SimpleDbQuery(IAsyncQueryProvider provider)
         {
             if (provider == null)
             {
@@ -24,7 +25,7 @@ namespace Cucumber.SimpleDb.Linq
             _expression = Expression.Constant(this);
         }
 
-        public Query(IQueryProvider provider, Expression expression)
+        public SimpleDbQuery(IAsyncQueryProvider provider, Expression expression)
         {
             if (provider == null)
             {
@@ -65,6 +66,11 @@ namespace Cucumber.SimpleDb.Linq
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable) _provider.Execute(_expression)).GetEnumerator();
+        }
+
+        async Task<IEnumerable<T>> IEnumerableAsync<T>.GetEnumerableAsync()
+        {
+            return await _provider.ExecuteAsync<T>(_expression).ConfigureAwait(false);
         }
 
         public override string ToString()

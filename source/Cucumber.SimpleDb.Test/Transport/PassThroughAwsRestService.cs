@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Transport;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Test
 {
     public class PassThroughAwsRestService : IAwsRestService
     {
-        public XElement ExecuteRequest(NameValueCollection arguments)
+        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             var doc = new XDocument(
                 new XElement("Arguments",

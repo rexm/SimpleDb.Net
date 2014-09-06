@@ -19,7 +19,7 @@ namespace Cucumber.SimpleDb.Linq.Structure
 
         public override Type Type
         {
-            get { return typeof (Query<ISimpleDbItem>); }
+            get { return typeof(SimpleDbQuery<ISimpleDbItem>); }
         }
 
         public override ExpressionType NodeType

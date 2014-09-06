@@ -16,7 +16,7 @@ namespace Cucumber.SimpleDb.Test.Statistics
             Assert.AreEqual(0, proxy.TotalContextUsage);
             Assert.AreEqual(0, proxy.OperationCount);
             Assert.IsNull(proxy.LastOperationId);
-            ((ISimpleDbService)proxy).Select("", false);
+            ((ISimpleDbService)proxy).SelectAsync("", false).Wait();
             Assert.AreEqual(0.001m, proxy.LastOperationUsage);
             Assert.AreEqual(0.001m, proxy.TotalContextUsage);
             Assert.AreEqual(1, proxy.OperationCount);
@@ -31,12 +31,12 @@ namespace Cucumber.SimpleDb.Test.Statistics
             Assert.AreEqual(0, proxy.TotalContextUsage);
             Assert.AreEqual(0, proxy.OperationCount);
             Assert.IsNull(proxy.LastOperationId);
-            ((ISimpleDbService)proxy).Select("", false);
+            ((ISimpleDbService)proxy).SelectAsync("", false).Wait();
             Assert.AreEqual(0.001m, proxy.LastOperationUsage);
             Assert.AreEqual(0.001m, proxy.TotalContextUsage);
             Assert.AreEqual(1, proxy.OperationCount);
             Assert.IsNotNullOrEmpty(proxy.LastOperationId);
-            ((ISimpleDbService)proxy).Select("", false);
+            ((ISimpleDbService)proxy).SelectAsync("", false).Wait();
             Assert.AreEqual(0.001m, proxy.LastOperationUsage);
             Assert.AreEqual(0.002m, proxy.TotalContextUsage);
             Assert.AreEqual(2, proxy.OperationCount);

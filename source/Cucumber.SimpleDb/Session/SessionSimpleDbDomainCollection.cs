@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Transport;
+using System.Collections;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Session
 {
@@ -23,7 +25,7 @@ namespace Cucumber.SimpleDb.Session
             {
                 if (_domains == null)
                 {
-                    PopulateDomains();
+                    _domains = GetDomainDictionaryAsync().Result;
                 }
                 return this._domains.Count;
             }
@@ -46,7 +48,7 @@ namespace Cucumber.SimpleDb.Session
                 }
                 else
                 {
-                    return new ProxySimpleDbDomain(name, this._domains, _session);
+                    return new SessionSimpleDbDomain(name, this._domains, _session);
                 }
                 throw new KeyNotFoundException(
                     string.Format("A domain named '{0}' does not exist",
@@ -56,19 +58,29 @@ namespace Cucumber.SimpleDb.Session
 
         public ISimpleDbDomain Add(string name)
         {
+            return AddAsync(name).Result;
+        }
+
+        public bool HasDomain(string name)
+        {
+            return HasDomainAsync(name).Result;
+        }
+
+        public async Task<ISimpleDbDomain> AddAsync(string name)
+        {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
             }
-            _session.Service.CreateDomain (name);
+            await _session.Service.CreateDomainAsync(name).ConfigureAwait(false);
             if (_domains != null)
             {
-                _domains.Add (name, new ProxySimpleDbDomain (name, _domains, _session));
+                _domains.Add(name, new SessionSimpleDbDomain(name, _domains, _session));
             }
-            return this [name];
+            return this[name];
         }
 
-        public bool HasDomain(string name)
+        public async Task<bool> HasDomainAsync(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -76,39 +88,37 @@ namespace Cucumber.SimpleDb.Session
             }
             if (_domains == null)
             {
-                PopulateDomains();
+                _domains = await GetDomainDictionaryAsync();
             }
             return _domains.ContainsKey(name);
         }
 
         public IEnumerator<ISimpleDbDomain> GetEnumerator()
         {
-            if (_domains == null)
-            {
-                PopulateDomains();
-            }
-            return this._domains.Select(kvp => kvp.Value).GetEnumerator();
+            return _domains != null 
+                ? _domains.Select(kvp => kvp.Value).GetEnumerator() 
+                    : Enumerable.Empty<ISimpleDbDomain>().GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        private async Task<Dictionary<string, ISimpleDbDomain>> GetDomainDictionaryAsync()
         {
-            return this.GetEnumerator();
-        }
-
-        private void PopulateDomains()
-        {
-            _domains = new Dictionary<string, ISimpleDbDomain>(StringComparer.OrdinalIgnoreCase);
-            XElement result = null;
+            var domains = new Dictionary<string, ISimpleDbDomain>(StringComparer.OrdinalIgnoreCase);
             string nextPageToken = null;
             do
             {
-                result = _session.Service.ListDomains(nextPageToken).Element(SdbNs + "ListDomainsResult");
+                var result = await _session.Service.ListDomainsAsync(nextPageToken).ConfigureAwait(false);
                 foreach (var domainNode in result.Elements(SdbNs + "DomainName"))
                 {
-                    _domains.Add(domainNode.Value, new ProxySimpleDbDomain(domainNode.Value, _domains, _session));
+                    domains.Add(domainNode.Value, new SessionSimpleDbDomain(domainNode.Value, domains, _session));
                 }
-                nextPageToken = result.Elements(SdbNs + "NextToken").Select(x => x.Value).FirstOrDefault();
+                nextPageToken = result.Elements(SdbNs + "NextPageToken").Select(x => x.Value).FirstOrDefault();
             } while (!string.IsNullOrEmpty(nextPageToken));
+            return domains;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         private readonly static XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";

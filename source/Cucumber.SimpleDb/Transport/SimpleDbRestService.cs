@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Xml;
 using System.Collections;
 using Cucumber.SimpleDb.Utilities;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Transport
 {
@@ -23,12 +24,12 @@ namespace Cucumber.SimpleDb.Transport
             _restService = restService;
         }
 
-        private XElement InternalExecute(NameValueCollection arguments)
+        private Task<XElement> InternalExecuteAsync(NameValueCollection arguments)
         {
-            return _restService.ExecuteRequest (arguments);
+            return _restService.ExecuteRequestAsync(arguments);
         }
 
-        public XElement BatchPutAttributes(string domain, params object[] items)
+        public Task<XElement> BatchPutAttributesAsync(string domain, params object[] items)
         {
             if (items.Length < 1)
             {
@@ -80,7 +81,7 @@ namespace Cucumber.SimpleDb.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
         private static int ParseAttribute(NameValueCollection values, int itemCount, int attributeCount, dynamic attribute, string attributeValue)
@@ -104,7 +105,7 @@ namespace Cucumber.SimpleDb.Transport
             return attributeCount;
         }
 
-        public XElement CreateDomain(string domain)
+        public Task<XElement> CreateDomainAsync(string domain)
         {
             if(IsValidDomainName(domain) == false)
             {
@@ -117,35 +118,35 @@ namespace Cucumber.SimpleDb.Transport
                 {"Action", "CreateDomain"},
                 {"DomainName", domain}
             };
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement DeleteDomain(string domain)
+        public Task<XElement> DeleteDomainAsync(string domain)
         {
             var values = new NameValueCollection
             {
                 {"Action", "DeleteDomain"},
                 {"DomainName", domain}
             };
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement GetDomainMeta(string domain)
+        public Task<XElement> GetDomainMetaAsync(string domain)
         {
             var values = new NameValueCollection
             {
                 {"Action", "DomainMetadata"},
                 {"DomainName", domain}
             };
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement ListDomains()
+        public Task<XElement> ListDomainsAsync()
         {
-            return ListDomains(null);
+            return ListDomainsAsync(null);
         }
 
-        public XElement ListDomains(string nextPageToken)
+        public Task<XElement> ListDomainsAsync(string nextPageToken)
         {
             var values = new NameValueCollection
             {
@@ -155,10 +156,10 @@ namespace Cucumber.SimpleDb.Transport
             {
                 values.Add("NextToken", nextPageToken);
             }
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement PutAttributes(string domain, string itemName, params object[] attributes)
+        public Task<XElement> PutAttributesAsync(string domain, string itemName, params object[] attributes)
         {
             var values = new NameValueCollection
             {
@@ -209,10 +210,10 @@ namespace Cucumber.SimpleDb.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement GetAttributes(string domain, string itemName, bool useConsistency, params string[] attributeNames)
+        public Task<XElement> GetAttributesAsync(string domain, string itemName, bool useConsistency, params string[] attributeNames)
         {
             var values = new NameValueCollection
             {
@@ -232,10 +233,10 @@ namespace Cucumber.SimpleDb.Transport
                     attributeName);
                 attributeCount++;
             }
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement DeleteAttributes(string domain, string itemName, params object[] attributes)
+        public Task<XElement> DeleteAttributesAsync(string domain, string itemName, params object[] attributes)
         {
             var values = new NameValueCollection
             {
@@ -280,10 +281,10 @@ namespace Cucumber.SimpleDb.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement BatchDeleteAttributes(string domain, params object[] items)
+        public Task<XElement> BatchDeleteAttributesAsync(string domain, params object[] items)
         {
             if (items.Length < 1)
             {
@@ -327,15 +328,15 @@ namespace Cucumber.SimpleDb.Transport
             {
                 throw new FormatException("One or more item definitions did not contain the expected properties", ex);
             }
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
-        public XElement Select(string query, bool useConsistency)
+        public Task<XElement> SelectAsync(string query, bool useConsistency)
         {
-            return Select(query, useConsistency, null);
+            return SelectAsync(query, useConsistency, null);
         }
 
-        public XElement Select(string query, bool useConsistency, string nextPageToken)
+        public Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
             var values = new NameValueCollection
             {
@@ -350,7 +351,7 @@ namespace Cucumber.SimpleDb.Transport
             {
                 values.Add("NextToken", nextPageToken);
             }
-            return InternalExecute(values);
+            return InternalExecuteAsync(values);
         }
 
         private bool IsValidDomainName(string domain)

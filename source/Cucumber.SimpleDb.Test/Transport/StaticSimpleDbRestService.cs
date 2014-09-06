@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Test.Transport
 {
@@ -12,35 +13,35 @@ namespace Cucumber.SimpleDb.Test.Transport
 
         #region ISimpleDbService implementation
 
-        public virtual XElement BatchDeleteAttributes (string domain, params object[] items)
+        public virtual Task<XElement> BatchDeleteAttributesAsync(string domain, params object[] items)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement BatchPutAttributes (string domain, params object[] items)
+        public virtual Task<XElement> BatchPutAttributesAsync(string domain, params object[] items)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement CreateDomain (string domain)
+        public virtual Task<XElement> CreateDomainAsync(string domain)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement DeleteDomain (string domain)
+        public virtual Task<XElement> DeleteDomainAsync(string domain)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement DeleteAttributes (string domain, string itemName, params object[] attributes)
+        public virtual Task<XElement> DeleteAttributesAsync(string domain, string itemName, params object[] attributes)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement GetDomainMeta (string domain)
+        public virtual Task<XElement> GetDomainMetaAsync(string domain)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement ListDomains ()
+        public virtual Task<XElement> ListDomainsAsync()
         {
-            return ListDomains(null);
+            return ListDomainsAsync(null);
         }
-        public virtual XElement ListDomains (string nextPageToken)
+        public virtual async Task<XElement> ListDomainsAsync(string nextPageToken)
         {
             return new XElement(SdbNs + "ListDomainsResponse", new XElement(SdbNs + "ListDomainsResult", new XElement[]
             {
@@ -49,19 +50,19 @@ namespace Cucumber.SimpleDb.Test.Transport
                 new XElement(SdbNs + "DomainName", "contacts")
             }));
         }
-        public virtual XElement PutAttributes (string domain, string name, params object[] attributes)
+        public virtual Task<XElement> PutAttributesAsync(string domain, string name, params object[] attributes)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement GetAttributes (string domain, string name, bool useConsistency, params string[] attributeNames)
+        public virtual Task<XElement> GetAttributesAsync(string domain, string name, bool useConsistency, params string[] attributeNames)
         {
             throw new NotImplementedException ();
         }
-        public virtual XElement Select (string query, bool useConsistency)
+        public virtual Task<XElement> SelectAsync(string query, bool useConsistency)
         {
-            return Select(query, useConsistency, null);
+            return SelectAsync(query, useConsistency, null);
         }
-        public virtual XElement Select (string query, bool useConsistency, string nextPageToken)
+        public virtual async Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
             return new XElement(SdbNs + "SelectResponse", new XElement(SdbNs + "SelectResult", new XElement[]
             {

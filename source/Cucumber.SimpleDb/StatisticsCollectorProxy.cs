@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb
 {
@@ -24,9 +25,10 @@ namespace Cucumber.SimpleDb
 
         public int OperationCount { get; private set; }
 
-        private XElement UpdateStatistics(XElement response)
+        private async Task<XElement> UpdateStatistics(Task<XElement> response)
         {
-            var metadata = response
+            var result = await response;
+            var metadata = result
                 .Element(sdbNs + "ResponseMetadata");
             if (metadata != null)
             {
@@ -34,7 +36,7 @@ namespace Cucumber.SimpleDb
                 UpdateId(metadata);
                 UpdateCount(metadata);
             }
-            return response;
+            return response.Result;
         }
 
         private void UpdateUsage(XElement metadata)
@@ -69,64 +71,64 @@ namespace Cucumber.SimpleDb
             OperationCount++;
         }
 
-        XElement ISimpleDbService.BatchDeleteAttributes(string domain, params object[] items)
+        Task<XElement> ISimpleDbService.BatchDeleteAttributesAsync(string domain, params object[] items)
         {
-            return UpdateStatistics(_service.BatchDeleteAttributes(domain, items));
+            return UpdateStatistics(_service.BatchDeleteAttributesAsync(domain, items));
         }
 
-        XElement ISimpleDbService.BatchPutAttributes(string domain, params object[] items)
+        Task<XElement> ISimpleDbService.BatchPutAttributesAsync(string domain, params object[] items)
         {
-            return UpdateStatistics(_service.BatchPutAttributes(domain, items));
+            return UpdateStatistics(_service.BatchPutAttributesAsync(domain, items));
         }
 
-        XElement ISimpleDbService.CreateDomain(string domain)
+        Task<XElement> ISimpleDbService.CreateDomainAsync(string domain)
         {
-            return UpdateStatistics(_service.CreateDomain(domain));
+            return UpdateStatistics(_service.CreateDomainAsync(domain));
         }
 
-        XElement ISimpleDbService.DeleteDomain(string domain)
+        Task<XElement> ISimpleDbService.DeleteDomainAsync(string domain)
         {
-            return UpdateStatistics(_service.DeleteDomain(domain));
+            return UpdateStatistics(_service.DeleteDomainAsync(domain));
         }
 
-        XElement ISimpleDbService.DeleteAttributes(string domain, string itemName, params object[] attributes)
+        Task<XElement> ISimpleDbService.DeleteAttributesAsync(string domain, string itemName, params object[] attributes)
         {
-            return UpdateStatistics(_service.DeleteAttributes(domain, itemName, attributes));
+            return UpdateStatistics(_service.DeleteAttributesAsync(domain, itemName, attributes));
         }
 
-        XElement ISimpleDbService.GetDomainMeta(string domain)
+        Task<XElement> ISimpleDbService.GetDomainMetaAsync(string domain)
         {
-            return UpdateStatistics(_service.GetDomainMeta(domain));
+            return UpdateStatistics(_service.GetDomainMetaAsync(domain));
         }
 
-        XElement ISimpleDbService.ListDomains()
+        Task<XElement> ISimpleDbService.ListDomainsAsync()
         {
-            return UpdateStatistics(_service.ListDomains());
+            return UpdateStatistics(_service.ListDomainsAsync());
         }
 
-        XElement ISimpleDbService.ListDomains(string nextPageToken)
+        Task<XElement> ISimpleDbService.ListDomainsAsync(string nextPageToken)
         {
-            return UpdateStatistics(_service.ListDomains(nextPageToken));
+            return UpdateStatistics(_service.ListDomainsAsync(nextPageToken));
         }
 
-        XElement ISimpleDbService.PutAttributes(string domain, string name, params object[] attributes)
+        Task<XElement> ISimpleDbService.PutAttributesAsync(string domain, string name, params object[] attributes)
         {
-            return UpdateStatistics(_service.PutAttributes(domain, name, attributes));
+            return UpdateStatistics(_service.PutAttributesAsync(domain, name, attributes));
         }
 
-        XElement ISimpleDbService.GetAttributes(string domain, string name, bool useConsistency, params string[] attributeNames)
+        Task<XElement> ISimpleDbService.GetAttributesAsync(string domain, string name, bool useConsistency, params string[] attributeNames)
         {
-            return UpdateStatistics(_service.GetAttributes(domain, name, useConsistency, attributeNames));
+            return UpdateStatistics(_service.GetAttributesAsync(domain, name, useConsistency, attributeNames));
         }
 
-        XElement ISimpleDbService.Select(string query, bool useConsistency)
+        Task<XElement> ISimpleDbService.SelectAsync(string query, bool useConsistency)
         {
-            return UpdateStatistics(_service.Select(query, useConsistency));
+            return UpdateStatistics(_service.SelectAsync(query, useConsistency));
         }
 
-        XElement ISimpleDbService.Select(string query, bool useConsistency, string nextPageToken)
+        Task<XElement> ISimpleDbService.SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
-            return UpdateStatistics(_service.Select(query, useConsistency, nextPageToken));
+            return UpdateStatistics(_service.SelectAsync(query, useConsistency, nextPageToken));
         }
 	}
 

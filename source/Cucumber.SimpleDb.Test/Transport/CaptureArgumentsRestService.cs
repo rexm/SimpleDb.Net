@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Xml.Linq;
 using Cucumber.SimpleDb.Transport;
+using System.Threading.Tasks;
 
 namespace Cucumber.SimpleDb.Test
 {
@@ -15,7 +16,7 @@ namespace Cucumber.SimpleDb.Test
             _captureResult = captureResult;
         }
 
-        public XElement ExecuteRequest(NameValueCollection arguments)
+        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
             var doc = new XDocument(
                 new XElement("Arguments",

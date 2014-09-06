@@ -40,7 +40,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                         return BindClientEnumerable(m);
                 }
             }
-            if (m.Method.DeclaringType == typeof (SimpleDbQueryable))
+            if (m.Method.DeclaringType == typeof (SimpleDbQueryableExtensions))
             {
                 switch (m.Method.Name)
                 {
@@ -364,7 +364,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
             private static bool IsSupportedSimpleDbExtension(MethodInfo m)
             {
-                return m.DeclaringType == typeof (SimpleDbQueryable);
+                return m.DeclaringType == typeof (SimpleDbQueryableExtensions);
             }
 
             private static readonly string[] supportedLinqMethodNames = { "Select", "Where", "Take", "OrderBy", "OrderByDescending", "Count", "First", "FirstOrDefault" };
