@@ -50,7 +50,7 @@ namespace Cucumber.SimpleDb.Linq
 
         Type IQueryable.ElementType
         {
-            get { return typeof (T); }
+            get { return typeof(T); }
         }
 
         IQueryProvider IQueryable.Provider
@@ -60,12 +60,14 @@ namespace Cucumber.SimpleDb.Linq
 
         public virtual IEnumerator<T> GetEnumerator()
         {
-            return ((IEnumerable<T>) _provider.Execute(_expression)).GetEnumerator();
+            return ((IEnumerableAsync<T>)this).GetEnumerableAsync().Result.GetEnumerator();
+            //return ((IEnumerable<T>)_provider.Execute(_expression)).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable) _provider.Execute(_expression)).GetEnumerator();
+            return this.GetEnumerator();
+            //return ((IEnumerable)_provider.Execute(_expression)).GetEnumerator();
         }
 
         async Task<IEnumerable<T>> IEnumerableAsync<T>.GetEnumerableAsync()

@@ -17,14 +17,15 @@ namespace Cucumber.SimpleDb.Test
             _items = items;
         }
 
-        public Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
+        public async Task<XElement> ExecuteRequestAsync(NameValueCollection arguments)
         {
-            return new Task<XElement>(() => 
+            return await new Task<XElement>(() => 
                 new XElement(ns + "SelectResponse",
                     new XElement(ns + "SelectResult", Enumerable.Range(1, _items).Select(i => GenerateElement(i))),
                     new XElement(ns + "ResponseMetadata", 
                         new XElement(ns + "RequestId", Guid.NewGuid()),
-                        new XElement(ns + "BoxUsage", 0.001m))));
+                        new XElement(ns + "BoxUsage", 0.001m)))
+            ).ConfigureAwait(false);
         }
 
         private XElement GenerateElement(int index)

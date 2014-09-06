@@ -27,10 +27,11 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
+            var arguments = m.Arguments.Select(arg => Visit(arg));
             return Expression.Call(
                 m.Object,
                 m.Method,
-                m.Arguments.Select(Visit).ToArray());
+                arguments);
         }
 
         protected override Expression VisitSimpleDbProjection(ProjectionExpression pex)
@@ -50,7 +51,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 return Expression.Call(
                     Expression.Constant(this),
                     this.GetType().GetMethod("ExecuteDeferredAsync", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .MakeGenericMethod(projector.Body.Type),
+                        .MakeGenericMethod(projector.Body.Type),
                     Expression.Constant(new QueryCommand(pex.Source)),
                     projector);
             }
@@ -65,7 +66,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
             }
             return (T)Convert.ChangeType(result
                 .Element(SdbNs + "Attribute")
-                .Element(SdbNs + "Value").Value, typeof (T));
+                .Element(SdbNs + "Value").Value, typeof(T));
         }
 
         private async Task<IEnumerable<T>> ExecuteDeferredAsync<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)

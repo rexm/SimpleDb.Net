@@ -63,9 +63,9 @@ namespace Cucumber.SimpleDb.Test.Transport
         {
             return SelectAsync(query, useConsistency, null);
         }
-        public virtual Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
+        public virtual async Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
-            return new Task<XElement>(() => 
+            return await new Task<XElement>(() => 
                 new XElement(SdbNs + "SelectResponse", new XElement(SdbNs + "SelectResult", new XElement[]
                 {
                     new XElement(SdbNs + "Item", new XElement[]{
@@ -75,7 +75,8 @@ namespace Cucumber.SimpleDb.Test.Transport
                             new XElement(SdbNs + "Value", 1)
                         })
                     })
-                })));
+                }))
+            ).ConfigureAwait(false);
         }
 
         #endregion

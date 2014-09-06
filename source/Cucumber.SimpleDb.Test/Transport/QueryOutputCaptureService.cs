@@ -14,10 +14,10 @@ namespace Cucumber.SimpleDb.Test.Transport
             _output = output;
         }
 
-        public override Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
+        public override async Task<XElement> SelectAsync(string query, bool useConsistency, string nextPageToken)
         {
             _output(query);
-            return base.SelectAsync(query, useConsistency, nextPageToken);
+            return await base.SelectAsync(query, useConsistency, nextPageToken).ConfigureAwait(false);
         }
     }
 }
