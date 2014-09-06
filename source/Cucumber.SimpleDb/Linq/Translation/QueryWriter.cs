@@ -12,6 +12,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
     {
         private const string NameFormat = "`{0}`";
         private const string ValueFormat = "\"{0}\"";
+        private const string FunctionFormat = "{0}()";
 
         private readonly QueryStringBuilder _qsb;
         private UnaryExpression _carryingUnary;
@@ -54,15 +55,22 @@ namespace Cucumber.SimpleDb.Linq.Translation
         protected override Expression VisitSimpleDbSelect(SelectExpression sex)
         {
             _qsb.Append("SELECT");
-            var select = "*";
             if (sex.Attributes.Any())
             {
-                select = string.Join(",",
-                    sex.Attributes
-                        .DistinctBy(att => att.Name)
-                        .Select(att => string.Format(NameFormat, att.Name)));
+                var position = 0;
+                foreach (var aex in sex.Attributes.DistinctBy(att => att.Name))
+                {
+                    if (position++ > 0)
+                    {
+                        _qsb.Append(",");
+                    }
+                    VisitSimpleDbAttribute(aex);
+                }
             }
-            _qsb.Append(select);
+            else
+            {
+                _qsb.Append("*");
+            }
             return sex;
         }
 
@@ -71,24 +79,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
             _qsb.Append("FROM");
             _qsb.AppendFormat(NameFormat, CreateSystemNameString(dex.Domain.Name));
             return dex;
-        }
-
-        protected override Expression VisitMember(MemberExpression m)
-        {
-            if (m.Member.DeclaringType == typeof (ISimpleDbItem))
-            {
-                switch (m.Member.Name)
-                {
-                    case "Name":
-                        WriteItemName();
-                        return m;
-                    default:
-                        throw new NotSupportedException(
-                            string.Format("Querying on '{0}' is not currently supported",
-                                m.Member.Name));
-                }
-            }
-            return base.VisitMember(m);
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
@@ -103,6 +93,14 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     case "StartsWith":
                         Visit(m.Object);
                         WriteLike(((ConstantExpression) m.Arguments[0]).Value.ToString(), "", "%");
+                        break;
+                    case "EndsWith":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "");
+                        break;
+                    case "Contains":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "%");
                         break;
                     case "Between":
                         Visit(m.Object);
@@ -120,6 +118,35 @@ namespace Cucumber.SimpleDb.Linq.Translation
                 }
                 return m;
             }
+            else if (IsQueryFunctionMethod(m))
+            {
+                switch (m.Method.Name)
+                {
+                    case "StartsWith":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "", "%");
+                        break;
+                    case "EndsWith":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "");
+                        break;
+                    case "Contains":
+                        Visit(m.Object);
+                        WriteLike(((ConstantExpression)m.Arguments[0]).Value.ToString(), "%", "%");
+                        break;
+                    default:
+                        throw new NotSupportedException(
+                            string.Format("Querying on '{0}' is not currently supported",
+                                m.Method.Name));
+                }
+                return m;
+            }
+            else
+            {
+                throw new NotSupportedException(
+                    string.Format("Querying on '{0}' is not currently supported",
+                        m.Object.Type.FullName));
+            }
             return base.VisitMethodCall(m);
         }
 
@@ -127,6 +154,12 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             var m = exp as MethodCallExpression;
             return m != null && m.Method.DeclaringType == typeof (SimpleDbAttributeValue);
+        }
+
+        private bool IsQueryFunctionMethod(Expression exp)
+        {
+            var m = exp as MethodCallExpression;
+            return m != null && m.Object.GetType() == typeof(FunctionExpression);
         }
 
         private void WriteBetween(string lower, string upper)
@@ -159,7 +192,8 @@ namespace Cucumber.SimpleDb.Linq.Translation
                     sequenceArgument.Type.Name));
             }
             WriteCommaSeparatedSequence(
-                (IEnumerable<object>) sequenceArgument.Value, value => _qsb.AppendFormat(ValueFormat, CreateUserValueString(value)));
+                (IEnumerable<object>) sequenceArgument.Value,
+                value => _qsb.AppendFormat(ValueFormat, CreateUserValueString(value)));
             _qsb.Append(")");
         }
 
@@ -201,11 +235,6 @@ namespace Cucumber.SimpleDb.Linq.Translation
             }
         }
 
-        private void WriteItemName()
-        {
-            _qsb.Append("itemName()");
-        }
-
         private void WriteEvery(MethodCallExpression m)
         {
             _qsb.Append("every(");
@@ -223,15 +252,27 @@ namespace Cucumber.SimpleDb.Linq.Translation
             Visit(where);
         }
 
-        protected override Expression VisitSimpleDbAttribute(AttributeExpression nex)
+        protected override Expression VisitSimpleDbAttribute(AttributeExpression aex)
         {
-            WriteSimpleDbAttribute(nex);
-            return nex;
+            if (aex is FunctionExpression)
+            {
+                WriteFunctionExpression((FunctionExpression)aex);
+            }
+            else
+            {
+                WriteSimpleDbAttribute(aex);
+            }
+            return aex;
         }
 
-        private void WriteSimpleDbAttribute(AttributeExpression nex)
+        private void WriteFunctionExpression(FunctionExpression fex)
         {
-            _qsb.AppendFormat(NameFormat, CreateSystemNameString(nex.Name));
+            _qsb.AppendFormat(FunctionFormat, fex.Name);
+        }
+
+        private void WriteSimpleDbAttribute(AttributeExpression aex)
+        {
+            _qsb.AppendFormat(NameFormat, CreateSystemNameString(aex.Name));
         }
 
         private void VisitLimit(Expression expression)
@@ -253,30 +294,28 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void VisitOrder(IEnumerable<OrderExpression> orderBys)
         {
-            var orderExpressions = orderBys as IList<OrderExpression> ?? orderBys.ToList();
-            if (!orderExpressions.Any())
-            {
-                return;
-            }
-            _qsb.Append("ORDERBY");
-            WriteCommaSeparatedSequence(orderExpressions, orderBy =>
-            {
-                WriteSimpleDbAttribute(orderBy.Attribute);
-                _qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
-            });
+			if(orderBys.Any() == false)
+			{
+				return;
+			}
+			_qsb.Append("ORDERBY");
+			WriteCommaSeparatedSequence(orderBys, orderBy => {
+                VisitSimpleDbAttribute(orderBy.Attribute);
+				_qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
+			});
         }
 
-        private void WriteCommaSeparatedSequence<T>(IEnumerable<T> sequence, Action<T> writeItem)
-        {
-            var first = true;
-            foreach (var item in sequence)
-            {
-                if (!first)
-                {
-                    _qsb.Append(",");
-                }
-                writeItem(item);
-                if (first)
+		private void WriteCommaSeparatedSequence<T>(IEnumerable<T> sequence, Action<T> writeItem)
+		{
+			bool first = true;
+			foreach(var item in sequence)
+			{
+				if(!first)
+				{
+					_qsb.Append(",");
+				}
+				writeItem(item);
+                if(first)
                 {
                     first = false;
                 }
@@ -318,7 +357,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         private void HandleNull(BinaryExpression node)
         {
             var attribute = node.Left as AttributeExpression ?? node.Right as AttributeExpression;
-            WriteSimpleDbAttribute(attribute);
+            VisitSimpleDbAttribute(attribute);
             _qsb.Append("IS");
             switch (node.NodeType)
             {
@@ -371,22 +410,17 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         private void VisitBinaryMember(Expression expr)
         {
-            var attributeExpression = expr as AttributeExpression;
-            if (attributeExpression != null)
+            if (expr is AttributeExpression)
             {
-                WriteSimpleDbAttribute(attributeExpression);
+                VisitSimpleDbAttribute((AttributeExpression)expr);
+            }
+            else if (expr is ConstantExpression)
+            {
+                _qsb.AppendFormat(ValueFormat, CreateUserValueString(((ConstantExpression)expr).Value));
             }
             else
             {
-                var constantExpression = expr as ConstantExpression;
-                if (constantExpression != null)
-                {
-                    _qsb.AppendFormat(ValueFormat, CreateUserValueString(constantExpression.Value));
-                }
-                else
-                {
-                    Visit(expr);
-                }
+                Visit(expr);
             }
         }
 
@@ -397,9 +431,10 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 stringValue = ((DateTime) value).ToString("o");
             }
-            return stringValue
+			return stringValue
                 .Replace("\\", "\\\\")
-                .Replace("\"", "\\\"");
+                .Replace("\"", "\\\"")
+				.Replace("%", "\\%");
         }
 
         private static string CreateSystemNameString(string name)

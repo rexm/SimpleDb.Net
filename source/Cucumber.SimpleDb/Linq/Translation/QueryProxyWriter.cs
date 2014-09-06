@@ -40,9 +40,18 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return Expression.Call(
                     Expression.Constant(this),
-                    GetType().GetMethod("ExecuteScalar", BindingFlags.NonPublic | BindingFlags.Instance)
+                    this.GetType().GetMethod("ExecuteScalar", BindingFlags.NonPublic | BindingFlags.Instance)
                         .MakeGenericMethod(pex.Source.Select.Type),
                     Expression.Constant(new QueryCommand(pex.Source)));
+            }
+            else
+            {
+                return Expression.Call(
+                    Expression.Constant(this),
+                    this.GetType().GetMethod("ExecuteDeferred", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .MakeGenericMethod(projector.Body.Type),
+                    Expression.Constant(new QueryCommand(pex.Source)),
+                    projector);
             }
             return Expression.Call(
                 Expression.Constant(this),
@@ -59,9 +68,9 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 throw new InvalidOperationException("Query did not return a scalar value in the result");
             }
-            return (T) Convert.ChangeType(result
+            return (T)Convert.ChangeType(result
                 .Element(SdbNs + "Attribute")
-                .Element(SdbNs + "Value").Value, typeof (T));
+                .Element(SdbNs + "Value").Value, typeof(T));
         }
 
         protected virtual IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<ISimpleDbItem, T> projector)

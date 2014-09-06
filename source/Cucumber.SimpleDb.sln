@@ -28,16 +28,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|x86.ActiveCfg = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -50,6 +40,7 @@ Global
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.ActiveCfg = Release|Any CPU
 		{7C915ED2-81D2-4DAF-BB3E-503441CBD922}.Release|x86.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{247DAE56-5C9C-4A53-B18D-8FEE2949657B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -70,9 +61,20 @@ Global
 		{59607E53-F9BF-4685-976A-D4C9E3F7658A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{59607E53-F9BF-4685-976A-D4C9E3F7658A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{59607E53-F9BF-4685-976A-D4C9E3F7658A}.Release|x86.ActiveCfg = Release|Any CPU
+=======
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9DA30BCD-FE40-4215-A513-3434608C20E7}.Release|x86.ActiveCfg = Release|Any CPU
+>>>>>>> master
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Cucumber.SimpleDb\Cucumber.SimpleDb.csproj
@@ -80,18 +82,45 @@ Global
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
 		$1.ResourceNamePolicy = FileFormatDefault
-		$0.TextStylePolicy = $4
-		$2.inheritsSet = null
-		$2.scope = text/x-csharp
-		$0.CSharpFormattingPolicy = $3
-		$3.ElseIfNewLinePlacement = SameLine
-		$3.AfterDelegateDeclarationParameterComma = True
-		$3.inheritsSet = Mono
-		$3.inheritsScope = text/x-csharp
+		$0.TextStylePolicy = $2
+		$2.FileWidth = 120
+		$2.TabsToSpaces = False
+		$2.inheritsSet = VisualStudio
+		$2.inheritsScope = text/plain
+		$0.TextStylePolicy = $3
+		$3.inheritsSet = VisualStudio
+		$3.inheritsScope = text/plain
 		$3.scope = text/x-csharp
-		$4.FileWidth = 120
-		$4.inheritsSet = VisualStudio
-		$4.inheritsScope = text/plain
-		$4.scope = text/plain
+		$0.CSharpFormattingPolicy = $4
+		$4.IndentSwitchBody = True
+		$4.IndentBlocksInsideExpressions = True
+		$4.AnonymousMethodBraceStyle = NextLine
+		$4.PropertyBraceStyle = NextLine
+		$4.PropertyGetBraceStyle = NextLine
+		$4.PropertySetBraceStyle = NextLine
+		$4.EventBraceStyle = NextLine
+		$4.EventAddBraceStyle = NextLine
+		$4.EventRemoveBraceStyle = NextLine
+		$4.StatementBraceStyle = NextLine
+		$4.ElseNewLinePlacement = NewLine
+		$4.CatchNewLinePlacement = NewLine
+		$4.FinallyNewLinePlacement = NewLine
+		$4.WhileNewLinePlacement = DoNotCare
+		$4.ArrayInitializerWrapping = DoNotChange
+		$4.ArrayInitializerBraceStyle = NextLine
+		$4.BeforeMethodDeclarationParentheses = False
+		$4.BeforeMethodCallParentheses = False
+		$4.BeforeConstructorDeclarationParentheses = False
+		$4.NewLineBeforeConstructorInitializerColon = NewLine
+		$4.NewLineAfterConstructorInitializerColon = SameLine
+		$4.BeforeDelegateDeclarationParentheses = False
+		$4.NewParentheses = False
+		$4.SpacesBeforeBrackets = False
+		$4.inheritsSet = Mono
+		$4.inheritsScope = text/x-csharp
+		$4.scope = text/x-csharp
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

@@ -31,15 +31,22 @@ namespace Cucumber.SimpleDb.Linq.Translation
             {
                 return ProjectionFromAggregation(aggregator);
             }
-            var source = Visit(aggregator.Source);
-            var projector = aggregator.Projector;
-            return Expression.Call(
-                typeof (Enumerable).GetMethod("Select", new[]
+            else
+            {
+                var source = Visit(aggregator.Source);
+                var projector = aggregator.Projector;
+                if (projector != null)
                 {
-                    typeof (IEnumerable<>), typeof (Func<,>)
-                }).MakeGenericMethod(source.Type, projector.Type),
-                source,
-                aggregator.Projector);
+                    return Expression.Call(
+                        typeof(Enumerable).GetMethod("Select", new []{ typeof(IEnumerable<>), typeof(Func<,>) }).MakeGenericMethod(source.Type, projector.Type),
+                        source,
+                        projector);
+                }
+                else
+                {
+                    return source;
+                }
+            }
         }
 
         private static Expression ProjectionFromAggregation(Aggregator aggregator)

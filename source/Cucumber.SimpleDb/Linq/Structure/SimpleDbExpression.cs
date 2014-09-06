@@ -22,6 +22,11 @@ namespace Cucumber.SimpleDb.Linq.Structure
             return new AttributeExpression(name, type);
         }
 
+        public static FunctionExpression Function(string functionName, Type type)
+        {
+            return new FunctionExpression(functionName, type);
+        }
+
         public static DomainExpression Domain(ISimpleDbDomain domain)
         {
             return new DomainExpression(domain);

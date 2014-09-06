@@ -38,9 +38,45 @@ namespace Cucumber.SimpleDb.Test
         {
             var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items.Where(i =>
-                    i["TestAtt1"].StartsWith("searchFor")));
-            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"searchFor%\"", query);
+                   i["TestAtt1"].Contains("searchFor")));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"%searchFor%\"", query);
         }
+
+		[Test]
+		public void WhereNotContainsString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					!i["TestAtt1"].Contains("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` NOT LIKE \"%searchFor%\"", query);
+		}
+
+		[Test]
+		public void WhereEndsWithString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					i["TestAtt1"].EndsWith("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"%searchFor\"", query);
+		}
+
+		[Test]
+		public void WhereNotEndsWithString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					!i["TestAtt1"].EndsWith("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` NOT LIKE \"%searchFor\"", query);
+		}
+
+		[Test]
+		public void WhereStartsWithString()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items.Where(i =>
+					i["TestAtt1"].StartsWith("searchFor")));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` LIKE \"searchFor%\"", query);
+		}
 
         [Test]
         public void WhereNotStartsWithString()
@@ -61,6 +97,15 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
+        public void WhereItemNameContains()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items.Where(i =>
+                    i.Name.Contains("searchFor")));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE itemName() LIKE \"%searchFor%\"", query);
+        }
+
+        [Test]
         public void OrderByBasic()
         {
             var query = GetQueryString(context =>
@@ -71,7 +116,7 @@ namespace Cucumber.SimpleDb.Test
         [Test]
         public void OrderByComplex()
         {
-            var query = GetQueryString(context =>
+            var query = GetQueryString(context => 
                 context.Domains["TestDomain1"].Items
                     .OrderBy(i => i["TestAtt1"])
                     .OrderByDescending(i => i["TestAtt2"]));
@@ -102,7 +147,7 @@ namespace Cucumber.SimpleDb.Test
         {
             var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items
-                    .Where(i => i["TestAtt1"].Between(7.5, 50)));
+                   .Where(i => i["TestAtt1"].Between(7.5, 50)));
             Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` BETWEEN \"7.5\" AND \"50\"", query);
         }
 
@@ -111,7 +156,7 @@ namespace Cucumber.SimpleDb.Test
         {
             var query = GetQueryString(context =>
                 context.Domains["TestDomain1"].Items
-                    .Where(i => i["TestAtt1"].Every() > 1));
+                   .Where(i => i["TestAtt1"].Every() > 1));
             Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE every( `TestAtt1` ) > \"1\"", query);
         }
 
@@ -141,6 +186,84 @@ namespace Cucumber.SimpleDb.Test
                 context.Domains["TestDomain1"].Items
                     .Count(i => i["TestAtt1"] > 1));
             Assert.AreEqual("SELECT COUNT(*) FROM `TestDomain1` WHERE `TestAtt1` > \"1\"", query);
+        }
+
+        [Test]
+        public void FirstBasic()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .First());
+            Assert.AreEqual("SELECT * FROM `TestDomain1` LIMIT 1", query);
+        }
+
+        [Test]
+        public void FirstOrDefaultBasic()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .FirstOrDefault());
+            Assert.AreEqual("SELECT * FROM `TestDomain1` LIMIT 1", query);
+        }
+
+        [Test]
+        public void FirstWithPredicate()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .First(i => i["TestAtt1"] > 1));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` > \"1\" LIMIT 1", query);
+        }
+
+        [Test]
+        public void FirstOrDefaultWithPredicate()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .FirstOrDefault(i => i["TestAtt1"] > 1));
+            Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` > \"1\" LIMIT 1", query);
+        }
+
+		[Test]
+		public void IsNull()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items
+				.Where(i => i["TestAtt1"] == null));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` IS NULL", query);
+		}
+
+		[Test]
+		public void IsNotNull()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items
+				.Where(i => i["TestAtt1"] != null));
+			Assert.AreEqual("SELECT * FROM `TestDomain1` WHERE `TestAtt1` IS NOT NULL", query);
+		}
+
+		[Test]
+		public void SelectWithItemName()
+		{
+			var query = GetQueryString(context =>
+				context.Domains["TestDomain1"].Items
+				.Select(i => new {
+					Name = i.Name,
+					Value = i["Value"]
+				}));
+			Assert.AreEqual("SELECT itemName(), `Value` FROM `TestDomain1`", query);
+		}
+
+        [Test]
+        public void OrderByWithItemNameNotExplicitlyInSelect()
+        {
+            var query = GetQueryString(context =>
+                context.Domains["TestDomain1"].Items
+                .OrderBy(i => i.Name)
+                .Select(i => new {
+                    Value = i["Value"]
+                }));
+            Assert.AreEqual("SELECT `Value`, itemName() FROM `TestDomain1` ORDERBY itemName() ASC", query);
         }
 
         private string GetQueryString<T>(Func<ISimpleDbContext, T> query)

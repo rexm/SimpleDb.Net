@@ -36,14 +36,14 @@ namespace Cucumber.SimpleDb.Linq.Structure
         {
             if (x != null && y != null)
             {
-                return x._name == y._name;
+                return x.ToString() == y.ToString();
             }
             return x == y;
         }
 
         public int GetHashCode(AttributeExpression obj)
         {
-            return obj._name.GetHashCode();
+            return obj.ToString().GetHashCode();
         }
 
         public override string ToString()

@@ -5,11 +5,25 @@ using Cucumber.SimpleDb.Utilities;
 
 namespace Cucumber.SimpleDb.Linq.Translation
 {
-    internal class IndexedAttributeMapper : SimpleDbExpressionVisitor
+    internal class ItemAttributeMapper : SimpleDbExpressionVisitor
     {
         public static Expression Eval(Expression expression)
         {
-            return new IndexedAttributeMapper().Visit(expression);
+            return new ItemAttributeMapper().Visit(expression);
+        }
+
+        protected override Expression VisitMember(MemberExpression node)
+        {
+            if (typeof(ISimpleDbItem).IsAssignableFrom(node.Member.DeclaringType))
+            {
+                switch (node.Member.Name)
+                {
+                    case "Name":
+                        return SimpleDbExpression.Function("itemName", typeof(string));
+                        break;
+                }
+            }
+            return base.VisitMember(node);
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
@@ -36,7 +50,9 @@ namespace Cucumber.SimpleDb.Linq.Translation
 
         protected override Expression VisitNew(NewExpression n)
         {
-            return Expression.New(n.Constructor, n.Arguments.Select(Visit).ToArray());
+            return Expression.New(
+                n.Constructor,
+                n.Arguments.Select(arg => this.Visit(arg)).ToArray());
         }
 
         private static AttributeExpression GenerateAttributeExpression(ConstantExpression expression)
