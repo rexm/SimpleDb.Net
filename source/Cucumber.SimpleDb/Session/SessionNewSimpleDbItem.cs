@@ -9,6 +9,8 @@ namespace Cucumber.SimpleDb.Session
 {
     internal class SessionNewSimpleDbItem : SessionSimpleDbItem, ISessionItem
     {
+        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
+
         internal SessionNewSimpleDbItem(IInternalContext context, ISimpleDbDomain domain, string name, Dictionary<string, SimpleDbAttributeValue> values)
             : base(context, domain, name, ToXElement(values), true)
         {
@@ -29,14 +31,14 @@ namespace Cucumber.SimpleDb.Session
         {
             if (values == null)
             {
-                return new XElement("Item");
+                return new XElement(sdbNs + "Item");
             }
-            return new XElement("Item",
+            return new XElement(sdbNs + "Item",
                 values
-                    .Select(kvp => new XElement("Attribute",
-                        new[]{new XElement("Name", kvp.Key)}
+                    .Select(kvp => new XElement(sdbNs + "Attribute",
+                    new[] { new XElement(sdbNs + "Name", kvp.Key) }
                         .Concat(kvp.Value.Values
-                            .Select(val => new XElement("Value", val)))))
+                            .Select(val => new XElement(sdbNs + "Value", val)))))
                 );
         }
     }

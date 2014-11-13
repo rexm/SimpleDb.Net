@@ -65,6 +65,7 @@
     <Compile Include="LINQ\IntegrationTests\AggregateTests.cs" />
     <Compile Include="Transport\SimpleInMemoryItemService.cs" />
     <Compile Include="Statistics\BasicStatisticsTests.cs" />
+    <Compile Include="SimpleDbItemCreateTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

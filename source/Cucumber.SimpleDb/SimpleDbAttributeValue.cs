@@ -208,6 +208,54 @@ namespace Cucumber.SimpleDb
             return new SimpleDbAttributeValue(value.ToString(), typeof(bool));
         }
 
+        /// <param name="value">Value.</param>
+        public static explicit operator string(SimpleDbAttributeValue value)
+        {
+            return value.Values.FirstOrDefault();
+        }
+
+        /// <param name="value">Value.</param>
+        public static explicit operator int(SimpleDbAttributeValue value)
+        {
+            return LiftValuesToType<int>(value._values).FirstOrDefault();
+        }
+
+        /// <param name="value">Value.</param>
+        public static explicit operator long(SimpleDbAttributeValue value)
+        {
+            return LiftValuesToType<long>(value._values).FirstOrDefault();
+        }
+
+        /// <param name="value">Value.</param>
+        public static explicit operator float(SimpleDbAttributeValue value)
+        {
+            return LiftValuesToType<float>(value._values).FirstOrDefault();
+        }
+
+        /// <param name="value">Value.</param>
+        public static explicit operator double(SimpleDbAttributeValue value)
+        {
+            return LiftValuesToType<double>(value._values).FirstOrDefault();
+        }
+
+        /// <param name="value">Value.</param>
+        public static explicit operator decimal(SimpleDbAttributeValue value)
+        {
+            return LiftValuesToType<decimal>(value._values).FirstOrDefault();
+        }
+
+        /// <param name="value">Value.</param>
+        public static explicit operator DateTime(SimpleDbAttributeValue value)
+        {
+            return LiftValuesToType<DateTime>(value._values).FirstOrDefault();
+        }
+
+        /// <param name="value">Value.</param>
+        public static explicit operator bool(SimpleDbAttributeValue value)
+        {
+            return LiftValuesToType<bool>(value._values).FirstOrDefault();
+        }
+
         /// <summary>
         /// Returns a <see cref="System.String"/> that represents the current <see cref="Cucumber.SimpleDb.SimpleDbAttributeValue"/>.
         /// If the attribute is multi-value, will contain the first value.
