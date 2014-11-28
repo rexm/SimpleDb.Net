@@ -12,6 +12,7 @@ namespace Cucumber.SimpleDb.Session
         private readonly ISimpleDbDomain _domain;
         private readonly IInternalContext _context;
         private readonly Dictionary<string, ISimpleDbItem> _fetchedItems;
+        private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         internal SessionSimpleDbItemCollection(IInternalContext context, ISimpleDbDomain domain, IQueryProvider queryProvider)
             : base(queryProvider)
@@ -28,7 +29,7 @@ namespace Cucumber.SimpleDb.Session
 
         public int Count
         {
-            get { return this.Count (); }
+            get { return this.Count(); }
         }
 
         public ISimpleDbItem this[string name]
@@ -38,10 +39,10 @@ namespace Cucumber.SimpleDb.Session
                 if (_fetchedItems.ContainsKey(name) == false)
                 {
                     var element = _context.Service.GetAttributes(_domain.Name, name, false);
-                    if (element.Descendants ("GetAttributesResult").First ().HasElements)
+                    if (element.Descendants(sdbNs + "GetAttributesResult").First().HasElements)
                     {
                         _fetchedItems.Add (name,
-                            new SessionSimpleDbItem (
+                            new SessionSimpleDbItem(
                                 _context,
                                 _domain,
                                 name,
