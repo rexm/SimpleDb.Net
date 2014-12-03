@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Cucumber.SimpleDb.Test.Transport
 {
@@ -9,7 +10,7 @@ namespace Cucumber.SimpleDb.Test.Transport
         public StaticSimpleDbRestService()
         {
         }
-
+            
         #region ISimpleDbService implementation
 
         public virtual XElement BatchDeleteAttributes (string domain, params object[] items)
@@ -55,7 +56,11 @@ namespace Cucumber.SimpleDb.Test.Transport
         }
         public virtual XElement GetAttributes (string domain, string name, bool useConsistency, params string[] attributeNames)
         {
-            throw new NotImplementedException ();
+            return new XElement(SdbNs + "SelectResponse",
+                new XElement(SdbNs + "SelectResult", Enumerable.Range(1, 3).Select(i => GenerateElement(i))),
+                new XElement(SdbNs + "ResponseMetadata", 
+                    new XElement(SdbNs + "RequestId", Guid.NewGuid()),
+                    new XElement(SdbNs + "BoxUsage", 0.001m)));
         }
         public virtual XElement Select (string query, bool useConsistency)
         {
@@ -78,6 +83,24 @@ namespace Cucumber.SimpleDb.Test.Transport
         #endregion
 
         private readonly static XNamespace SdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
+
+        private XElement GenerateElement(int index)
+        {
+            return new XElement(SdbNs + "Item", new XElement[]
+                {
+                    new XElement(SdbNs + "Name", "ItemName" + index),
+                    new XElement(SdbNs + "Attribute", new XElement[]
+                        {
+                            new XElement(SdbNs + "Name", "Att1"),
+                            new XElement(SdbNs + "Value", new Random().Next())
+                        }),
+                    new XElement(SdbNs + "Attribute", new XElement[]
+                        {
+                            new XElement(SdbNs + "Name", "Att2"),
+                            new XElement(SdbNs + "Value", new Random().Next())
+                        })
+                });
+        }
     }
 }
 

@@ -211,48 +211,80 @@ namespace Cucumber.SimpleDb
         /// <param name="value">Value.</param>
         public static explicit operator string(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                return null;
+            }
             return value.Values.FirstOrDefault();
         }
 
         /// <param name="value">Value.</param>
         public static explicit operator int(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                throw new NullReferenceException();
+            }
             return LiftValuesToType<int>(value._values).FirstOrDefault();
         }
 
         /// <param name="value">Value.</param>
         public static explicit operator long(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                throw new NullReferenceException();
+            }
             return LiftValuesToType<long>(value._values).FirstOrDefault();
         }
 
         /// <param name="value">Value.</param>
         public static explicit operator float(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                throw new NullReferenceException();
+            }
             return LiftValuesToType<float>(value._values).FirstOrDefault();
         }
 
         /// <param name="value">Value.</param>
         public static explicit operator double(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                throw new NullReferenceException();
+            }
             return LiftValuesToType<double>(value._values).FirstOrDefault();
         }
 
         /// <param name="value">Value.</param>
         public static explicit operator decimal(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                throw new NullReferenceException();
+            }
             return LiftValuesToType<decimal>(value._values).FirstOrDefault();
         }
 
         /// <param name="value">Value.</param>
         public static explicit operator DateTime(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                throw new NullReferenceException();
+            }
             return LiftValuesToType<DateTime>(value._values).FirstOrDefault();
         }
 
         /// <param name="value">Value.</param>
         public static explicit operator bool(SimpleDbAttributeValue value)
         {
+            if (value == null)
+            {
+                throw new NullReferenceException();
+            }
             return LiftValuesToType<bool>(value._values).FirstOrDefault();
         }
 

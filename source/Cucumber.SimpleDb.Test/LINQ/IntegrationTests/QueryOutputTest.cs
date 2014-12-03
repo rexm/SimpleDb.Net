@@ -17,6 +17,19 @@ namespace Cucumber.SimpleDb.Test
         }
 
         [Test]
+        public void ExplicitSelect()
+        {
+            var query = GetQueryString (context =>
+                context.Domains["TestDomain1"].Items
+                .Select(i => new
+                    {
+                        Att1 = i["Att1"],
+                        Att2 = i["Att2"]
+                    }));
+            Assert.AreEqual("SELECT `Att1`, `Att2` FROM `TestDomain1`", query);
+        }
+
+        [Test]
         public void WhereStringBasic ()
         {
             var query = GetQueryString(context => 

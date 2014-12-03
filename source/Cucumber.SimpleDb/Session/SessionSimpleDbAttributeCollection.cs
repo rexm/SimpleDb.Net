@@ -12,9 +12,11 @@ namespace Cucumber.SimpleDb.Session
         private Dictionary<string, SessionSimpleDbAttribute> _attributes = new Dictionary<string, SessionSimpleDbAttribute>();
         private bool _complete;
         private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
+        private readonly IInternalContext _context;
 
         internal SessionSimpleDbAttributeCollection(IInternalContext context, SessionSimpleDbItem item, XElement data, bool complete)
         {
+            _context = context;
             _item = item;
             _complete = complete;
 
@@ -22,25 +24,7 @@ namespace Cucumber.SimpleDb.Session
 
             try
             {
-                var subResult = data.Descendants(sdbNs + "Attribute").Select(
-                        x => new SessionSimpleDbAttribute(
-                            _item,
-                            x.Element(sdbNs + "Name").Value,
-                            x.Elements(sdbNs + "Value").
-                            Select(val => val.Value).ToArray()
-                        )
-                    );
-                foreach (var resItem in subResult) {
-                    if (!result.Keys.Contains(resItem.Name)) {
-                        result.Add(resItem.Name, resItem);
-                    }
-                    else {
-                        result[resItem.Name].Value = new SimpleDbAttributeValue(
-                            result[resItem.Name].Value.Values.Concat(resItem.Value.Values).ToArray());
-                    }
-                }
-
-                _attributes = result;
+                AddAttributeData(data);
             }
             catch (Exception ex)
             {
@@ -77,10 +61,10 @@ namespace Cucumber.SimpleDb.Session
             {
                 if (_complete == false)
                 {
-                    throw new NotImplementedException(
-                        "Lazy-completing partially hydrated items is not yet supported");
+                    AddAttributeData(_context.Service.GetAttributes(((ISessionItem)_item).Domain.Name, _item.Name, false));
+                    _complete = true;
                 }
-                return false;
+                return _attributes.ContainsKey (attributeName);
             }
             return true;
         }
@@ -117,6 +101,22 @@ namespace Cucumber.SimpleDb.Session
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        private void AddAttributeData(XElement data)
+        {
+            var subResult = data.Descendants(sdbNs + "Attribute").Select(x => new SessionSimpleDbAttribute(_item, x.Element(sdbNs + "Name").Value, x.Elements(sdbNs + "Value").Select(val => val.Value).ToArray()));
+            foreach (var resItem in subResult)
+            {
+                if (!_attributes.ContainsKey(resItem.Name))
+                {
+                    _attributes.Add(resItem.Name, resItem);
+                }
+                else
+                {
+                    _attributes[resItem.Name].Value = new SimpleDbAttributeValue(_attributes[resItem.Name].Value.Values.Concat(resItem.Value.Values).ToArray());
+                }
+            }
         }
     }
 }

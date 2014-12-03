@@ -72,7 +72,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
         {
             foreach (var itemData in ExecuteQuery(query))
             {
-                yield return projector(new SessionSimpleDbItem(_context, query.Domain, itemData, query.ExplicitSelect));
+                yield return projector(new SessionSimpleDbItem(_context, query.Domain, itemData, !query.ExplicitSelect));
             }
         }
 
