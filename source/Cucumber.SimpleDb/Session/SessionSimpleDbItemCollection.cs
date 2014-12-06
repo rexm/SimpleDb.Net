@@ -38,7 +38,7 @@ namespace Cucumber.SimpleDb.Session
             {
                 if (_fetchedItems.ContainsKey(name) == false)
                 {
-                    var element = _context.Service.GetAttributes(_domain.Name, name, false);
+                    var element = _context.Service.GetAttributes(_domain.Name, name, true);
                     if (element.Descendants(sdbNs + "GetAttributesResult").First().HasElements)
                     {
                         _fetchedItems.Add (name,
