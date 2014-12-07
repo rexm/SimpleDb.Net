@@ -58,6 +58,10 @@ namespace Cucumber.SimpleDb.Utilities
 
         public static bool HasMember(this object item, string memberName)
         {
+            if (item == null)
+            {
+                return false;
+            }
             return item.GetType().GetMember(memberName).Length > 0;
         }
 
