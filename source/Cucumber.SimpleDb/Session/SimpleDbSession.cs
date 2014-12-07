@@ -57,20 +57,60 @@ namespace Cucumber.SimpleDb.Session
 
         private IEnumerable<Action<ISimpleDbService>> CollectDeleteOperations(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
         {
-            var deleteBatches = domainSet.Where(i => i.State == SessionItemState.Delete).GroupsOf(25);
-            foreach (var deleteBatch in deleteBatches)
+            var deleteAttributeBatches = 
+                GetAttributesMarkedForDeletion(domainSet)
+                .Concat(GetItemsMarkedForDeletion(domainSet))
+                .GroupsOf(25);
+            foreach (var deleteBatch in deleteAttributeBatches)
             {
-                yield return service => service.BatchDeleteAttributes(domainSet.Key.Name, deleteBatch.Cast<object>().ToArray());
+                yield return service => service.BatchDeleteAttributes(domainSet.Key.Name, deleteBatch.ToArray());
             }
         }
 
         private IEnumerable<Action<ISimpleDbService>> CollectUpsertOperations(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
         {
-            var putBatches = domainSet.Where(i => i.State == SessionItemState.Create || i.State == SessionItemState.Update).GroupsOf(25);
+            var putBatches = domainSet
+                .Where(i => i.State == SessionItemState.Create || i.State == SessionItemState.Update)
+                .GroupsOf(25);
             foreach (var putBatch in putBatches)
             {
-                yield return service => service.BatchPutAttributes(domainSet.Key.Name, putBatch.Cast<object>().ToArray());
+                var items = GetItemsMarkedForUpsert(putBatch);
+                if(items.Any())
+                {
+                    yield return service => service.BatchPutAttributes(
+                        domainSet.Key.Name,
+                        items.ToArray());
+                }
             }
+        }
+
+        private IEnumerable<object> GetItemsMarkedForUpsert(IEnumerable<ISessionItem> putBatch)
+        {
+            return putBatch.Select(i => new {
+                Name = i.Name,
+                Attributes = i.Attributes.Where(att => ((ISessionAttribute)att).IsDirty && ((ISessionAttribute)att).IsDeleted == false)
+            }).Where(a => a.Attributes.Any()).Cast<object>();
+        }
+
+        private IEnumerable<object> GetItemsMarkedForDeletion(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
+        {
+            return domainSet
+                .Where(i => i.State == SessionItemState.Delete)
+                .Select(i => new {
+                    Name = i.Name
+                }).Cast<object>();
+        }
+
+        private IEnumerable<object> GetAttributesMarkedForDeletion(IGrouping<ISimpleDbDomain, ISessionItem> domainSet)
+        {
+            return domainSet
+                .Where(i => i.State == SessionItemState.Update)
+                .Select(i => new {
+                    Name = i.Name,
+                    Attributes = i.Attributes.Where(att => ((ISessionAttribute)att).IsDeleted)
+                })
+                .Where(a => a.Attributes.Any())
+                .Cast<object>();
         }
     }
 }

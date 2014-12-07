@@ -8,5 +8,7 @@ namespace Cucumber.SimpleDb.Session
     internal interface ISessionAttribute
     {
         bool IsDirty { get; }
+        bool IsDeleted { get; }
+        ISessionItem Item { get; }
     }
 }

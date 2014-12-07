@@ -85,7 +85,7 @@ namespace Cucumber.SimpleDb.Session
         {
             get
             {
-                return _attributes.Where(att => ((ISessionAttribute)att).IsDirty);
+                return _attributes;
             }
         }
 
@@ -97,7 +97,9 @@ namespace Cucumber.SimpleDb.Session
                 {
                     return SessionItemState.Delete;
                 }
-                return ((ISessionItem)this).Attributes.Count() > 0 ? SessionItemState.Update : SessionItemState.Unchanged;
+                return ((ISessionItem)this).Attributes
+                    .Where(att => ((ISessionAttribute)att).IsDirty)
+                    .Count() > 0 ? SessionItemState.Update : SessionItemState.Unchanged;
             }
         }
 

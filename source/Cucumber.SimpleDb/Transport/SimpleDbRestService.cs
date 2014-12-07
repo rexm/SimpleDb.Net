@@ -314,9 +314,6 @@ namespace Cucumber.SimpleDb.Transport
                             values.Add(
                                 string.Format("Item.{0}.Attribute.{1}.Name", itemCount, attributeCount),
                                 attribute.Name);
-                            values.Add(
-                                string.Format("Item.{0}.Attribute.{1}.Value", itemCount, attributeCount),
-                                attribute.Value.ToString());
                             attributeCount++;
                         }
                     }

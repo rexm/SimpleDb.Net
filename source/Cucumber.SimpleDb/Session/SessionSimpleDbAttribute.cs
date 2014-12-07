@@ -12,9 +12,11 @@ namespace Cucumber.SimpleDb.Session
         private readonly SimpleDbAttributeValue _originalValue;
         private SimpleDbAttributeValue _newValue;
         private readonly string _name;
+        private SessionSimpleDbItem _item;
 
         internal SessionSimpleDbAttribute(SessionSimpleDbItem item, string name, params string[] values)
         {
+            _item = item;
             _name = name;
             _originalValue = new SimpleDbAttributeValue(values);
             _newValue = _originalValue;
@@ -33,8 +35,17 @@ namespace Cucumber.SimpleDb.Session
             }
             set
             {
+                if (value == null)
+                {
+                    this.IsDeleted = true;
+                    value = new SimpleDbAttributeValue(new string[] { null });
+                }
+                else
+                {
+                    this.IsDeleted = false;
+                }
                 _newValue = value;
-                this.IsDirty = _newValue != _originalValue;
+                this.IsDirty = !_newValue.Values.SequenceEqual(_originalValue.Values);
             }
         }
 
@@ -44,9 +55,20 @@ namespace Cucumber.SimpleDb.Session
             private set;
         }
 
+        public bool IsDeleted
+        {
+            get;
+            private set;
+        }
+
         public bool Replace
         {
             get { return true; }
+        }
+
+        public ISessionItem Item
+        {
+            get { return _item; }
         }
     }
 }
