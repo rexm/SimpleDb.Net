@@ -476,6 +476,13 @@ namespace Cucumber.SimpleDb
 
         private static IEnumerable LiftValuesToType(string[] values, Type type)
         {
+            if (type == null)
+            {
+                foreach (var value in values)
+                {
+                    yield return value;
+                }
+            }
             foreach (var value in values)
             {
                 object typedValue = null;
