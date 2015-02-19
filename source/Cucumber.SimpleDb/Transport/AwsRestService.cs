@@ -17,12 +17,19 @@ namespace Cucumber.SimpleDb.Transport
         private readonly string _publicKey;
         private readonly string _privateKey;
         private readonly IWebRequestProvider _webRequest;
+        private readonly string _simpleDbUrl;
         private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         public AwsRestService(string publicKey, string privateKey, IWebRequestProvider webRequest)
+            : this(publicKey, privateKey, "sdb.amazonaws.com",webRequest)
+        {
+        }
+
+        public AwsRestService(string publicKey, string privateKey,string simpleDbUrl, IWebRequestProvider webRequest)
         {
             _publicKey = publicKey;
             _privateKey = privateKey;
+            _simpleDbUrl = simpleDbUrl;
             _webRequest = webRequest;
         }
 
@@ -33,7 +40,7 @@ namespace Cucumber.SimpleDb.Transport
             var request = _webRequest.Create(string.Format(
                 "{0}://{1}/?{2}",
                 simpleDbProtocol,
-                simpleDbUrl,
+                _simpleDbUrl,
                 argumentString));
             try
             {
@@ -119,7 +126,7 @@ namespace Cucumber.SimpleDb.Transport
         {
             return string.Format("{0}\n{1}\n/\n{2}",
                 "GET",
-                simpleDbUrl,
+                _simpleDbUrl,
                 string.Join("&",
                     arguments.AllKeys.OrderBy(k => k, new NaturalByteComparer())
                     .Select(k => string.Format("{0}={1}",
@@ -144,7 +151,6 @@ namespace Cucumber.SimpleDb.Transport
             }
         }
             
-        private const string simpleDbUrl = "sdb.amazonaws.com";
         private const string simpleDbProtocol = "https";
     }
 }

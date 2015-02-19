@@ -20,8 +20,9 @@ namespace Cucumber.SimpleDb
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="publicKey"/> or <paramref name="privateKey"/> is null or empty.</exception>
         /// <param name="publicKey">The AWS public key to use.</param>
         /// <param name="privateKey">The AWS private key to use.</param>
+        /// <param name="endpoint">The SimpleDB endpoint to be used. Default is 'sdb.amazonaws.com'. See full list at http://docs.aws.amazon.com/general/latest/gr/rande.html#sdb_region </param>
         /// <returns>The <c>Cucumber.SimpleDb.ISimpleDbContext</c> instance.</returns>
-        public static ISimpleDbContext Create(string publicKey, string privateKey)
+        public static ISimpleDbContext Create(string publicKey, string privateKey, string endpoint = "sdb.amazonaws.com")
         {
             if (string.IsNullOrEmpty(publicKey))
             {
@@ -31,7 +32,7 @@ namespace Cucumber.SimpleDb
             {
                 throw new ArgumentNullException("privateKey");
             }
-            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey, new WebRequestProvider())));
+            return Create(new SimpleDbRestService(new AwsRestService(publicKey, privateKey,endpoint, new WebRequestProvider())));
         }
 
         /// <summary>
