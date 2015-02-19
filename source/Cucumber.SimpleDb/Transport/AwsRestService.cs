@@ -17,14 +17,12 @@ namespace Cucumber.SimpleDb.Transport
         private readonly string _publicKey;
         private readonly string _privateKey;
         private readonly IWebRequestProvider _webRequest;
-        private readonly string _simpleDbUrl = "sdb.amazonaws.com";
+        private readonly string _simpleDbUrl;
         private static readonly XNamespace sdbNs = "http://sdb.amazonaws.com/doc/2009-04-15/";
 
         public AwsRestService(string publicKey, string privateKey, IWebRequestProvider webRequest)
+            : this(publicKey, privateKey, "sdb.amazonaws.com",webRequest)
         {
-            _publicKey = publicKey;
-            _privateKey = privateKey;
-            _webRequest = webRequest;
         }
 
         public AwsRestService(string publicKey, string privateKey,string simpleDbUrl, IWebRequestProvider webRequest)
