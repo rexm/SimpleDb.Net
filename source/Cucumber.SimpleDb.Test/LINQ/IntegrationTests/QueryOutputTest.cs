@@ -123,7 +123,7 @@ namespace Cucumber.SimpleDb.Test
         {
             var query = GetQueryString (context => 
                 context.Domains["TestDomain1"].Items.OrderBy(i => i["TestAtt1"]));
-            Assert.AreEqual("SELECT * FROM `TestDomain1` ORDERBY `TestAtt1` ASC", query);
+            Assert.AreEqual("SELECT * FROM `TestDomain1` ORDER BY `TestAtt1` ASC", query);
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace Cucumber.SimpleDb.Test
                 context.Domains["TestDomain1"].Items
                    .OrderBy(i => i["TestAtt1"])
                     .OrderByDescending(i => i["TestAtt2"]));
-            Assert.AreEqual("SELECT * FROM `TestDomain1` ORDERBY `TestAtt1` ASC, `TestAtt2` DESC", query);
+            Assert.AreEqual("SELECT * FROM `TestDomain1` ORDER BY `TestAtt1` ASC, `TestAtt2` DESC", query);
         }
 
         [Test]
@@ -276,7 +276,7 @@ namespace Cucumber.SimpleDb.Test
                 .Select(i => new {
                     Value = i["Value"]
                 }));
-            Assert.AreEqual("SELECT `Value`, itemName() FROM `TestDomain1` ORDERBY itemName() ASC", query);
+            Assert.AreEqual("SELECT `Value`, itemName() FROM `TestDomain1` ORDER BY itemName() ASC", query);
         }
 
         private string GetQueryString<T>(Func<ISimpleDbContext, T> query)
