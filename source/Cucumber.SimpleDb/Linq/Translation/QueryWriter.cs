@@ -300,7 +300,7 @@ namespace Cucumber.SimpleDb.Linq.Translation
 			{
 				return;
 			}
-			_qsb.Append("ORDERBY");
+			_qsb.Append("ORDER BY");
 			WriteCommaSeparatedSequence(orderBys, orderBy => {
                 VisitSimpleDbAttribute(orderBy.Attribute);
 				_qsb.Append(orderBy.Direction == SortDirection.Ascending ? "ASC" : "DESC");
